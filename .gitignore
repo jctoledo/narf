@@ -1,5 +1,7 @@
 *.class
-
+*target*
+*.pdb
+*.dat
 # Package Files #
 *.jar
 *.war
