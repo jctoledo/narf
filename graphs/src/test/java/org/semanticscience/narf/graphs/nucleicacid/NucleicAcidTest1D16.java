@@ -32,8 +32,9 @@ import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.Test;
 import org.semanticscience.narf.graphs.lib.cycles.Cycle;
+import org.semanticscience.narf.graphs.lib.cycles.CycleBasis;
+import org.semanticscience.narf.graphs.lib.cycles.FundamentalCycleBasis;
 import org.semanticscience.narf.graphs.lib.cycles.exceptions.CycleBasisException;
-import org.semanticscience.narf.graphs.old.CycleBasisOld;
 import org.semanticscience.narf.structures.parts.Nucleotide;
 
 /**
@@ -89,16 +90,12 @@ public class NucleicAcidTest1D16 {
 	@Test
 	public void testingCycleBasis(){
 		for(NucleicAcid aNuc: nas){
-			try {
-				CycleBasisOld<Nucleotide, InteractionEdge> cb = new CycleBasisOld<Nucleotide,InteractionEdge>(aNuc);
-				List<Cycle<Nucleotide, InteractionEdge>> chordlessCB = cb.getChordlessCycleBasis();
-				for (Cycle<Nucleotide, InteractionEdge> cycle : chordlessCB) {
-					System.out.println(cycle+"\n");
-					
-				}
-			} catch (CycleBasisException e) {
-				e.printStackTrace();
+			CycleBasis<Nucleotide,InteractionEdge> cb = new FundamentalCycleBasis<Nucleotide, InteractionEdge>(aNuc);
+			List<Cycle<Nucleotide,InteractionEdge>> fcb = cb.getCycleBasis();
+			for (Cycle<Nucleotide, InteractionEdge> cycle : fcb) {
+				System.out.println(cycle+"\n");
 			}
+			
 		}
 	}
 }

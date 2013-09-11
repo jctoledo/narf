@@ -28,33 +28,31 @@ import java.util.List;
 
 import org.jgrapht.UndirectedGraph;
 import org.jgrapht.graph.SimpleWeightedGraph;
-import org.jgrapht.traverse.DepthFirstIterator;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.Test;
-import org.semanticscience.narf.graphs.lib.cycles.exceptions.CycleBasisException;
 import org.semanticscience.narf.graphs.lib.cycles.exceptions.CycleException;
-import org.semanticscience.narf.graphs.old.CycleBasisOld;
 
 /**
- * @author  Jose Cruz-Toledo
- *
+ * @author Jose Cruz-Toledo
+ * 
  */
 public class CycleBasisTest {
-	
+
 	private static UndirectedGraph<String, String> sampleGraph1 = null;
 	private static UndirectedGraph<String, String> sampleGraph2 = null;
 	private static UndirectedGraph<String, String> sampleGraph3 = null;
-	private static UndirectedGraph<String,String> sampleGraph4 = null;
-	private static UndirectedGraph<String,String> sampleGraph5 = null;
+	private static UndirectedGraph<String, String> sampleGraph4 = null;
+	private static UndirectedGraph<String, String> sampleGraph5 = null;
 	private static UndirectedGraph<String, String> sampleHairpinGraph = null;
 	private static UndirectedGraph<String, String> dfsGraph = null;
-	private static CycleBasisOld<String,String> ccb = null;
-	private static CycleBasisOld<String,String> ccb2 = null;
-	private static CycleBasisOld<String, String> ccb3 = null;
-	private static  CycleBasisOld<String,String> ccb4 = null;
-	private static  CycleBasisOld<String,String> ccb5 = null;
-	private static CycleBasisOld<String, String> hairpin = null;
+	private static CycleBasis<String, String> ccb = null;
+	private static CycleBasis<String, String> ccb2 = null;
+	private static CycleBasis<String, String> ccb3 = null;
+	private static CycleBasis<String, String> ccb4 = null;
+	private static CycleBasis<String, String> ccb5 = null;
+	private static CycleBasis<String, String> hairpin = null;
+
 	/**
 	 * @throws java.lang.Exception
 	 */
@@ -67,12 +65,11 @@ public class CycleBasisTest {
 		sampleGraph5 = createSampleGraph5();
 		sampleHairpinGraph = createSampleHairpin();
 		dfsGraph = createDPSGraph();
-		ccb = new CycleBasisOld<String, String>(sampleGraph1);
-		ccb2 = new CycleBasisOld<String, String>(sampleGraph2);
-		ccb3 = new CycleBasisOld<String, String>(sampleGraph3);
-		ccb4 = new CycleBasisOld<String,String>(sampleGraph4);
-		ccb5 = new CycleBasisOld<String, String>(sampleGraph5);
-		hairpin = new CycleBasisOld<String,String>(sampleHairpinGraph);
+		ccb2 = new FundamentalCycleBasis<String, String>(sampleGraph2);
+		ccb3 = new FundamentalCycleBasis<String, String>(sampleGraph3);
+		ccb4 = new FundamentalCycleBasis<String, String>(sampleGraph4);
+		ccb5 = new FundamentalCycleBasis<String, String>(sampleGraph5);
+		hairpin = new FundamentalCycleBasis<String, String>(sampleHairpinGraph);
 	}
 
 	/**
@@ -86,166 +83,121 @@ public class CycleBasisTest {
 		sampleGraph4 = null;
 		sampleGraph5 = null;
 		hairpin = null;
-		
+
 		ccb = null;
 		ccb2 = null;
 		ccb3 = null;
 		ccb4 = null;
 		ccb5 = null;
 	}
-	
-	
-	@Test
-	public void testingCreateCycleFromVertexArray(){
-		boolean b = true;
-		String[] someVerts = new String[5];
-		someVerts[0] = "v4";
-		someVerts[1] = "v3";
-		someVerts[2] = "v2";
-		someVerts[3] = "v1";
-		someVerts[4] = "v5";
-		DepthFirstIterator<String, String> i = new DepthFirstIterator<String, String>(sampleGraph1, "v1");
-		while(i.hasNext()){
-			String current = i.next();
-			//get a list of the neighbours of current
-		//	List<String> neighbours = getNeighbours(current);
-			
-		}
-		Cycle<String, String> c = ccb.createCycleFromVertices(sampleGraph1, someVerts);
-		if(c.getFirstEdge().equals("c")){
-			b = false;
-		}
-		assertFalse(b);		
-	}
-	
+
 	@Test
 	public void testingCCB() throws CycleException {
 		boolean b = true;
-		//test if triangle with edges (c, d, f) and vertices (v3, v4, v5) is in the ccb
+		// test if triangle with edges (c, d, f) and vertices (v3, v4, v5) is in
+		// the ccb
 		List<String> el = new LinkedList<String>();
 		el.add("c");
 		el.add("d");
 		el.add("f");
-		Cycle<String, String> triangle = new Cycle<String, String>(sampleGraph1, "v3", "v5", el, el.size());
-		List<Cycle<String, String>> basis = ccb.getChordlessCycleBasis();
-		if(basis.contains(triangle)){
-			b = false;
-		}
-		assertFalse(b);
-	}
-	
-	@Test
-	public void testingEdgeExistsBetweenNonAdjacentVertices() throws CycleBasisException{
-		//create a vertexList
-		String[] someVerts = new String[4];
-		someVerts[0] = "v5";
-		someVerts[1] = "v3";
-		someVerts[2] = "v2";
-		someVerts[3] = "v1";
-		boolean b = ccb.edgeExistsBetweenNonAdjacentVertices(someVerts);
-		assertFalse(b);
-	}
-	
-	@Test
-	public void testingCCB2() throws CycleException{
-		boolean b = true;
-		//test if triangle with edges (h,i, b) and vertices(v2,v6,v3) is in the ccb2
-		List<String> el = new LinkedList<String>();
-		el.add("h");
-		el.add("i");
-		el.add("b");
-		Cycle<String,String> triangle = new Cycle<String, String>(sampleGraph2, "v2", "v3", el, el.size());
-		List<Cycle<String,String>> basis = ccb2.getChordlessCycleBasis();
-		if(basis.contains(triangle)){
+		Cycle<String, String> triangle = new Cycle<String, String>(
+				sampleGraph1, "v3", "v5", el, el.size());
+		List<Cycle<String, String>> basis = ccb.getCycleBasis();
+		if (basis.contains(triangle)) {
 			b = false;
 		}
 		assertFalse(b);
 	}
 
-	/*@Test
-	public void testingCCB3() {
-		boolean b = true;
-		//test if 
-		List<Cycle<String, String>> l = ccb3.getCycleBasis();
-		System.out.println(ccb3.getCycleBasis().size());
-		for(Cycle<String, String> c :l){
-			if(c.getWeight() == 4.0){
-				System.out.println(" Weight 4: "+ c);
-			}else{
-				System.out.println( " not 4: "+ c);
-			}
-		}
-		System.out.println(ccb3.getCycleBasis());
-		Map<Double, List<Cycle<String,String>>> m = new HashMap<Double, List<Cycle<String,String>>>();
-		for (Cycle<String, String> cycle : l) {
-			Double w = cycle.getWeight();
-			if(!m.containsKey(w)){
-				List<Cycle<String,String>> tl = new ArrayList<Cycle<String, String>>();
-				tl.add(cycle);
-				m.put(w, tl);
-			}else{
-				//already in there
-				//get the list
-				//add cycle to the end of it
-				List<Cycle<String,String>> qw = m.get(w);
-				qw.add(cycle);
-				m.put(w, qw);
-			}
-		}
-		for (Map.Entry<Double, List<Cycle<String,String>>> entry : m.entrySet()) {
-			System.out.println("key = "+entry.getKey()+ ", length = "+ entry.getValue().size()+ " , contents = "+entry.getValue() );
-		}
-	}*/
-	
 	@Test
-	public void testingCCB4() throws CycleException{
+	public void testingCCB2() throws CycleException {
+		boolean b = true;
+		// test if triangle with edges (h,i, b) and vertices(v2,v6,v3) is in the
+		// ccb2
+		List<String> el = new LinkedList<String>();
+		el.add("h");
+		el.add("i");
+		el.add("b");
+		Cycle<String, String> triangle = new Cycle<String, String>(
+				sampleGraph2, "v2", "v3", el, el.size());
+		List<Cycle<String, String>> basis = ccb2.getCycleBasis();
+		if (basis.contains(triangle)) {
+			b = false;
+		}
+		assertFalse(b);
+	}
+
+	/*
+	 * @Test public void testingCCB3() { boolean b = true; //test if
+	 * List<Cycle<String, String>> l = ccb3.getCycleBasis();
+	 * System.out.println(ccb3.getCycleBasis().size()); for(Cycle<String,
+	 * String> c :l){ if(c.getWeight() == 4.0){
+	 * System.out.println(" Weight 4: "+ c); }else{ System.out.println(
+	 * " not 4: "+ c); } } System.out.println(ccb3.getCycleBasis()); Map<Double,
+	 * List<Cycle<String,String>>> m = new HashMap<Double,
+	 * List<Cycle<String,String>>>(); for (Cycle<String, String> cycle : l) {
+	 * Double w = cycle.getWeight(); if(!m.containsKey(w)){
+	 * List<Cycle<String,String>> tl = new ArrayList<Cycle<String, String>>();
+	 * tl.add(cycle); m.put(w, tl); }else{ //already in there //get the list
+	 * //add cycle to the end of it List<Cycle<String,String>> qw = m.get(w);
+	 * qw.add(cycle); m.put(w, qw); } } for (Map.Entry<Double,
+	 * List<Cycle<String,String>>> entry : m.entrySet()) {
+	 * System.out.println("key = "+entry.getKey()+ ", length = "+
+	 * entry.getValue().size()+ " , contents = "+entry.getValue() ); } }
+	 */
+
+	@Test
+	public void testingCCB4() throws CycleException {
 		boolean b = true;
 		boolean e = true;
 		boolean d = true;
-		List<Cycle<String, String>> l = ccb4.getChordlessCycleBasis();
+		List<Cycle<String, String>> l = ccb4.getCycleBasis();
 		List<String> el1 = new ArrayList<String>();
 		el1.add("k");
 		el1.add("i");
 		el1.add("f");
 		el1.add("h");
-		Cycle<String, String> c1 = new Cycle<String, String>(sampleGraph4, "v7", "v4", el1, el1.size());
+		Cycle<String, String> c1 = new Cycle<String, String>(sampleGraph4,
+				"v7", "v4", el1, el1.size());
 		List<String> el2 = new ArrayList<String>();
 		el2.add("l");
 		el2.add("j");
 		el2.add("g");
 		el2.add("i");
-		Cycle<String, String> c2 = new Cycle<String, String>(sampleGraph4, "v8", "v5", el2, el2.size());
+		Cycle<String, String> c2 = new Cycle<String, String>(sampleGraph4,
+				"v8", "v5", el2, el2.size());
 
-		if(l.contains(c1)){
+		if (l.contains(c1)) {
 			b = false;
 		}
-		if(l.contains(c2)){
+		if (l.contains(c2)) {
 			e = false;
 		}
-		
-		if(b == false && e == false){
+
+		if (b == false && e == false) {
 			d = false;
 		}
 		assertFalse(d);
 	}
-	
+
 	@Test
-	public void testingCCB5() throws CycleException{
+	public void testingCCB5() throws CycleException {
 		boolean b = true;
-		List<Cycle<String,String>> c = ccb5.getChordlessCycleBasis();
-		//Cycle: VertexList [v8, v4, v3, v2] EdgeList: [j, c, b, i] StartVertex: v8, EndVertex: v2 Weight: 4.0
+		List<Cycle<String, String>> c = ccb5.getCycleBasis();
+		// Cycle: VertexList [v8, v4, v3, v2] EdgeList: [j, c, b, i]
+		// StartVertex: v8, EndVertex: v2 Weight: 4.0
 		List<String> el1 = new ArrayList<String>();
 		el1.add("j");
 		el1.add("c");
 		el1.add("b");
 		el1.add("i");
-		Cycle<String, String> c1 = new Cycle<String, String>(sampleGraph5, "v8", "v2", el1, el1.size());
-		if(c.contains(c1)){
+		Cycle<String, String> c1 = new Cycle<String, String>(sampleGraph5,
+				"v8", "v2", el1, el1.size());
+		if (c.contains(c1)) {
 			b = false;
 		}
 		assertFalse(b);
 	}
-	
 
 	private static UndirectedGraph<String, String> createSampleGraph() {
 		UndirectedGraph<String, String> g = new SimpleWeightedGraph<String, String>(
@@ -274,7 +226,8 @@ public class CycleBasisTest {
 		g.addEdge(v3, v5, f);
 		return g;
 	}
-	private static UndirectedGraph<String,String> createSampleGraph2(){
+
+	private static UndirectedGraph<String, String> createSampleGraph2() {
 		UndirectedGraph<String, String> rm = new SimpleWeightedGraph<String, String>(
 				String.class);
 		String v1 = "v1";
@@ -309,8 +262,8 @@ public class CycleBasisTest {
 		rm.addEdge(v3, v6, i);
 		return rm;
 	}
-	
-	private static UndirectedGraph<String,String> createSampleGraph3(){
+
+	private static UndirectedGraph<String, String> createSampleGraph3() {
 		UndirectedGraph<String, String> rm = new SimpleWeightedGraph<String, String>(
 				String.class);
 		String v1 = "v1";
@@ -373,9 +326,10 @@ public class CycleBasisTest {
 		rm.addEdge(v12, v11, q);
 		return rm;
 	}
-	
-	private static UndirectedGraph<String, String> createSampleGraph4(){
-		UndirectedGraph<String,String> rm = new SimpleWeightedGraph<String,String>(String.class);
+
+	private static UndirectedGraph<String, String> createSampleGraph4() {
+		UndirectedGraph<String, String> rm = new SimpleWeightedGraph<String, String>(
+				String.class);
 		String v1 = "v1";
 		String v2 = "v2";
 		String v3 = "v3";
@@ -420,9 +374,10 @@ public class CycleBasisTest {
 		rm.addEdge(v8, v9, l);
 		return rm;
 	}
-	
-	private static UndirectedGraph<String, String> createDPSGraph(){
-		UndirectedGraph<String,String> rm = new SimpleWeightedGraph<String,String>(String.class);
+
+	private static UndirectedGraph<String, String> createDPSGraph() {
+		UndirectedGraph<String, String> rm = new SimpleWeightedGraph<String, String>(
+				String.class);
 		String vA = "A";
 		String vB = "B";
 		String vC = "C";
@@ -448,20 +403,21 @@ public class CycleBasisTest {
 		rm.addVertex(vF);
 		rm.addVertex(vG);
 		rm.addVertex(vH);
-		rm.addEdge(vA, vB,a);
-		rm.addEdge(vB,vE,e);
-		rm.addEdge(vE, vG,g);
-		rm.addEdge(vG, vA,f);
-		rm.addEdge(vA, vD,b);
-		rm.addEdge(vF, vD,c);
-		rm.addEdge(vB, vF,d);
-		rm.addEdge(vF, vC,h);
-		rm.addEdge(vC, vH,i);
+		rm.addEdge(vA, vB, a);
+		rm.addEdge(vB, vE, e);
+		rm.addEdge(vE, vG, g);
+		rm.addEdge(vG, vA, f);
+		rm.addEdge(vA, vD, b);
+		rm.addEdge(vF, vD, c);
+		rm.addEdge(vB, vF, d);
+		rm.addEdge(vF, vC, h);
+		rm.addEdge(vC, vH, i);
 		return rm;
 	}
-	
-	private static UndirectedGraph<String,String> createSampleHairpin(){
-		UndirectedGraph<String,String> rm = new SimpleWeightedGraph<String,String>(String.class);
+
+	private static UndirectedGraph<String, String> createSampleHairpin() {
+		UndirectedGraph<String, String> rm = new SimpleWeightedGraph<String, String>(
+				String.class);
 		String v1 = "v1";
 		String v2 = "v2";
 		String v3 = "v3";
@@ -521,9 +477,10 @@ public class CycleBasisTest {
 		rm.addEdge(v12, v13, l);
 		return rm;
 	}
-	
-	private static UndirectedGraph<String, String> createSampleGraph5(){
-		UndirectedGraph<String,String> rm = new SimpleWeightedGraph<String,String>(String.class);
+
+	private static UndirectedGraph<String, String> createSampleGraph5() {
+		UndirectedGraph<String, String> rm = new SimpleWeightedGraph<String, String>(
+				String.class);
 		String v1 = "v1";
 		String v2 = "v2";
 		String v3 = "v3";

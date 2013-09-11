@@ -28,7 +28,7 @@ import java.util.LinkedHashSet;
 import java.util.Map;
 import java.util.Set;
 
-import org.semanticscience.narf.graphs.old.CycleBasisOld;
+import org.semanticscience.narf.graphs.lib.cycles.CycleBasis;
 import org.semanticscience.narf.structures.interactions.BasePair;
 import org.semanticscience.narf.structures.interactions.BaseStack;
 import org.semanticscience.narf.structures.interactions.NucleotideInteraction;
@@ -78,7 +78,7 @@ public class NucleicAcid extends AbstractNucleicAcid  {
 	 */
 	private Map<String, Set<NucleotideInteraction>> chain2InteractionMap;
 	
-	private CycleBasisOld<Nucleotide, NucleotideInteraction> cycleBasis;
+	private CycleBasis<Nucleotide, NucleotideInteraction> cycleBasis;
 
 	//private CyclicMotifGraph cyclicMotifGraph;
 

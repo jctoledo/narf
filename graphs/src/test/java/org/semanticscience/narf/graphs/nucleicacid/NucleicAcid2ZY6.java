@@ -20,8 +20,6 @@
  */
 package org.semanticscience.narf.graphs.nucleicacid;
 
-import static org.junit.Assert.*;
-
 import java.io.File;
 import java.io.IOException;
 import java.net.URL;
@@ -33,8 +31,8 @@ import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.Test;
 import org.semanticscience.narf.graphs.lib.cycles.Cycle;
-import org.semanticscience.narf.graphs.lib.cycles.exceptions.CycleBasisException;
-import org.semanticscience.narf.graphs.old.CycleBasisOld;
+import org.semanticscience.narf.graphs.lib.cycles.CycleBasis;
+import org.semanticscience.narf.graphs.lib.cycles.FundamentalCycleBasis;
 import org.semanticscience.narf.structures.parts.Nucleotide;
 
 /**
@@ -68,69 +66,64 @@ public class NucleicAcid2ZY6 {
 	@Test
 	public void testingCycleBasisPrettyPrint() throws IOException {
 		for (NucleicAcid aNuc : nas) {
-			try {
-				CycleBasisOld<Nucleotide, InteractionEdge> cb = new CycleBasisOld<Nucleotide, InteractionEdge>(
-						aNuc);
-				List<Cycle<Nucleotide, InteractionEdge>> chordlessCB = cb
-						.getChordlessCycleBasis();
-				// get the total number of cycles
-				System.out.println("Cycle Basis for PDBID: " + pdbId);
-				System.out.println("Total number of cylces: "
-						+ chordlessCB.size());
-				String b = "";
-				for (Cycle<Nucleotide, InteractionEdge> cycle : chordlessCB) {
-					// get the cycle length
-					int clen = cycle.size();
-					// get the interaction edges
-					String edgeSummary = "Edges : [";
-					List<InteractionEdge> edges = cycle.getEdgeList();
-					for (InteractionEdge anEdge : edges) {
-						edgeSummary += anEdge.extractEdgeClasses() + "-";
-					}
-					// remove the last "-"
-					edgeSummary = edgeSummary.substring(0,
-							edgeSummary.length() - 1) + "] ";
-					// make a vertex summary
-					String vertexSummary = "Vertices : [";
-					List<Nucleotide> vertices = cycle.getVertexList();
-					for (Nucleotide n : vertices) {
-						vertexSummary += n.getResidueIdentifier()
-								+ n.getResiduePosition() + "_" + n.getChainId()
-								+ ", ";
-					}
-					// remove the last ", "
-					vertexSummary = vertexSummary.substring(0,
-							vertexSummary.length() - 2)
-							+ "]";
-					// get the basepair classes
-					String bpSummary = "BasePair classes: [";
-					for (InteractionEdge anEdge : edges) {
-						String bpC = anEdge.extractBasePairClasses();
-						if (bpC.length() > 0) {
-							bpSummary += anEdge.extractBasePairClasses() + ", ";
-						}
-					}
-					bpSummary = bpSummary.substring(0, bpSummary.length() - 2)
-							+ "]";
-					String printMe = "Cycle Length : " + clen + "\n";
-					printMe += "Start Vertex: "
-							+ cycle.getStartVertex().getResidueIdentifier()
-							+ cycle.getStartVertex().getResiduePosition() + "_"
-							+ cycle.getStartVertex().getChainId() + "\n";
-					printMe += "End Vertex: "
-							+ cycle.getEndVertex().getResidueIdentifier()
-							+ cycle.getEndVertex().getResiduePosition() + "_"
-							+ cycle.getEndVertex().getChainId() + "\n";
-					printMe += edgeSummary + "\n";
-					printMe += vertexSummary + "\n";
-					printMe += bpSummary + "\n\n";
-
-					System.out.println(printMe);
+			CycleBasis<Nucleotide, InteractionEdge> cb = new FundamentalCycleBasis<Nucleotide, InteractionEdge>(
+					aNuc);
+			List<Cycle<Nucleotide, InteractionEdge>> chordlessCB = cb
+					.getCycleBasis();
+			// get the total number of cycles
+			System.out.println("Cycle Basis for PDBID: " + pdbId);
+			System.out.println("Total number of cylces: " + chordlessCB.size());
+			String b = "";
+			for (Cycle<Nucleotide, InteractionEdge> cycle : chordlessCB) {
+				// get the cycle length
+				int clen = cycle.size();
+				// get the interaction edges
+				String edgeSummary = "Edges : [";
+				List<InteractionEdge> edges = cycle.getEdgeList();
+				for (InteractionEdge anEdge : edges) {
+					edgeSummary += anEdge.extractEdgeClasses() + "-";
 				}
-				FileUtils.write(new File("/tmp/out.output"), b);
-			} catch (CycleBasisException e) {
-				e.printStackTrace();
+				// remove the last "-"
+				edgeSummary = edgeSummary
+						.substring(0, edgeSummary.length() - 1) + "] ";
+				// make a vertex summary
+				String vertexSummary = "Vertices : [";
+				List<Nucleotide> vertices = cycle.getVertexList();
+				for (Nucleotide n : vertices) {
+					vertexSummary += n.getResidueIdentifier()
+							+ n.getResiduePosition() + "_" + n.getChainId()
+							+ ", ";
+				}
+				// remove the last ", "
+				vertexSummary = vertexSummary.substring(0,
+						vertexSummary.length() - 2)
+						+ "]";
+				// get the basepair classes
+				String bpSummary = "BasePair classes: [";
+				for (InteractionEdge anEdge : edges) {
+					String bpC = anEdge.extractBasePairClasses();
+					if (bpC.length() > 0) {
+						bpSummary += anEdge.extractBasePairClasses() + ", ";
+					}
+				}
+				bpSummary = bpSummary.substring(0, bpSummary.length() - 2)
+						+ "]";
+				String printMe = "Cycle Length : " + clen + "\n";
+				printMe += "Start Vertex: "
+						+ cycle.getStartVertex().getResidueIdentifier()
+						+ cycle.getStartVertex().getResiduePosition() + "_"
+						+ cycle.getStartVertex().getChainId() + "\n";
+				printMe += "End Vertex: "
+						+ cycle.getEndVertex().getResidueIdentifier()
+						+ cycle.getEndVertex().getResiduePosition() + "_"
+						+ cycle.getEndVertex().getChainId() + "\n";
+				printMe += edgeSummary + "\n";
+				printMe += vertexSummary + "\n";
+				printMe += bpSummary + "\n\n";
+
+				System.out.println(printMe);
 			}
+			FileUtils.write(new File("/tmp/out.output"), b);
 		}
 	}
 

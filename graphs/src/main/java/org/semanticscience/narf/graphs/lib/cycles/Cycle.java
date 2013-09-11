@@ -95,14 +95,6 @@ public class Cycle<V, E> extends GraphPathImpl<V, E> {
 			if (d < 0) {
 				throw new CycleException("Incorrect number of edges");
 			}
-			/*
-			 * if(edgeList.size() != vertexList.size()){
-			 * System.out.println("vertexList size: "+vertexList.size() +
-			 * " edge list size: "+ edgeList.size());
-			 * System.out.println("Vertex List: \n "+vertexList);
-			 * System.out.println("Edge List: \n"+edgeList); throw new
-			 * CycleException("Incorrect number of edges"); }
-			 */
 			// check if start and end vertex are in the vertex list
 			if (!this.containsVertex(startVertex)) {
 				throw new CycleException(
@@ -160,7 +152,6 @@ public class Cycle<V, E> extends GraphPathImpl<V, E> {
 	 * The edges that are between startV and endV including the edge that starts
 	 * at endV
 	 * 
-	 * @param source
 	 * @param startV
 	 * @param endV
 	 * @return

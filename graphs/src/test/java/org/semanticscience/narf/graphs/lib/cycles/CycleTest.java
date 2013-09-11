@@ -40,13 +40,14 @@ import org.semanticscience.narf.graphs.lib.cycles.exceptions.CycleException;
  */
 public class CycleTest {
 	private static UndirectedGraph<String, String> sampleGraph1 = null;
+	
 	private static UndirectedGraph<String, String> sampleGraph2 = null;
 	private static UndirectedGraph<String, String> rectangleGraph = null;
 	private static UndirectedGraph<String,String> sampleStem = null;
 
 	private static Cycle<String, String> c1 = null;
-	private static Cycle<String, String> c2 = null;
 	private static Cycle<String, String> c3 = null;
+	private static Cycle<String, String> pentaCycle = null;
 
 	private static Cycle<String, String> rotateMe = null;
 	private static Cycle<String, String> flipped = null;
@@ -61,14 +62,13 @@ public class CycleTest {
 	@BeforeClass
 	public static void setUpBeforeClass() throws Exception {
 		sampleGraph1 = createSampleGraph();
-		/*sampleGraph2 = createSampleGraph2();
-		rectangleGraph = createRectangleGraph();
+		sampleGraph2 = createSampleGraph2();
+		/*rectangleGraph = createRectangleGraph();
 		*/
-		// cycles 1 and 2 are identical cycle 3 is different
 		c1 = createC1(sampleGraph1);
-		/*c2 = createC1(sampleGraph1);
 		c3 = createC3(sampleGraph1);
-		rotateMe = createRotateMe(sampleGraph2);
+		pentaCycle = createPentaCycle(sampleGraph2);
+		/*rotateMe = createRotateMe(sampleGraph2);
 		flipped = rotateMe.invertCycle();
 		recCycle = createCycle1Rectangle(rectangleGraph);*/
 		sampleStem = createSampleStem();
@@ -82,35 +82,85 @@ public class CycleTest {
 	public static void tearDownAfterClass() throws Exception {
 		rotateMe = null;
 		c1 = null;
-		c2 = null;
 		c3 = null;
+		pentaCycle = null;
 		rectangleGraph = null;
 		recCycle = null;
 		flipped = null;
 		cycleOne = null;
 	}
+	
 	@Test 
 	public void testingRotateCycle(){
 		Cycle <String, String>x = null;
 		try{
-			x = cycleOne.rotateCycle("v2","v1");
+			System.out.println(cycleOne);
+			x = cycleOne.rotateCycle("v1","v2");
 			List<String> sl = new ArrayList<String> ();
-			sl.add("b");
-			sl.add("c");
-			sl.add("d");
-			sl.add("e");
-			sl.add("f");
-			sl.add("g");
 			sl.add("h");
+			sl.add("g");
+			sl.add("f");
+			sl.add("e");
+			sl.add("d");
+			sl.add("c");
+			sl.add("b");
 			sl.add("a");
 			assertEquals(sl, x.getEdgeList());
-			assertEquals("v1", x.getEndVertex());
-			assertEquals("v2", x.getStartVertex());
+			assertEquals("v2", x.getEndVertex());
+			assertEquals("v1", x.getStartVertex());
 		}catch(CycleException e){
-			System.out.println("poto rico :p( | )");
+			System.out.println("something did not work");
 			e.printStackTrace();
 			
 		}
+	}
+	
+	@Test
+	public void rotateCycleTest1() {
+		Cycle<String, String> x;
+		ArrayList<String> el = new ArrayList<String>();
+		el.add("f");
+		el.add("e");
+		el.add("c");
+		boolean b = false;
+		try {
+			Cycle<String,String> r = new Cycle<String, String>(sampleGraph1, "v3", "v4", el, el.size());
+			x = c1.rotateCycle("v3", "v4");
+			if (!x.equals(r)) {
+				b = true;
+			}
+			assertFalse(b);
+		} catch (CycleException e) {
+			e.printStackTrace();
+		}
+		assertFalse(b);
+	}
+	
+	@Test
+	public void getNextVertexTest(){
+		String v = "v4";
+		boolean b= true;
+		if(c1.getNextVertex("v3").equals(v)){
+			b = false;
+		}
+		assertFalse(b);
+	}
+	
+	
+	@Test
+	public void testCompSubEdgeList1(){
+		try{
+			List<String> s = new ArrayList<String>();
+			s.add("b");
+			s.add("c");
+			s.add("d");
+			List<String>e =pentaCycle.computeEdgeSubList("v2", "v5");
+			assertEquals(s, e);
+		}catch(CycleException e){
+			e.printStackTrace();
+		}
+		
+		
 	}
 	
 	@Test
@@ -184,21 +234,7 @@ public class CycleTest {
 		assertFalse(b);
 	}*/
 
-	/*@Test
-	public void rotateCycleTest1() {
-		Cycle<String, String> x;
-		boolean b = false;
-		try {
-			x = rotateMe.rotateCycle("v3", "v2");
-			if (!x.equals(rotateMe)) {
-				b = true;
-			}
-			assertFalse(b);
-		} catch (CycleException e) {
-			e.printStackTrace();
-		}
-		assertFalse(b);
-	}*/
+
 	
 	/*@Test
 	public void rotateCycleTest2(){
@@ -238,41 +274,34 @@ public class CycleTest {
 		}
 		assertFalse(b);
 	}*/
-	/*
-
+	
+	
 	@Test
-	public void testContainsVertex() {
-		boolean f = true;
-		if (rotateMe.containsVertex("v5")) {
-			f = false;
+	public void testContainsVertex(){
+		String v = "v5";
+		boolean b = true;
+		if(c1.containsVertex(v)){
+			b = false;
 		}
-		assertFalse(f);
-	}*/
-	/*
+		assertFalse(b);
+	}
 
 	@Test
 	public void testEquals() {
-		boolean f = true;
 		boolean g = true;
 		boolean h = true;
-		boolean x = true;
-		if (c1.equals(c2)) {
-			f = false;
-		}
+		
 		if (!c1.equals(c3)) {
 			g = false;
 		}
-		if (!c1.equals(rotateMe)) {
-			x = false;
-		}
-		if ((g == false) && (f == false) && (x == false)) {
+		
+		if ((g == false)) {
 			h = false;
 		} else {
 			h = true;
 		}
 		assertFalse(h);
 	}
-	*/
 	
 	private static UndirectedGraph<String, String> createSampleStem() {
 		UndirectedGraph<String, String> rm = new SimpleWeightedGraph<String, String>(
@@ -472,6 +501,24 @@ public class CycleTest {
 			rm = new Cycle<String, String>(aG, startVertex, endVertex, eL,
 					eL.size());
 		} catch (CycleException e) {
+			e.printStackTrace();
+		}
+		return rm;
+	}
+	
+	private static Cycle<String, String> createPentaCycle(UndirectedGraph<String,String> aG){
+		Cycle<String, String> rm = null;
+		List<String> el = new ArrayList<String>();
+		el.add("a");
+		el.add("b");
+		el.add("c");
+		el.add("d");
+		el.add("e");
+		String startV = "v1";
+		String endV = "v5";
+		try{
+			rm = new Cycle<String, String>(sampleGraph2, startV, endV, el, el.size());
+		}catch(CycleException e){
 			e.printStackTrace();
 		}
 		return rm;

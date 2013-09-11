@@ -55,6 +55,7 @@ public class X3DNADSSRer {
 	 * @param anInputDir
 	 * @param anOutputDir
 	 */
+	//TODO: fix to work on multiple models
 	public X3DNADSSRer(File anInputDir, File anOutputDir, String basisType) {
 		inputFiles = getFilePathsFromDir(anInputDir, "pdb");
 		for (String aFilePath : inputFiles) {
