@@ -2,6 +2,8 @@
 *target*
 *.pdb
 *.dat
+*.ps
+*.log
 # Package Files #
 *.jar
 *.war
