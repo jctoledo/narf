@@ -1,0 +1,57 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+	<modelVersion>4.0.0</modelVersion>
+	<parent>
+		<artifactId>narf</artifactId>
+		<groupId>org.semanticscience</groupId>
+		<version>1.1</version>
+	</parent>
+	<groupId>org.semanticscience.narf</groupId>
+	<artifactId>graphs</artifactId>
+	<name>graphs</name>
+	<description>A set of classes used to represent nucleic acid structure as graphs</description>
+	<dependencies>
+		<dependency>
+			<groupId>org</groupId>
+			<artifactId>jgrapht</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>com.hp.hpl.jena</groupId>
+			<artifactId>jena</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>junit</groupId>
+			<artifactId>junit</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>org.mod4j.org.apache.commons</groupId>
+			<artifactId>cli</artifactId>
+			<version>1.0.0</version>
+		</dependency>
+		<!-- <dependency>
+			<groupId>ca.wilkinsonlab.sadi</groupId>
+			<artifactId>sadi-common</artifactId>
+		</dependency> 
+		<dependency>
+			<groupId>com.dumontierlab</groupId>
+			<artifactId>pdb2rdf-parser</artifactId>
+			<version>0.0.10</version>
+		</dependency>-->
+		<dependency>
+			<groupId>commons-collections</groupId>
+			<artifactId>commons-collections</artifactId>
+			<version>3.2.1</version>
+		</dependency>
+
+		<dependency>
+			<groupId>org.semanticscience.narf</groupId>
+			<artifactId>structures</artifactId>
+			<version>1.0</version>
+		</dependency>
+		<dependency>
+			<groupId>org.openscience.cdk</groupId>
+			<artifactId>ringsearch</artifactId>
+			<version>1.4.6</version>
+		</dependency>
+	</dependencies>
+</project>
