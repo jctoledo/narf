@@ -94,7 +94,6 @@ public class CycleTest {
 	public void testingRotateCycle(){
 		Cycle <String, String>x = null;
 		try{
-			System.out.println(cycleOne);
 			x = cycleOne.rotateCycle("v1","v2");
 			List<String> sl = new ArrayList<String> ();
 			sl.add("h");
@@ -134,6 +133,26 @@ public class CycleTest {
 			e.printStackTrace();
 		}
 		assertFalse(b);
+	}
+	
+	@Test
+	public void rotateCycleTest2(){
+		try{
+			Cycle<String,String> c = null;
+			c = pentaCycle.rotateCycle("v5", "v1");
+			ArrayList<String> l = new ArrayList<String>();
+			l.add("d");
+			l.add("c");
+			l.add("b");
+			l.add("a");
+			l.add("e");
+			assertEquals(c.getEdgeList(), l);
+			assertEquals("v1", c.getLastVertex());
+			assertEquals("e", c.getLastEdge());
+			assertEquals("v5", c.getFirstVertex());
+		}catch(CycleException e){
+			e.printStackTrace();
+		}
 	}
 	
 	@Test
@@ -182,24 +201,7 @@ public class CycleTest {
 			e.printStackTrace();
 		}
 	}
-	/*@Test
-	public void testingInvertCycle() {
-
-		boolean b = true;
-		boolean c = true;
-		boolean d = true;
-		if (rotateMe.getNextEdge("v1").equals("a")) {
-			b = false;
-		}
-		if (flipped.getNextEdge("v5").equals("d")) {
-			c = false;
-		}
-		if (c == false && b == false) {
-			d = false;
-		}
-		assertFalse(d);
-	}*/
-
+	
 	/**
 	 * Testing the equals method on two identical cycles except that one of them
 	 * has been inverted

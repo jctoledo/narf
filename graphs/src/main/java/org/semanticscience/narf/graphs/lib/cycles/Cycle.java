@@ -65,7 +65,7 @@ public class Cycle<V, E> extends GraphPathImpl<V, E> {
 			throw new CycleException(
 					"Invalid number of edges. Minimum 3 accepted!");
 		} else {
-			// get the fisrt and last edge
+			// get the first and last edge
 			E lastE = edgeList.get(edgeList.size() - 1);
 			E firstE = edgeList.get(0);
 			V firstV = this.getCommonVertex(firstE, lastE);
@@ -148,61 +148,6 @@ public class Cycle<V, E> extends GraphPathImpl<V, E> {
 		return this.getVertexList().get(s - 1);
 	}
 
-	/**
-	 * The edges that are between startV and endV including the edge that starts
-	 * at endV
-	 * 
-	 * @param startV
-	 * @param endV
-	 * @return
-	 * @throws CycleException
-	 */
-	public List<E> computeEdgeSubList(V startV, V endV) throws CycleException {
-		if (startV.equals(endV)) {
-			throw new CycleException("Start Vertex cannot equal End Vertex!");
-		} else {
-			List<E> eList = new LinkedList<E>();
-			// iterate over vertex list and find vertices that are between
-			// startV and endV
-			List<V> vList = new LinkedList<V>();
-			boolean b = false;
-			Iterator<V> vItr = this.getVertexList().iterator();
-			x: while (vItr.hasNext()) {
-				V aVert = vItr.next();
-				if (aVert.equals(startV)) {
-					vList.add(aVert);
-					b = true;
-					continue x;
-				}
-				if (b == true) {
-					vList.add(aVert);
-					if (aVert.equals(endV)) {
-						b = false;
-						break x;
-					}
-				}
-			}// while
-
-			for (int i = 1; i < vList.size(); i++) {
-				V aV = vList.get(i);
-				for (int j = i - 1; j < vList.size() - 1; j++) {
-					V anotherV = vList.get(j);
-					// get common edge
-					E aE = this.getCommonEdge(aV, anotherV);
-					if (aE != null) {
-						if (!eList.contains(aE)) {
-							eList.add(aE);
-						}// if
-					}// if
-				}// for
-				if (i == vList.size() - 1) {
-					E lastEdge = this.getNextEdge(aV);
-					eList.add(lastEdge);
-				}
-			}// for
-			return eList;
-		}
-	}
 
 	/**
 	 * Returns an edge connecting aVertex to anotherVertex if such vertices and
@@ -388,10 +333,6 @@ public class Cycle<V, E> extends GraphPathImpl<V, E> {
 				throw new CycleException(
 						"Start and end vertices must be adjacent!");
 			}
-			/*
-			 * else if (distance < 0) { throw new CycleException(
-			 * "End vertex must be before start vertex!"); }
-			 */
 			// check for the base case (the newstart and newend vertices are the
 			// same as the bases'
 			if (newStart.equals(this.getStartVertex())
@@ -415,6 +356,11 @@ public class Cycle<V, E> extends GraphPathImpl<V, E> {
 			// check if start is equal to new end
 			if (this.getStartVertex().equals(newEnd)) {
 				// do something special :)
+				if(newStart.equals(this.getEndVertex())){
+					int p = 0;
+					
+				}
+					
 				List<E> e = computeEdgeSubList(newStart, this.getEndVertex());
 				E extra = this.getNextEdge(this.getFirstVertex());
 				e.add(extra);
@@ -422,6 +368,10 @@ public class Cycle<V, E> extends GraphPathImpl<V, E> {
 						newEnd, e, e.size());
 				return c;
 			} else {
+				if(newStart.equals(this.getEndVertex()) || newEnd.equals(this.getStartVertex())){
+					int p = 0;
+					
+				}
 				// check if newEnd is equal to start
 				List<E> e = computeEdgeSubList(newStart, this.getEndVertex());
 				List<E> d = computeEdgeSubList(this.getStartVertex(), newEnd);
@@ -432,6 +382,62 @@ public class Cycle<V, E> extends GraphPathImpl<V, E> {
 				return c;
 			}
 
+		}
+	}
+	
+	/**
+	 * The edges that are between startV and endV including the edge that starts
+	 * at endV
+	 * 
+	 * @param startV
+	 * @param endV
+	 * @return
+	 * @throws CycleException
+	 */
+	public List<E> computeEdgeSubList(V startV, V endV) throws CycleException {
+		if (startV.equals(endV)) {
+			throw new CycleException("Start Vertex cannot equal End Vertex!");
+		} else {
+			List<E> eList = new LinkedList<E>();
+			// iterate over vertex list and find vertices that are between
+			// startV and endV
+			List<V> vList = new LinkedList<V>();
+			boolean b = false;
+			Iterator<V> vItr = this.getVertexList().iterator();
+			x: while (vItr.hasNext()) {
+				V aVert = vItr.next();
+				if (aVert.equals(startV)) {
+					vList.add(aVert);
+					b = true;
+					continue x;
+				}
+				if (b == true) {
+					vList.add(aVert);
+					if (aVert.equals(endV)) {
+						b = false;
+						break x;
+					}
+				}
+			}// while
+
+			for (int i = 1; i < vList.size(); i++) {
+				V aV = vList.get(i);
+				for (int j = i - 1; j < vList.size() - 1; j++) {
+					V anotherV = vList.get(j);
+					// get common edge
+					E aE = this.getCommonEdge(aV, anotherV);
+					if (aE != null) {
+						if (!eList.contains(aE)) {
+							eList.add(aE);
+						}// if
+					}// if
+				}// for
+				if (i == vList.size() - 1) {
+					E lastEdge = this.getNextEdge(aV);
+					eList.add(lastEdge);
+				}
+			}// for
+			return eList;
 		}
 	}
 
@@ -559,15 +565,6 @@ public class Cycle<V, E> extends GraphPathImpl<V, E> {
 				.equals(this.getGraph().getEdgeTarget(edge2))) {
 			return this.getGraph().getEdgeTarget(edge1);
 		}
-		return null;
-	}
-
-	/**
-	 * Create a human readable label for the edges in this graph
-	 * 
-	 * @return
-	 */
-	public String makeEdgesSummary() {
 		return null;
 	}
 

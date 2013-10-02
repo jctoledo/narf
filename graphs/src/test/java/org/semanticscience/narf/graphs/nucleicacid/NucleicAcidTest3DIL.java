@@ -20,7 +20,7 @@
  */
 package org.semanticscience.narf.graphs.nucleicacid;
 
-import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.*;
 
 import java.io.File;
 import java.io.IOException;
@@ -35,14 +35,15 @@ import org.junit.Test;
 import org.semanticscience.narf.graphs.lib.cycles.Cycle;
 import org.semanticscience.narf.graphs.lib.cycles.CycleBasis;
 import org.semanticscience.narf.graphs.lib.cycles.FundamentalCycleBasis;
+import org.semanticscience.narf.graphs.lib.cycles.exceptions.CycleBasisException;
 import org.semanticscience.narf.structures.parts.Nucleotide;
 
 /**
  * @author Jose Cruz-Toledo
  * 
  */
-public class NucleicAcidTest4KYY {
-	private static String pdbId = "4KYY";
+public class NucleicAcidTest3DIL {
+	private static String pdbId = "3GCA";
 	private static Set<NucleicAcid> x3dnaNas;
 	private static Set<NucleicAcid> mcNas;
 
@@ -56,7 +57,7 @@ public class NucleicAcidTest4KYY {
 				+ ".pdb");
 		FileUtils.copyURLToFile(aURL, aFile);
 		x3dnaNas = ExtractedNucleicAcid.x3dnaDssr(aFile);
-		mcNas = ExtractedNucleicAcid.mcannotate(aFile);
+		
 	}
 
 	/**
@@ -65,10 +66,9 @@ public class NucleicAcidTest4KYY {
 	@AfterClass
 	public static void tearDownAfterClass() throws Exception {
 		x3dnaNas = null;
-		mcNas = null;
 	}
 
-	@Test
+	/*@Test
 	public void checkVertexCount() {
 		for (NucleicAcid aNucAc : x3dnaNas) {
 			//get the set of vertices
@@ -76,8 +76,6 @@ public class NucleicAcidTest4KYY {
 			assertEquals(16, ns.size());
 		}		
 	}
-	
-	
 	@Test
 	public void testEdgeCount(){
 		//count the number of non-unique edges
@@ -90,35 +88,18 @@ public class NucleicAcidTest4KYY {
 			}
 		}
 		assertEquals(42, edgeCount);
-	}
+	}*/
 	
 	@Test
 	public void testingCycleBasis() throws IOException{
-		String buf  = "";
 		for(NucleicAcid aNuc: x3dnaNas){
 			CycleBasis<Nucleotide,InteractionEdge> cb = new FundamentalCycleBasis<Nucleotide, InteractionEdge>(aNuc);
 			List<Cycle<Nucleotide,InteractionEdge>> fcb = cb.getCycleBasis();
+			String buf = "";
 			for (Cycle<Nucleotide, InteractionEdge> cycle : fcb) {
-				buf += cycle.toString()+"\n";
-				//System.out.println(cycle+"\n");
+				buf += cycle.toString()+"\n\n\n\n";
 			}
-			
+			FileUtils.writeStringToFile(new File("/tmp/3gca.out"), buf);
 		}
-		FileUtils.writeStringToFile(new File("/tmp/"+pdbId+"_x3dna_cycles.out"), buf);
-	}
-	
-	@Test
-	public void checkMcNas() throws IOException{
-		String buf  = "";
-		for(NucleicAcid aNuc: mcNas){
-			CycleBasis<Nucleotide,InteractionEdge> cb = new FundamentalCycleBasis<Nucleotide, InteractionEdge>(aNuc);
-			List<Cycle<Nucleotide,InteractionEdge>> fcb = cb.getCycleBasis();
-			for (Cycle<Nucleotide, InteractionEdge> cycle : fcb) {
-				buf += cycle.toString()+"\n";
-				//System.out.println(cycle+"\n");
-			}
-			
-		}
-		FileUtils.writeStringToFile(new File("/tmp/"+pdbId+"mcannotate_cycles.out"), buf);
 	}
 }

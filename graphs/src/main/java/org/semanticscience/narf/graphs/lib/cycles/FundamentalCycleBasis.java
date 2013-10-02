@@ -21,11 +21,9 @@
 package org.semanticscience.narf.graphs.lib.cycles;
 
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
-import java.util.Set;
 
 import org.jgrapht.Graphs;
 import org.jgrapht.UndirectedGraph;
@@ -58,7 +56,7 @@ public class FundamentalCycleBasis<V, E> extends CycleBasis<V, E> {
 		super(na);
 		cyclesMap = initializeCycleMap();
 		minimumSpanningTreeGraph = this.retrieveKruskalMSTGraph();
-		cycleBasis = compFundamentalCycleBasis(minimumSpanningTreeGraph);
+		cycleBasis = computeCycleBasis(minimumSpanningTreeGraph);
 
 	}
 
@@ -175,9 +173,9 @@ public class FundamentalCycleBasis<V, E> extends CycleBasis<V, E> {
 		}
 		return rm;
 	}
-/*
-	private Set<Cycle<V, E>> computeCycleBasis(UndirectedGraph<V, E> anMSTGraph) {
-		Set<Cycle<V, E>> rm = new HashSet<Cycle<V, E>>();
+
+	private List<Cycle<V, E>> computeCycleBasis(UndirectedGraph<V, E> anMSTGraph) {
+		List<Cycle<V, E>> rm = new LinkedList<Cycle<V, E>>();
 		// find all the edges that are not in the mst
 		List<E> notInMST = new LinkedList<E>();
 		for (E anEdge : this.getBaseGraph().edgeSet()) {
@@ -279,14 +277,14 @@ public class FundamentalCycleBasis<V, E> extends CycleBasis<V, E> {
 		}
 		return rm;
 	}
-*/
+
 	/**
 	 * Find the list of cycles that share anEdge from this.getCylesMap()
 	 * 
 	 * @return the list of cycles that share anEdge
 	 * @throws CycleException
 	 */
-/*	private List<Cycle<V, E>> intersectCycleByEdge(E anEdge)
+	private List<Cycle<V, E>> intersectCycleByEdge(E anEdge)
 			throws CycleException {
 		List<Cycle<V, E>> rm = new LinkedList<Cycle<V, E>>();
 		// iterate over the vertexlist
@@ -303,7 +301,7 @@ public class FundamentalCycleBasis<V, E> extends CycleBasis<V, E> {
 			}
 		}
 		return rm;
-	}*/
+	}
 	
 	private Cycle<V, E> intersect(E anEdge) throws CycleException {
 		V v1 = this.getBaseGraph().getEdgeSource(anEdge);

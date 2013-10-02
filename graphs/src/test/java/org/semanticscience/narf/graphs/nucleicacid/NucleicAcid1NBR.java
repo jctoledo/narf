@@ -64,7 +64,7 @@ public class NucleicAcid1NBR {
 		File aFile = new File(FileUtils.getTempDirectoryPath() + "/" + pdbId
 				+ ".pdb");
 		FileUtils.copyURLToFile(aURL, aFile);
-		nAs = ExtractedNucleicAcid.mcannotate(aFile);
+		nAs = ExtractedNucleicAcid.x3dnaDssr(aFile);
 	}
 
 	@AfterClass
@@ -72,14 +72,21 @@ public class NucleicAcid1NBR {
 		nAs = null;
 		files = null;
 	}
-
+	
 	@Test
+	public void TestOne(){
+		for (NucleicAcid na : nAs) {
+			System.out.println(na.getBasePairs());
+		}
+	}
+
+	/*@Test
 	public void testGetChains() {
 		for (NucleicAcid na : nAs) {
 			String[] chains = na.getChains();
 			assertEquals("A", chains[0]);
 		}
-	}
+	}*/
 /*
 	@Test
 	public void testContainsChain() {
