@@ -46,25 +46,15 @@ public class X3DNADSSRer {
 	private File inputDir = null;
 	private File outputDir = null;
 
-	private X3DNADSSRer(File anInputDir, File anOutputDir, String aBasisType)
+	private X3DNADSSRer(File anInputDir, File anOutputDir)
 			throws Exception {
 		// check the inputs
 		if (!anInputDir.isDirectory() || !anOutputDir.isDirectory()) {
 			throw new Exception(
 					"Invalid parameters! Pass in a valid inputDir and an outputDir");
 		}
-		this.inputDir = anInputDir;
-		this.outputDir = anOutputDir;
-	}
-
-	/**
-	 * Executes X3DNA-DSSR on the provided vile and stores the output in
-	 * anOutputFile.
-	 * 
-	 * @param anInputFile
-	 */
-	private X3DNADSSRer(File anInputFile,  File anOutputFile) {
-
+		this.setInputDir(anInputDir);
+		this.setOutputDir(anOutputDir);
 	}
 
 	/**
@@ -238,6 +228,34 @@ public class X3DNADSSRer {
 			}
 		}
 		return fns;
+	}
+
+	/**
+	 * @return the inputDir
+	 */
+	public File getInputDir() {
+		return inputDir;
+	}
+
+	/**
+	 * @param inputDir the inputDir to set
+	 */
+	private void setInputDir(File inputDir) {
+		this.inputDir = inputDir;
+	}
+
+	/**
+	 * @return the outputDir
+	 */
+	public File getOutputDir() {
+		return outputDir;
+	}
+
+	/**
+	 * @param outputDir the outputDir to set
+	 */
+	private void setOutputDir(File outputDir) {
+		this.outputDir = outputDir;
 	}
 
 }
