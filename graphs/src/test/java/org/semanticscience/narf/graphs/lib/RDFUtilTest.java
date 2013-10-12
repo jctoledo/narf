@@ -43,9 +43,10 @@ public class RDFUtilTest {
 	 */
 	private static String pdbId = "1Y26";
 	/**
-	 * The pdb file that will be used for this test
+	 * The directory where the pdb files that will be used for this test
+	 * are stored
 	 */
-	private static File pdbFile = null;
+	private static File pdbFilesDir = null;
 	/**
 	 * The output of X3DNADSSR
 	 */
@@ -57,9 +58,11 @@ public class RDFUtilTest {
 	public static void setUpBeforeClass() throws Exception {
 		//download a pdb file
 		URL aURL = new URL("http://www.rcsb.org/pdb/files/" + pdbId + ".pdb");
-		pdbFile = new File(FileUtils.getTempDirectoryPath() + "/" + pdbId
+		//make a temporary direcotry
+		pdbFilesDir = new File(FileUtils.getTempDirectoryPath()+"/pdb_files");
+		File aPdbFile = new File(pdbFilesDir+ "/" + pdbId
 				+ ".pdb");
-		FileUtils.copyURLToFile(aURL, pdbFile);
+		FileUtils.copyURLToFile(aURL, aPdbFile);
 		
 		
 	}
@@ -69,7 +72,7 @@ public class RDFUtilTest {
 	 */
 	@AfterClass
 	public static void tearDownAfterClass() throws Exception {
-		FileUtils.forceDeleteOnExit(pdbFile);
+		FileUtils.forceDeleteOnExit(pdbFilesDir);
 		
 	}
 
