@@ -145,7 +145,6 @@ public class Nucleotide extends Residue {
 				aPuckerAtom, aPuckerQuality);
 		pdbId = aPdbId;
 		chainId = aChainId;
-
 	}
 
 	/**

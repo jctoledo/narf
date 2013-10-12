@@ -441,6 +441,10 @@ public class Cycle<V, E> extends GraphPathImpl<V, E> {
 		}
 	}
 
+	/**
+	 * Retrieve the complete list of vertices that compose this cycle
+	 * @return an unmodifiable list of vertices
+	 */
 	public List<V> getVertexList() {
 		return Collections.unmodifiableList(vertexList);
 	}

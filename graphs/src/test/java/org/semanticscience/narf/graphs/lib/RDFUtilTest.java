@@ -24,17 +24,21 @@ import static org.junit.Assert.fail;
 
 import java.io.File;
 import java.net.URL;
+import java.util.List;
 import java.util.Set;
 
 import org.apache.commons.io.FileUtils;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.Test;
+import org.semanticscience.narf.graphs.lib.cycles.Cycle;
 import org.semanticscience.narf.graphs.lib.cycles.FundamentalCycleBasis;
 import org.semanticscience.narf.graphs.nucleicacid.ExtractedNucleicAcid;
 import org.semanticscience.narf.graphs.nucleicacid.InteractionEdge;
 import org.semanticscience.narf.graphs.nucleicacid.NucleicAcid;
 import org.semanticscience.narf.structures.parts.Nucleotide;
+
+import com.hp.hpl.jena.rdf.model.Model;
 
 /**
  * @author  Jose Cruz-Toledo
@@ -45,6 +49,10 @@ public class RDFUtilTest {
 	 * The FCB that will be RDFized
 	 */
 	private static FundamentalCycleBasis<Nucleotide, InteractionEdge> fcb = null;
+	/**
+	 * The list of cycles that belong to the FCB
+	 */
+	private static List<Cycle<Nucleotide, InteractionEdge>> cycleBasisList = null;
 	/**
 	 * The PDBId of the file that will be used in this test
 	 */
@@ -81,7 +89,7 @@ public class RDFUtilTest {
 		//now compute the fundamental cycle basis
 		if(nucs.size() == 1){
 			for(NucleicAcid aNuc: nucs){
-				
+				fcb = new FundamentalCycleBasis<Nucleotide, InteractionEdge>(aNuc);
 			}
 		}
 	}
@@ -94,13 +102,14 @@ public class RDFUtilTest {
 		FileUtils.forceDeleteOnExit(pdbFilesDir);
 		nucs = null;
 		fcb = null;
+		cycleBasisList = null;
 	}
 
 	@Test
-	public void test() {
-		
-		System.out.println(nucs);
-		
+	public void testRDFizer() {
+		List<Cycle<Nucleotide, InteractionEdge>> cycleBasisList = fcb.getCycleBasis();
+		Model m = RDFUtil.createNarfModel(pdbId, cycleBasisList);
+		//vm.write(System.out);	
 	}
 
 }

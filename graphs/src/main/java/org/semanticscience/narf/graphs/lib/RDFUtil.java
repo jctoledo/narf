@@ -27,6 +27,7 @@ import org.semanticscience.narf.graphs.lib.cycles.Cycle;
 import org.semanticscience.narf.graphs.nucleicacid.InteractionEdge;
 import org.semanticscience.narf.structures.interactions.BasePair;
 import org.semanticscience.narf.structures.interactions.NucleotideInteraction;
+import org.semanticscience.narf.structures.interactions.PhosphodiesterBond;
 import org.semanticscience.narf.structures.parts.Nucleotide;
 
 import com.hp.hpl.jena.rdf.model.Model;
@@ -42,18 +43,40 @@ public class RDFUtil {
 	
 	/**
 	 * Creates a narf 
-	 * @param acycleList
-	 * @return
+	 * @param aPdbId the pdbId of the structure from where this cycle basis was derived
+	 * @param acycleList the list of cycles computed from a pdb id
+	 * @return a jena model that completely describes these cycles
 	 */
-	public static Model createNarfModel(List<Cycle<Nucleotide, InteractionEdge>> acycleList){
+	public static Model createNarfModel(String aPdbId, List<Cycle<Nucleotide, InteractionEdge>> acycleList){
 		Model rm = ModelFactory.createDefaultModel();
+		int count = 1;
 		for(Cycle<Nucleotide, InteractionEdge> acyc: acycleList){
-			Nucleotide sv = acyc.getStartVertex();
-			InteractionEdge ie = acyc.getIncomingEdge(sv);
-			
+			//get the vertices
+			List<Nucleotide> verts = acyc.getVertexList();
+			for(Nucleotide aNuc : verts){
+				//create a bio2rdf resource for each nucleotide
+				Resource aNucRes = rm.createResource(Vocab.pdb_resource+aPdbId+"/chemicalComponent_"+aNuc.getChainId()+aNuc.getResiduePosition());
+				//type it
+				aNucRes.addProperty(Vocab.rdftype, Vocab.pdb_resource+"Residue");
+			}
+			//get the interaction edges
+			List<InteractionEdge> edges = acyc.getEdgeList();
+			for (InteractionEdge anEdge: edges){
+				Set<NucleotideInteraction> interactions = anEdge.getInteractions();
+				for (NucleotideInteraction ni:interactions){
+					if(ni instanceof BasePair){
+						System.out.println(anEdge.getInteractions());
+					}
+					if(ni instanceof PhosphodiesterBond){
+						//blah
+					}
+				}
+				
+			}
+			count ++;
 			
 		}
-		return null;
+		return rm;
 	}
 	
 	@SuppressWarnings("unused")
@@ -62,6 +85,7 @@ public class RDFUtil {
 		private static final String pdb_base = "http://bio2rdf.org/pdb";
 		private static final String narf_vocabulary = narf_base+"_vocabulary:";
 		private static final String pdb_vocabulary = pdb_base+"_vocabulary:";
+		private static final String pdb_resource = pdb_base+"_resource:";
 		private static final String narf_resource = narf_base+"_resource:";
 		private static final String rdf = "http://www.w3.org/1999/02/22-rdf-syntax-ns#";
 		private static final String rdfs = "http://www.w3.org/2000/01/rdf-schema#";
