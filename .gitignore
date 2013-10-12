@@ -1,6 +1,6 @@
 *.class
 *target*
-*.pdb
+dssr*
 *.dat
 *.ps
 *.log
