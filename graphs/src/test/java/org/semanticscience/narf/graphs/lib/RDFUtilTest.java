@@ -30,14 +30,21 @@ import org.apache.commons.io.FileUtils;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.Test;
-import org.semanticscience.narf.graphs.bin.X3DNADSSRer;
+import org.semanticscience.narf.graphs.lib.cycles.FundamentalCycleBasis;
+import org.semanticscience.narf.graphs.nucleicacid.ExtractedNucleicAcid;
+import org.semanticscience.narf.graphs.nucleicacid.InteractionEdge;
 import org.semanticscience.narf.graphs.nucleicacid.NucleicAcid;
+import org.semanticscience.narf.structures.parts.Nucleotide;
 
 /**
  * @author  Jose Cruz-Toledo
  *
  */
 public class RDFUtilTest {
+	/**
+	 * The FCB that will be RDFized
+	 */
+	private static FundamentalCycleBasis<Nucleotide, InteractionEdge> fcb = null;
 	/**
 	 * The PDBId of the file that will be used in this test
 	 */
@@ -48,9 +55,13 @@ public class RDFUtilTest {
 	 */
 	private static File pdbFilesDir = null;
 	/**
+	 * The directory where the output of this test will be stored
+	 */
+	private static File outputDir = null;
+	/**
 	 * The output of X3DNADSSR
 	 */
-	Set<NucleicAcid> nucs = null;
+	private static Set<NucleicAcid> nucs = null;
 	/**
 	 * @throws java.lang.Exception
 	 */
@@ -64,7 +75,15 @@ public class RDFUtilTest {
 				+ ".pdb");
 		FileUtils.copyURLToFile(aURL, aPdbFile);
 		
-		
+		outputDir = new File(FileUtils.getTempDirectory()+"/rdfutil_output");
+		FileUtils.forceMkdir(outputDir);
+		nucs = ExtractedNucleicAcid.x3dnaDssr(aPdbFile);
+		//now compute the fundamental cycle basis
+		if(nucs.size() == 1){
+			for(NucleicAcid aNuc: nucs){
+				
+			}
+		}
 	}
 
 	/**
@@ -73,12 +92,15 @@ public class RDFUtilTest {
 	@AfterClass
 	public static void tearDownAfterClass() throws Exception {
 		FileUtils.forceDeleteOnExit(pdbFilesDir);
-		
+		nucs = null;
+		fcb = null;
 	}
 
 	@Test
 	public void test() {
-		fail("Not yet implemented");
+		
+		System.out.println(nucs);
+		
 	}
 
 }
