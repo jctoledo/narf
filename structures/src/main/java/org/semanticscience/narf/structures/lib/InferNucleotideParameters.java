@@ -23,6 +23,7 @@ package org.semanticscience.narf.structures.lib;
 import java.util.LinkedHashSet;
 import java.util.Set;
 
+import org.semanticscience.narf.structures.interactions.BasePair;
 import org.semanticscience.narf.structures.lib.exceptions.InvalidEdgeException;
 import org.semanticscience.narf.structures.lib.exceptions.InvalidGlycosidicOrientationException;
 import org.semanticscience.narf.structures.parts.Edge;

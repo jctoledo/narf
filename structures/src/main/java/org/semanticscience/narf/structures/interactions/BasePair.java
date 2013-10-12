@@ -304,6 +304,19 @@ public class BasePair extends NucleotideInteraction implements
 	public String getLWClass() {
 		return LWClass;
 	}
+	
+	/**
+	 * This method infers the correct RNAO class for a given BasePair object.
+	 * The inferences are drawn from Table 2 of http://www.ncbi.nlm.nih.gov/pmc/articles/PMC1370104/
+	 * @param aBp a BasePair for which an RNAO class must be inferred
+	 * @return the RNAO identifier of the corresponding BasePair class 
+	 */
+	public String inferRnaOClass(){
+		String lwclass = this.getLWClass();
+		
+		return null;
+		
+	}
 
 	/*
 	 * (non-Javadoc)
