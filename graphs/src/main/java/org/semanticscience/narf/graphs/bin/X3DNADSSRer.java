@@ -43,13 +43,27 @@ import org.semanticscience.narf.structures.parts.Nucleotide;
  * 
  */
 public class X3DNADSSRer {
-
-	public File inputDir = null;
-	public File outputDir = null;
-	public List<String> inputFiles = null;
-
-	//public X3DNADSSRer (File anInputFile)
+	private String basisType = null;
+	private File inputDir = null;
+	private File outputDir = null;
 	
+	private X3DNADSSRer (File anInputDir, File anOutputDir, String aBasisType) throws Exception{
+		//check the inputs
+		if(!anInputDir.isDirectory() || !anOutputDir.isDirectory()){
+			throw new Exception("Invalid parameters! Pass in a valid inputDir and an outputDir");
+		}
+		this.inputDir = anInputDir;
+		this.outputDir = anOutputDir;
+		this.basisType = aBasisType;
+	}
+
+	/**
+	 * Executes X3DNA-DSSR on the provided vile and stores the output in anOutputFile. 
+	 * @param anInputFile
+	 */
+	public X3DNADSSRer (File anInputFile, File anOutputFile){
+		
+	}
 	/**
 	 * Executes X3DNA-DSSR on all files in anInputDir and stores the output in
 	 * anOutputDir
@@ -57,8 +71,84 @@ public class X3DNADSSRer {
 	 * @param anInputDir
 	 * @param anOutputDir
 	 */
+
 	//TODO: fix to work on multiple models
-	public X3DNADSSRer(File anInputDir, File anOutputDir, String basisType) throws Exception{
+	public static void makeCycleBasis(File anInputDir, File anOutputDir, String aBasisType) throws Exception{
+		X3DNADSSRer x = new X3DNADSSRer(anInputDir, anOutputDir, aBasisType);
+		List<String> inputFiles = getFilePathsFromDir(anInputDir, "pdb");
+		for (String aFilePath : inputFiles) {
+			Set<NucleicAcid> nucs = runX3DNADSSR(aFilePath);
+			// only one model
+			if (nucs.size() == 1) {
+				for (NucleicAcid aNuc : nucs) {
+					// check cyclebasis type
+					if (aBasisType.equals("fundamental")) {
+						FundamentalCycleBasis<Nucleotide, InteractionEdge> cb = new FundamentalCycleBasis<Nucleotide, InteractionEdge>(
+								aNuc);
+						List<Cycle<Nucleotide, InteractionEdge>> ccb = cb
+								.getCycleBasis();
+						// the pdbid
+						String aPdbId = x.getPdbIdFromFilePath(aFilePath);
+						// create an file for output here inside of
+						// anOutputDir
+						File outFile = new File(anOutputDir.getAbsolutePath()
+								+ "/" + aPdbId + ".cycles.out");
+						for (Cycle<Nucleotide, InteractionEdge> cycle : ccb) {
+							int cLen = cycle.size();
+							String sV = cycle.getStartVertex()
+									.getResidueIdentifier()
+									+ cycle.getStartVertex()
+											.getResiduePosition()
+									+ "_"
+									+ cycle.getStartVertex().getChainId();
+
+							String eV = cycle.getEndVertex()
+									.getResidueIdentifier()
+									+ cycle.getEndVertex().getResiduePosition()
+									+ "_" + cycle.getEndVertex().getChainId();
+							// edgeclass
+							String edgeSummary = "";
+							String bpSummary = "";
+							List<InteractionEdge> edges = cycle.getEdgeList();
+							for (InteractionEdge anEdge : edges) {
+								String bpC = anEdge.extractBasePairClasses();
+								if (bpC.length() > 0) {
+									bpSummary += bpC + ", ";
+								}
+								edgeSummary += anEdge.extractEdgeClasses()
+										+ "-";
+							}
+							bpSummary = bpSummary.substring(0,
+									bpSummary.length() - 2);
+							edgeSummary = edgeSummary.substring(0,
+									edgeSummary.length() - 1);
+							String vertexSummary = "";
+							List<Nucleotide> vertices = cycle.getVertexList();
+							for (Nucleotide n : vertices) {
+								vertexSummary += n.getResidueIdentifier()
+										+ n.getResiduePosition() + "_"
+										+ n.getChainId() + ", ";
+							}
+							vertexSummary = vertexSummary.substring(0,
+									vertexSummary.length() - 2);
+							String data = aPdbId + "\t" + cLen + "\t" + sV
+									+ "\t" + eV + "\t" + edgeSummary + "\t"
+									+ bpSummary + "\t" + vertexSummary + "\n";
+							try {
+								FileUtils
+										.writeStringToFile(outFile, data, true);
+							} catch (IOException e) {
+								e.printStackTrace();
+							}
+						}
+					}// fundamental
+				}
+			}
+		}
+	}
+	
+
+	/*public X3DNADSSRer(File anInputDir, File anOutputDir, String basisType) throws Exception{
 		//check the inputs
 		if(!anInputDir.isDirectory() || !anOutputDir.isDirectory()){
 			throw new Exception("Invalid parameters! Pass in a valid inputDir and an outputDir");
@@ -137,9 +227,9 @@ public class X3DNADSSRer {
 				}
 			}
 		}
-	}
+	}*/
 
-	private Set<NucleicAcid> runX3DNADSSR(String aPathToPDBFile) {
+	private  static Set<NucleicAcid> runX3DNADSSR(String aPathToPDBFile) {
 		File iF = new File(aPathToPDBFile);
 		try {
 			return ExtractedNucleicAcid.x3dnaDssr(iF);

@@ -30,6 +30,7 @@ import org.apache.commons.io.FileUtils;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.Test;
+import org.semanticscience.narf.graphs.bin.X3DNADSSRer;
 import org.semanticscience.narf.graphs.nucleicacid.NucleicAcid;
 
 /**
@@ -59,6 +60,7 @@ public class RDFUtilTest {
 		pdbFile = new File(FileUtils.getTempDirectoryPath() + "/" + pdbId
 				+ ".pdb");
 		FileUtils.copyURLToFile(aURL, pdbFile);
+		
 		
 	}
 

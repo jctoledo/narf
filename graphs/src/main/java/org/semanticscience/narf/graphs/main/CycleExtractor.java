@@ -51,7 +51,7 @@ public class CycleExtractor {
 				outputdir= c.getOptionValue("outputDir");
 			}
 			if(inputdir != null && outputdir !=null){
-				X3DNADSSRer x = new X3DNADSSRer(new File(inputdir), new File(outputdir), "fundamental");
+				X3DNADSSRer.makeCycleBasis(new File(inputdir), new File(outputdir), "fundamental");
 			}
 		}catch(ParseException e){
 			e.printStackTrace();

@@ -53,7 +53,7 @@ public class X3DNADSSRerTest {
 	@Test
 	public void test() {
 		try {
-			X3DNADSSRer x = new X3DNADSSRer(inputDir, outputDir, "fundamental");
+			X3DNADSSRer.makeCycleBasis(inputDir, outputDir, "fundamental");
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
