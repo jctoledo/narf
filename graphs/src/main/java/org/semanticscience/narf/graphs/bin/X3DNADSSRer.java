@@ -46,8 +46,7 @@ public class X3DNADSSRer {
 	private File inputDir = null;
 	private File outputDir = null;
 
-	private X3DNADSSRer(File anInputDir, File anOutputDir)
-			throws Exception {
+	private X3DNADSSRer(File anInputDir, File anOutputDir) throws Exception {
 		// check the inputs
 		if (!anInputDir.isDirectory() || !anOutputDir.isDirectory()) {
 			throw new Exception(
@@ -135,49 +134,6 @@ public class X3DNADSSRer {
 		}
 	}
 
-	/*
-	 * public X3DNADSSRer(File anInputDir, File anOutputDir, String basisType)
-	 * throws Exception{ //check the inputs if(!anInputDir.isDirectory() ||
-	 * !anOutputDir.isDirectory()){ throw new
-	 * Exception("Invalid parameters! Pass in a valid inputDir and an outputDir"
-	 * ); } inputFiles = getFilePathsFromDir(anInputDir, "pdb"); for (String
-	 * aFilePath : inputFiles) { Set<NucleicAcid> nucs =
-	 * this.runX3DNADSSR(aFilePath); // only one model if (nucs.size() == 1) {
-	 * for (NucleicAcid aNuc : nucs) { // check cyclebasis type if
-	 * (basisType.equals("fundamental")) { FundamentalCycleBasis<Nucleotide,
-	 * InteractionEdge> cb = new FundamentalCycleBasis<Nucleotide,
-	 * InteractionEdge>( aNuc); List<Cycle<Nucleotide, InteractionEdge>> ccb =
-	 * cb .getCycleBasis(); // the pdbid String aPdbId =
-	 * this.getPdbIdFromFilePath(aFilePath); // create an file for output here
-	 * inside of // anOutputDir File outFile = new
-	 * File(anOutputDir.getAbsolutePath() + "/" + aPdbId + ".cycles.out"); for
-	 * (Cycle<Nucleotide, InteractionEdge> cycle : ccb) { int cLen =
-	 * cycle.size(); String sV = cycle.getStartVertex() .getResidueIdentifier()
-	 * + cycle.getStartVertex() .getResiduePosition() + "_" +
-	 * cycle.getStartVertex().getChainId();
-	 * 
-	 * String eV = cycle.getEndVertex() .getResidueIdentifier() +
-	 * cycle.getEndVertex().getResiduePosition() + "_" +
-	 * cycle.getEndVertex().getChainId(); // edgeclass String edgeSummary = "";
-	 * String bpSummary = ""; List<InteractionEdge> edges = cycle.getEdgeList();
-	 * for (InteractionEdge anEdge : edges) { String bpC =
-	 * anEdge.extractBasePairClasses(); if (bpC.length() > 0) { bpSummary += bpC
-	 * + ", "; } edgeSummary += anEdge.extractEdgeClasses() + "-"; } bpSummary =
-	 * bpSummary.substring(0, bpSummary.length() - 2); edgeSummary =
-	 * edgeSummary.substring(0, edgeSummary.length() - 1); String vertexSummary
-	 * = ""; List<Nucleotide> vertices = cycle.getVertexList(); for (Nucleotide
-	 * n : vertices) { vertexSummary += n.getResidueIdentifier() +
-	 * n.getResiduePosition() + "_" + n.getChainId() + ", "; } vertexSummary =
-	 * vertexSummary.substring(0, vertexSummary.length() - 2); String data =
-	 * aPdbId + "\t" + cLen + "\t" + sV + "\t" + eV + "\t" + edgeSummary + "\t"
-	 * + bpSummary + "\t" + vertexSummary + "\n"; try { FileUtils
-	 * .writeStringToFile(outFile, data, true); } catch (IOException e) {
-	 * e.printStackTrace(); } } }// fundamental else if
-	 * (basisType.equals("chordless")) { // TODO:add code here
-	 * 
-	 * } } } } }
-	 */
-
 	private static Set<NucleicAcid> runX3DNADSSR(String aPathToPDBFile) {
 		File iF = new File(aPathToPDBFile);
 		try {
@@ -238,7 +194,8 @@ public class X3DNADSSRer {
 	}
 
 	/**
-	 * @param inputDir the inputDir to set
+	 * @param inputDir
+	 *            the inputDir to set
 	 */
 	private void setInputDir(File inputDir) {
 		this.inputDir = inputDir;
@@ -252,7 +209,8 @@ public class X3DNADSSRer {
 	}
 
 	/**
-	 * @param outputDir the outputDir to set
+	 * @param outputDir
+	 *            the outputDir to set
 	 */
 	private void setOutputDir(File outputDir) {
 		this.outputDir = outputDir;
