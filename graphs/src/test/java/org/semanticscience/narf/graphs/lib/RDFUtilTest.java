@@ -37,6 +37,7 @@ public class RDFUtilTest {
 	 */
 	@BeforeClass
 	public static void setUpBeforeClass() throws Exception {
+		//private 
 	}
 
 	/**
