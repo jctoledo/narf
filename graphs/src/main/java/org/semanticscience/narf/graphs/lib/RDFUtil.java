@@ -65,11 +65,15 @@ public class RDFUtil {
 				Set<NucleotideInteraction> interactions = anEdge.getInteractions();
 				for (NucleotideInteraction ni:interactions){
 					if(ni instanceof BasePair){
-						System.out.println(anEdge.getInteractions());
+						System.out.println(anEdge.getFirstNucleotide().getResidueIdentifier());
+						//System.out.println(anEdge.getInteractions());
+						((BasePair) ni).inferRnaOClass();
+						
 					}
 					if(ni instanceof PhosphodiesterBond){
 						//blah
 					}
+					
 				}
 				
 			}
