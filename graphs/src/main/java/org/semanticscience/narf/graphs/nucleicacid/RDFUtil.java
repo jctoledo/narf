@@ -31,17 +31,20 @@ import org.semanticscience.narf.structures.parts.Nucleotide;
 import com.hp.hpl.jena.rdf.model.Model;
 import com.hp.hpl.jena.rdf.model.ModelFactory;
 import com.hp.hpl.jena.rdf.model.Property;
+import com.hp.hpl.jena.rdf.model.Resource;
 
 /**
  * @author  Jose Cruz-Toledo
  *
  */
 public class RDFUtil {
-	private static String base = "http://bio2rdf.org/narf:";
-	private static String resource = base.substring(0, base.length()-1)+"_resource:";
-	private static String vocabulary = base.substring(0, base.length()-1)+"_vocabulary:";
 	
-	public static Model createModel(List<Cycle<Nucleotide, InteractionEdge>> acycleList){
+	/**
+	 * Creates a narf 
+	 * @param acycleList
+	 * @return
+	 */
+	public static Model createNarfModel(List<Cycle<Nucleotide, InteractionEdge>> acycleList){
 		Model rm = ModelFactory.createDefaultModel();
 		for(Cycle<Nucleotide, InteractionEdge> acyc: acycleList){
 			Nucleotide sv = acyc.getStartVertex();
@@ -51,10 +54,29 @@ public class RDFUtil {
 		return null;
 	}
 	
+	@SuppressWarnings("unused")
 	private static final class Vocab{
+		private static final String narf_base = "http://bio2rdf.org/narf";
+		private static final String pdb_base = "http://bio2rdf.org/pdb";
+		private static final String narf_vocabulary = narf_base+"_vocabulary:";
+		private static final String pdb_vocabulary = pdb_base+"_vocabulary:";
+		private static final String narf_resource = narf_base+"_resource:";
+		private static final String rdf = "http://www.w3.org/1999/02/22-rdf-syntax-ns#";
+		private static final String rdfs = "http://www.w3.org/2000/01/rdf-schema#";
+		
+		
 		private static Model m = ModelFactory.createDefaultModel();
-		public static Property rdftype = m.createProperty("http://www.w3.org/1999/02/22-rdf-syntax-ns#type");
+		public static Property rdftype = m.createProperty(rdf+"type");
+		public static Property rdfslabel = m.createProperty(rdfs+"label");
+		public static Property hasMember = m.createProperty(narf_vocabulary+"has_member");
+		public static Property hasPart = m.createProperty(narf_vocabulary+"has_part");
+		public static Property hasAttribute = m.createProperty(narf_vocabulary+"has_attribute");
+		public static Property hasValue = m.createProperty(narf_vocabulary+"has_value");		
+		public static Property paired_with = m.createProperty(narf_vocabulary+"paired_with");
+		public static Property stacked_with = m.createProperty(narf_vocabulary+"stacked_with");
+		public static Property covalenty_connected_to = m.createProperty(narf_vocabulary+"covalently_connected_to");
+		public static Resource cycle = m.createResource(narf_vocabulary+"cycle");
+		public static Resource size = m.createResource(narf_vocabulary+"size");
 		
 	}
-	
 }
