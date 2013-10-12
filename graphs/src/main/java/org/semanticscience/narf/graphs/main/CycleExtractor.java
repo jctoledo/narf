@@ -37,7 +37,7 @@ import org.semanticscience.narf.graphs.bin.X3DNADSSRer;
  * 
  */
 public class CycleExtractor {
-	public static void main(String[] args) {
+	public static void main(String[] args) throws Exception {
 		Options options = createOptions();
 		CommandLineParser p = createCliParser();
 		String inputdir = null;

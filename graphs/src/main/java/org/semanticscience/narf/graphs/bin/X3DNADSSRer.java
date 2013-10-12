@@ -48,6 +48,8 @@ public class X3DNADSSRer {
 	public File outputDir = null;
 	public List<String> inputFiles = null;
 
+	//public X3DNADSSRer (File anInputFile)
+	
 	/**
 	 * Executes X3DNA-DSSR on all files in anInputDir and stores the output in
 	 * anOutputDir
@@ -56,7 +58,11 @@ public class X3DNADSSRer {
 	 * @param anOutputDir
 	 */
 	//TODO: fix to work on multiple models
-	public X3DNADSSRer(File anInputDir, File anOutputDir, String basisType) {
+	public X3DNADSSRer(File anInputDir, File anOutputDir, String basisType) throws Exception{
+		//check the inputs
+		if(!anInputDir.isDirectory() || !anOutputDir.isDirectory()){
+			throw new Exception("Invalid parameters! Pass in a valid inputDir and an outputDir");
+		}
 		inputFiles = getFilePathsFromDir(anInputDir, "pdb");
 		for (String aFilePath : inputFiles) {
 			Set<NucleicAcid> nucs = this.runX3DNADSSR(aFilePath);

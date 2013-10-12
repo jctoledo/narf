@@ -52,7 +52,11 @@ public class X3DNADSSRerTest {
 
 	@Test
 	public void test() {
-		X3DNADSSRer x = new X3DNADSSRer(inputDir, outputDir, "fundamental");
+		try {
+			X3DNADSSRer x = new X3DNADSSRer(inputDir, outputDir, "fundamental");
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
 	}
 
 }
