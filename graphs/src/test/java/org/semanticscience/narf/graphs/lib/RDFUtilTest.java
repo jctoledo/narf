@@ -110,7 +110,7 @@ public class RDFUtilTest {
 	public void testRDFizer() throws IOException {
 		List<Cycle<Nucleotide, InteractionEdge>> cycleBasisList = fcb.getCycleBasis();
 		Model m = RDFUtil.createNarfModel(pdbId, cycleBasisList);
-		//vm.write(System.out);	
+		m.write(System.out);	
 	}
 
 }
