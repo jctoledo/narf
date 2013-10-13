@@ -325,12 +325,9 @@ public class BasePair extends NucleotideInteraction implements
 					.equalsIgnoreCase("G")
 					&& this.getSecondNucleotide().getResidueIdentifier()
 							.equalsIgnoreCase("G")) {
-				return "http://purl.obolibrary.org/obo/RNAO_0000116"; // cis
-																		// base
-																		// pair
+				return "http://purl.obolibrary.org/obo/RNAO_0000116";
 			} else {
-				return "http://purl.obolibrary.org/obo/RNAO_0000003"; // family
-																		// 1
+				return "http://purl.obolibrary.org/obo/RNAO_0000003";
 			}
 		} else if (lwclass.equals("cSS")) {
 			return "http://purl.obolibrary.org/obo/RNAO_0000013";

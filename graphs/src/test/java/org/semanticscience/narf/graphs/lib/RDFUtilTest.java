@@ -23,6 +23,7 @@ package org.semanticscience.narf.graphs.lib;
 import static org.junit.Assert.fail;
 
 import java.io.File;
+import java.io.IOException;
 import java.net.URL;
 import java.util.List;
 import java.util.Set;
@@ -106,7 +107,7 @@ public class RDFUtilTest {
 	}
 
 	@Test
-	public void testRDFizer() {
+	public void testRDFizer() throws IOException {
 		List<Cycle<Nucleotide, InteractionEdge>> cycleBasisList = fcb.getCycleBasis();
 		Model m = RDFUtil.createNarfModel(pdbId, cycleBasisList);
 		//vm.write(System.out);	
