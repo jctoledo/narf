@@ -27,8 +27,7 @@ import java.util.Iterator;
 import java.util.LinkedHashSet;
 import java.util.Map;
 import java.util.Set;
-
-import org.semanticscience.narf.graphs.lib.cycles.CycleBasis;
+import org._3pq.jgrapht.graph.SimpleGraph;
 import org.semanticscience.narf.structures.interactions.BasePair;
 import org.semanticscience.narf.structures.interactions.BaseStack;
 import org.semanticscience.narf.structures.interactions.NucleotideInteraction;
@@ -78,9 +77,8 @@ public class NucleicAcid extends AbstractNucleicAcid  {
 	 */
 	private Map<String, Set<NucleotideInteraction>> chain2InteractionMap;
 	
-	private CycleBasis<Nucleotide, NucleotideInteraction> cycleBasis;
+	
 
-	//private CyclicMotifGraph cyclicMotifGraph;
 
 	/**
 	 * Construct a nucleic acid using a mapping of chains to their respective
@@ -242,6 +240,26 @@ public class NucleicAcid extends AbstractNucleicAcid  {
 		return returnMe;
 	}
 
+	/**
+	 * Serialize a Nucleic acid as a cdk SimpleGraph
+	 * @return
+	 */
+	public SimpleGraph makeSimpleGraph(){
+		SimpleGraph rm = new SimpleGraph();
+		//add all the vertices to rm
+		for(Nucleotide aNuc:this.vertexSet()){
+			rm.addVertex(aNuc);
+		}
+		//add all of the edges to rm 
+		for (InteractionEdge anIntE : this.edgeSet()){
+			for(NucleotideInteraction aNucI : anIntE.getInteractions()){
+				rm.addEdge(aNucI.getFirstNucleotide(), aNucI.getSecondNucleotide());
+			}
+		}
+		
+		return rm;
+	}
+	
 	/**
 	 * Get a unmodifiable set of interactions for a given chain. The returned
 	 * set contains both intra- and inter-chain interactions.

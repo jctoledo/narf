@@ -33,14 +33,17 @@ import org.junit.Test;
 import org.semanticscience.narf.graphs.lib.cycles.Cycle;
 import org.semanticscience.narf.graphs.lib.cycles.CycleBasis;
 import org.semanticscience.narf.graphs.lib.cycles.FundamentalCycleBasis;
+import org.semanticscience.narf.structures.interactions.BasePair;
+import org.semanticscience.narf.structures.interactions.BaseStack;
+import org.semanticscience.narf.structures.interactions.PhosphodiesterBond;
 import org.semanticscience.narf.structures.parts.Nucleotide;
 
 /**
  * @author Jose Cruz-Toledo
  * 
  */
-public class NucleicAcid2ZY6 {
-	private static String pdbId = "4ENB";
+public class NucleicAcidTest {
+	private static String pdbId = "3Q50";
 	private static Set<NucleicAcid> nas;
 
 	/**
@@ -63,7 +66,25 @@ public class NucleicAcid2ZY6 {
 		nas = null;
 	}
 
-	@Test
+	@Test 
+	public void testingNucleicAcidGraph(){
+		for(NucleicAcid aNuc: nas){
+			Set<Nucleotide> nucs = aNuc.vertexSet();
+			Set<BasePair> basePairs = aNuc.getBasePairs();
+			Set<BaseStack> baseStacks = aNuc.getBaseStacks();
+			Set <PhosphodiesterBond> backbone = aNuc.getPhosphodiesterBonds();
+			Set<InteractionEdge> allEdges = aNuc.edgeSet();
+			System.out.println("# of base pairs : "+ basePairs.size());
+			System.out.println("# of Phosphodiester bonds :" + backbone.size());
+			System.out.println("# of Base stacks : "+baseStacks.size());
+			System.out.println("# of total edges : "+allEdges.size());
+			System.out.println("# of total nucleotides : "+ nucs.size());
+						
+		}
+	}
+	
+	
+	/*@Test
 	public void testingCycleBasisPrettyPrint() throws IOException {
 		for (NucleicAcid aNuc : nas) {
 			CycleBasis<Nucleotide, InteractionEdge> cb = new FundamentalCycleBasis<Nucleotide, InteractionEdge>(
@@ -125,6 +146,6 @@ public class NucleicAcid2ZY6 {
 			}
 			FileUtils.write(new File("/tmp/out.output"), b);
 		}
-	}
+	}*/
 
 }

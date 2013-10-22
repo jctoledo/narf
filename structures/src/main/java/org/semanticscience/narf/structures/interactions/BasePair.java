@@ -626,7 +626,7 @@ public class BasePair extends NucleotideInteraction implements
 				+ ", c1c1Distance=" + c1c1Distance + ", n1n9Distance="
 				+ n1n9Distance + ", c6c8Distance=" + c6c8Distance
 				+ ", saengerClass=" + saengerClass + ", LWClass=" + LWClass
-				+ "]";
+				+ "]\n";
 	}
 
 	/*
