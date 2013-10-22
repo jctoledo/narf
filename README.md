@@ -1,4 +1,4 @@
-narf
+niarf
 ====
 
 Nucleic Acid Representation Framework
