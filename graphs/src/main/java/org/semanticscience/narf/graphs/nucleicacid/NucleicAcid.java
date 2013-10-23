@@ -388,6 +388,13 @@ public class NucleicAcid extends AbstractNucleicAcid  {
 	}
 
 	/**
+	 * Get the minimum cycle basis of this graph
+	 * @return the MCB as computed by CDK's ringsearch
+	 */
+	public List<Cycle<Nucleotide,InteractionEdge>> getMinimumCycleBasis(){
+		return this.minimumCycleBasis;
+	}
+	/**
 	 * Get a set of the chain identifiers present in the nucleic acid.
 	 * 
 	 * @return a set of chain identifiers
