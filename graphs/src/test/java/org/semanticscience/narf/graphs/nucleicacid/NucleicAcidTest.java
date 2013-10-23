@@ -124,13 +124,14 @@ public class NucleicAcidTest {
 					Edge anEdge = sce_itr.next();
 					Nucleotide source =(Nucleotide) anEdge.getSource();
 					Nucleotide target = (Nucleotide) anEdge.getTarget();
-					el.addAll(aNuc.getAllEdges(source, target));
+					Set<InteractionEdge> x = aNuc.getAllEdges(source, target);
+					el.addAll(x);
 				}
 				
 				
 				//System.out.println("Edges:");
 				//System.out.println(el);
-				Nucleotide first_nuc = null;
+				/**/Nucleotide first_nuc = null;
 				Nucleotide last_nuc = null;
 				int nuc_count = 0;
 			
@@ -144,11 +145,6 @@ public class NucleicAcidTest {
 					}
 				}
 				try{
-					//UndirectedGraph <Nucleotide, InteractionEdge> g = new org.jgrapht.graph.SimpleGraph<V, E>(arg0);
-					if(aNuc.containsVertex(first_nuc)){
-						int p = 2;
-						System.out.println(p);
-					}
 					Cycle <Nucleotide , InteractionEdge> c = new Cycle<Nucleotide, InteractionEdge>(aNuc, first_nuc, last_nuc, el, sc.weight());
 					System.out.println(c);
 				}catch(CycleException e){

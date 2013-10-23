@@ -20,6 +20,7 @@
  */
 package org.semanticscience.narf.graphs.nucleicacid;
 
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -30,11 +31,15 @@ import java.util.Map;
 import java.util.Set;
 import org._3pq.jgrapht.graph.SimpleGraph;
 import org.openscience.cdk.annotations.TestClass;
+import org.openscience.cdk.ringsearch.cyclebasis.CycleBasis;
+import org.openscience.cdk.ringsearch.cyclebasis.SimpleCycle;
 import org.semanticscience.narf.graphs.lib.cycles.Cycle;
+import org.semanticscience.narf.graphs.lib.cycles.exceptions.CycleException;
 import org.semanticscience.narf.structures.interactions.BasePair;
 import org.semanticscience.narf.structures.interactions.BaseStack;
 import org.semanticscience.narf.structures.interactions.NucleotideInteraction;
 import org.semanticscience.narf.structures.interactions.PhosphodiesterBond;
+import org.semanticscience.narf.structures.parts.Edge;
 import org.semanticscience.narf.structures.parts.Nucleotide;
 import org.semanticscience.narf.structures.parts.Sequence;
 import org.semanticscience.narf.structures.secondary.SecondaryStructure;
@@ -107,9 +112,10 @@ public class NucleicAcid extends AbstractNucleicAcid  {
 		this.interactions = someInteractions;
 		this.chain2InteractionMap = makeChain2InteractionMap(aSequenceMap,
 				someInteractions);
-		this.populateNucleicAcid();		
+		this.populateNucleicAcid();
+		//now compute the MCB
+		
 	}
-
 	/**
 	 * Constructed a nucleic acid from its secondary structure. The secondary
 	 * structure will only contain {@link BasePair} and
@@ -125,6 +131,49 @@ public class NucleicAcid extends AbstractNucleicAcid  {
 				.getInteractions());
 	}
 
+	
+	@SuppressWarnings("unchecked")
+	public List<Cycle<Nucleotide,InteractionEdge>> computeMCB() throws CycleException{
+		List<Cycle<Nucleotide, InteractionEdge>> rm = new ArrayList<Cycle<Nucleotide,InteractionEdge>>();
+		//create a org._3pq.jgrapht.graph.SimpleGraph representation of this 
+		SimpleGraph sg = this.makeSimpleGraph();
+		//compute mcb
+		CycleBasis cb = new CycleBasis(sg);
+		List<SimpleCycle> cycles =  (List<SimpleCycle>) cb.cycles();
+		//iterate over the org._3pq.jgrapht.graph.SimpleCycle list and convert them
+		if(cycles.size() == 0 || cycles == null){
+			throw new CycleException("Empty cycle basis!");
+		}
+		for (SimpleCycle sc: cycles){
+			//find all the vertices of this cycle
+			Set<Nucleotide> nucs = (Set<Nucleotide>)sc.vertexSet();
+			//find the first and last nucleotides in this set of vertices
+			Nucleotide first_nuc = null;
+			Nucleotide last_nuc = null;
+			int nuc_c = 0;
+			for(Nucleotide n : nucs){
+				if(nuc_c == 0){
+					first_nuc = n;
+				}
+				nuc_c ++;
+				if(nuc_c == nucs.size()){
+					last_nuc = n;
+				}
+			}			
+			List<InteractionEdge> el = new ArrayList<InteractionEdge>();
+			//iterate over the edges get the source and target nucs
+			//then query this for the corresponding interactin  edges
+			Iterator<org._3pq.jgrapht.Edge> sce_itr = sc.edgeSet().iterator();
+			while(sce_itr.hasNext()){
+				org._3pq.jgrapht.Edge anEdge = sce_itr.next();
+				Nucleotide s = (Nucleotide) anEdge.getSource();
+				Nucleotide t = (Nucleotide) anEdge.getTarget();
+				el.addAll(this.getAllEdges(s, t));
+			}
+		}
+		return rm;
+	}
+	
 	/**
 	 * Populate the nucleic acid with the nucleotides and interactions present
 	 * in the molecule.
@@ -260,7 +309,6 @@ public class NucleicAcid extends AbstractNucleicAcid  {
 				rm.addEdge(aNucI.getFirstNucleotide(), aNucI.getSecondNucleotide());
 			}
 		}
-		
 		return rm;
 	}
 	

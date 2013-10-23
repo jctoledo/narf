@@ -230,7 +230,6 @@ public class Cycle<V, E> extends GraphPathImpl<V, E> {
 			for (V aVert : vl) {
 				try {
 					if (aVert == null) {
-						System.out.println(vl);
 						rm = false;
 						break;
 					}
@@ -530,19 +529,19 @@ public class Cycle<V, E> extends GraphPathImpl<V, E> {
 
 	public String toString() {
 		String r = "";
-		r += "Cycle: Size: [" + vertexList.size() + "] ,VertexList [";
+		r += "Cycle: Size: [" + vertexList.size() + "] ,\nVertexList [";
 		for (V ver : vertexList) {
-			r += ver + ", ";
+			r += ver + "\n ";
 		}
 		r = r.substring(0, r.length() - 2);
-		r += "] EdgeList: [";
+		r += "]\n EdgeList: [";
 		for (E anEdge : this.getEdgeList()) {
-			r += anEdge + ", ";
+			r += anEdge + "\n";
 		}
 		r = r.substring(0, r.length() - 2);
-		r += "] StartVertex: " + this.getStartVertex() + ", EndVertex: "
+		r += "] \nStartVertex: " + this.getStartVertex() + ", EndVertex: "
 				+ this.getEndVertex();
-		r += " Weight: " + this.getWeight();
+		r += " Weight: " + this.getWeight()+"\n\n";
 		return r;
 	}
 
