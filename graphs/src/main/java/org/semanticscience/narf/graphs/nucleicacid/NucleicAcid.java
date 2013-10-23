@@ -25,10 +25,12 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.LinkedHashSet;
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import org._3pq.jgrapht.graph.SimpleGraph;
 import org.openscience.cdk.annotations.TestClass;
+import org.semanticscience.narf.graphs.lib.cycles.Cycle;
 import org.semanticscience.narf.structures.interactions.BasePair;
 import org.semanticscience.narf.structures.interactions.BaseStack;
 import org.semanticscience.narf.structures.interactions.NucleotideInteraction;
@@ -77,8 +79,11 @@ public class NucleicAcid extends AbstractNucleicAcid  {
 	 * inter-chain interactions.
 	 */
 	private Map<String, Set<NucleotideInteraction>> chain2InteractionMap;
-	
-	
+	/**
+	 * The minimum cycle basis computed for this nucleic acid 
+	 * Uses the CDK ringsearch implementation of Horton 1984
+	 */
+	private List<Cycle<Nucleotide, InteractionEdge>> minimumCycleBasis;	
 
 	/**
 	 * Construct a nucleic acid using a mapping of chains to their respective
