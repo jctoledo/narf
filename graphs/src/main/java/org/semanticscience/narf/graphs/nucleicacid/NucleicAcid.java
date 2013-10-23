@@ -28,6 +28,7 @@ import java.util.LinkedHashSet;
 import java.util.Map;
 import java.util.Set;
 import org._3pq.jgrapht.graph.SimpleGraph;
+import org.openscience.cdk.annotations.TestClass;
 import org.semanticscience.narf.structures.interactions.BasePair;
 import org.semanticscience.narf.structures.interactions.BaseStack;
 import org.semanticscience.narf.structures.interactions.NucleotideInteraction;
@@ -244,6 +245,7 @@ public class NucleicAcid extends AbstractNucleicAcid  {
 	 * Serialize a Nucleic acid as a cdk SimpleGraph
 	 * @return
 	 */
+	@TestClass("org.semanticscience.narf.graphs.nucleicacid.NucleicAcidTest")
 	public SimpleGraph makeSimpleGraph(){
 		SimpleGraph rm = new SimpleGraph();
 		//add all the vertices to rm
@@ -259,6 +261,8 @@ public class NucleicAcid extends AbstractNucleicAcid  {
 		
 		return rm;
 	}
+	
+	
 	
 	/**
 	 * Get a unmodifiable set of interactions for a given chain. The returned

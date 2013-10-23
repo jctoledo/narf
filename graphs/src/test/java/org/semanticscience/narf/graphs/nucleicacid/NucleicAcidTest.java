@@ -23,16 +23,27 @@ package org.semanticscience.narf.graphs.nucleicacid;
 import java.io.File;
 import java.io.IOException;
 import java.net.URL;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.HashMap;
+import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
+
 
 import org.apache.commons.io.FileUtils;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
+
+import org._3pq.jgrapht.Edge;
+import org._3pq.jgrapht.graph.SimpleGraph;
 import org.junit.Test;
+
+import org.openscience.cdk.ringsearch.cyclebasis.CycleBasis;
+import org.openscience.cdk.ringsearch.cyclebasis.SimpleCycle;
 import org.semanticscience.narf.graphs.lib.cycles.Cycle;
-import org.semanticscience.narf.graphs.lib.cycles.CycleBasis;
-import org.semanticscience.narf.graphs.lib.cycles.FundamentalCycleBasis;
+import org.semanticscience.narf.graphs.lib.cycles.exceptions.CycleException;
 import org.semanticscience.narf.structures.interactions.BasePair;
 import org.semanticscience.narf.structures.interactions.BaseStack;
 import org.semanticscience.narf.structures.interactions.PhosphodiesterBond;
@@ -67,7 +78,7 @@ public class NucleicAcidTest {
 	}
 
 	@Test 
-	public void testingNucleicAcidGraph(){
+	public void testingNucleicAcid(){
 		for(NucleicAcid aNuc: nas){
 			Set<Nucleotide> nucs = aNuc.vertexSet();
 			Set<BasePair> basePairs = aNuc.getBasePairs();
@@ -80,6 +91,81 @@ public class NucleicAcidTest {
 			System.out.println("# of total edges : "+allEdges.size());
 			System.out.println("# of total nucleotides : "+ nucs.size());
 						
+		}
+	}
+	
+	@Test
+	@SuppressWarnings("unchecked")
+	public void testMakeSimpleGraph() throws IOException{
+		for(NucleicAcid aNuc: nas){
+			SimpleGraph sg = aNuc.makeSimpleGraph();
+			CycleBasis cb = new CycleBasis(sg);
+			List<SimpleCycle> cycles =  (List<SimpleCycle>) cb.cycles();
+			System.out.println(cycles.size());
+			Map<Double, Double> w = new HashMap<Double, Double>();
+			for(SimpleCycle sc: cycles){
+				if (w.containsKey(sc.weight())){
+					Double d =w.get(sc.weight())+1.0;
+					w.put(sc.weight(), d);
+				}else{
+					w.put(sc.weight(), 1.0);
+				}
+				//System.out.println("Cycle of weight: "+sc.weight());
+				//System.out.println("Members:");
+				Set<Nucleotide> nucs = sc.vertexSet();
+				//Cycle c = new Cycle<Nucleotide, InteractionEdge>(null, sc.vertexList()
+				//		., endVertex, edgeList, weight)
+				List<InteractionEdge> el = new ArrayList<InteractionEdge>();
+				
+				//iterate over the edges get the source and target 
+				//then query aNuc for the cooresponding interaction edge
+				Iterator<Edge> sce_itr = sc.edgeSet().iterator();
+				while(sce_itr.hasNext()){
+					Edge anEdge = sce_itr.next();
+					Nucleotide source =(Nucleotide) anEdge.getSource();
+					Nucleotide target = (Nucleotide) anEdge.getTarget();
+					el.addAll(aNuc.getAllEdges(source, target));
+				}
+				
+				
+				//System.out.println("Edges:");
+				//System.out.println(el);
+				Nucleotide first_nuc = null;
+				Nucleotide last_nuc = null;
+				int nuc_count = 0;
+			
+				for(Nucleotide an : nucs){
+					if(nuc_count == 0){
+						first_nuc = an;
+					}
+					nuc_count++;
+					if(nuc_count == nucs.size()){
+						last_nuc = an;
+					}
+				}
+				try{
+					//UndirectedGraph <Nucleotide, InteractionEdge> g = new org.jgrapht.graph.SimpleGraph<V, E>(arg0);
+					if(aNuc.containsVertex(first_nuc)){
+						int p = 2;
+						System.out.println(p);
+					}
+					Cycle <Nucleotide , InteractionEdge> c = new Cycle<Nucleotide, InteractionEdge>(aNuc, first_nuc, last_nuc, el, sc.weight());
+					System.out.println(c);
+				}catch(CycleException e){
+					e.printStackTrace();
+				} 
+				System.out.println("******");
+			}
+			//now write to file the frequency
+			String buf = "";
+			Iterator it = w.entrySet().iterator();
+			while(it.hasNext()){
+				Map.Entry x = (Map.Entry) it.next();
+				Double k = (Double) x.getKey();
+				Double v = (Double) x.getValue();
+				buf += k+"\t"+v+"\n";
+			}
+			FileUtils.writeStringToFile(new File("/tmp/freq.tsv"), buf);
 		}
 	}
 	
