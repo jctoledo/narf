@@ -20,6 +20,8 @@
  */
 package org.semanticscience.narf.structures.parts;
 
+import java.util.Comparator;
+
 import org.semanticscience.narf.structures.lib.exceptions.InvalidResidueException;
 
 /**
@@ -30,8 +32,8 @@ import org.semanticscience.narf.structures.lib.exceptions.InvalidResidueExceptio
  * @version %I%, %G%
  * @since 1.6
  */
-public class Nucleotide extends Residue {
-	/** 
+public class Nucleotide extends Residue implements Comparator<Nucleotide> {
+	/**
 	 * the Pdb id where tho
 	 */
 	private String pdbId;
@@ -238,9 +240,10 @@ public class Nucleotide extends Residue {
 		return puckerQuality;
 	}
 
-	public String getChainId(){
+	public String getChainId() {
 		return chainId;
 	}
+
 	/*
 	 * (non-Javadoc)
 	 * 
@@ -320,6 +323,17 @@ public class Nucleotide extends Residue {
 				+ ", nucleotideConformation=" + nucleotideConformation
 				+ ", residuePosition=" + residuePosition + ", puckerAtom="
 				+ puckerAtom + ", puckerQuality=" + puckerQuality + "]";
+	}
+
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see java.util.Comparator#compare(java.lang.Object, java.lang.Object)
+	 */
+	@Override
+	public int compare(Nucleotide o1, Nucleotide o2) {
+		return (o1.getResiduePosition() > o2.getResiduePosition() ? -1 : (o1
+				.getResiduePosition() == o2.getResiduePosition() ? 0 : 1));
 	}
 
 }

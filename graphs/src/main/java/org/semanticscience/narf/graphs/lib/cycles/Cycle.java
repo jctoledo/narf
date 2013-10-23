@@ -60,6 +60,7 @@ public class Cycle<V, E> extends GraphPathImpl<V, E> {
 			List<E> edgeList, double weight) throws CycleException {
 		super(aGraph, startVertex, endVertex, edgeList, weight);
 		vertexList = new LinkedList<V>();
+		
 		// check that you have at least 3 edges
 		if (edgeList.size() < 3) {
 			throw new CycleException(

@@ -145,6 +145,8 @@ public class NucleicAcidTest {
 					}
 				}
 				try{
+					//pre-process the edge list
+					List<InteractionEdge> l = processEdgeList(el);
 					Cycle <Nucleotide , InteractionEdge> c = new Cycle<Nucleotide, InteractionEdge>(aNuc, first_nuc, last_nuc, el, sc.weight());
 					System.out.println(c);
 				}catch(CycleException e){
@@ -163,6 +165,16 @@ public class NucleicAcidTest {
 			}
 			FileUtils.writeStringToFile(new File("/tmp/freq.tsv"), buf);
 		}
+	}
+
+	/**
+	 * @param el
+	 * @return
+	 */
+	private List<InteractionEdge> processEdgeList(List<InteractionEdge> el) {
+		System.out.println(el);
+		System.exit(1);
+		return null;
 	}
 	
 	
