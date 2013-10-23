@@ -80,7 +80,6 @@ public class NucleicAcid extends AbstractNucleicAcid  {
 	
 	
 
-
 	/**
 	 * Construct a nucleic acid using a mapping of chains to their respective
 	 * sequences and a set of interactions that occur in the nucleic acid. The
@@ -103,9 +102,7 @@ public class NucleicAcid extends AbstractNucleicAcid  {
 		this.interactions = someInteractions;
 		this.chain2InteractionMap = makeChain2InteractionMap(aSequenceMap,
 				someInteractions);
-		this.populateNucleicAcid();
-		//this.cyclicMotifGraph = new CyclicMotifGraph(this);
-		
+		this.populateNucleicAcid();		
 	}
 
 	/**

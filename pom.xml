@@ -3,7 +3,7 @@
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>org.semanticscience</groupId>
 	<artifactId>narf</artifactId>
-	<version>1.1</version>
+	<version>2.0</version>
 	<packaging>pom</packaging>
 	<name>Nucleic Acid Representation Framework</name>
 	<properties>
