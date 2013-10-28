@@ -95,7 +95,6 @@ public class NucleicAcidTest {
 		}
 	}
 	
-	
 	@Test 
 	public void testCycleBasis(){
 		for(NucleicAcid aNuc: nas){
