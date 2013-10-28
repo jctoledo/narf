@@ -20,29 +20,15 @@
  */
 package org.semanticscience.narf.graphs.lib.cycles;
 
-import static org.junit.Assert.*;
-
 import java.io.File;
 import java.net.URL;
-import java.util.ArrayList;
-import java.util.Iterator;
-import java.util.List;
 import java.util.Set;
 
-import org._3pq.jgrapht.Edge;
-import org._3pq.jgrapht.graph.SimpleGraph;
 import org.apache.commons.io.FileUtils;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
-import org.junit.Test;
-import org.semanticscience.narf.graphs.lib.cycles.exceptions.CycleException;
 import org.semanticscience.narf.graphs.nucleicacid.ExtractedNucleicAcid;
-import org.semanticscience.narf.graphs.nucleicacid.InteractionEdge;
 import org.semanticscience.narf.graphs.nucleicacid.NucleicAcid;
-import org.semanticscience.narf.structures.parts.Nucleotide;
-
-import org.openscience.cdk.ringsearch.cyclebasis.CycleBasis;
-import org.openscience.cdk.ringsearch.cyclebasis.SimpleCycle;
 
 /**
  * @author  Jose Cruz-Toledo
@@ -70,37 +56,6 @@ public class SimpleCycleConverterTest {
 	@AfterClass
 	public static void tearDownAfterClass() throws Exception {
 		nas = null;
-	}
-
-	@Test
-	public void test() throws CycleException {
-		for (NucleicAcid aNuc : nas){
-			SimpleGraph sg = aNuc.makeSimpleGraph();
-			CycleBasis cb = new CycleBasis(sg);
-			List<SimpleCycle> cycles = (List<SimpleCycle>)cb.cycles();
-			for(SimpleCycle sc:cycles){
-				//the edges of this cycle
-				List<InteractionEdge> el = new ArrayList<InteractionEdge>();
-				//populate the edgelist
-				Iterator<Edge> sce_itr = sc.edgeSet().iterator();
-				while(sce_itr.hasNext()){
-					Edge anEdge = sce_itr.next();
-					Nucleotide source =(Nucleotide) anEdge.getSource();
-					Nucleotide target = (Nucleotide) anEdge.getTarget();
-					Set<InteractionEdge> x = aNuc.getAllEdges(source, target);
-					el.addAll(x);
-				}
-				//now order the edges of this cycle
-				el = SimpleCycleConverter.sortEdgeList(el);
-				Nucleotide fv = SimpleCycleConverter.findFirstNucleotide(el);
-				Nucleotide lv = SimpleCycleConverter.findLastNucleotide(el);
-				
-				//now create a cycle from this information
-				Cycle<Nucleotide, InteractionEdge> c = new Cycle<Nucleotide, InteractionEdge>(aNuc, fv, lv, el, el.size());
-				System.out.println(c);
-				
-			}
-		}
 	}
 
 }

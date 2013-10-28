@@ -34,6 +34,7 @@ import org.openscience.cdk.annotations.TestClass;
 import org.openscience.cdk.ringsearch.cyclebasis.CycleBasis;
 import org.openscience.cdk.ringsearch.cyclebasis.SimpleCycle;
 import org.semanticscience.narf.graphs.lib.cycles.Cycle;
+import org.semanticscience.narf.graphs.lib.cycles.SimpleCycleConverter;
 import org.semanticscience.narf.graphs.lib.cycles.exceptions.CycleException;
 import org.semanticscience.narf.structures.interactions.BasePair;
 import org.semanticscience.narf.structures.interactions.BaseStack;
@@ -55,7 +56,7 @@ import org.semanticscience.narf.structures.secondary.SecondaryStructure;
  * @since 1.6
  */
 
-public class NucleicAcid extends AbstractNucleicAcid  {
+public class NucleicAcid extends AbstractNucleicAcid {
 
 	private static final long serialVersionUID = 2692448232910041821L;
 
@@ -85,10 +86,10 @@ public class NucleicAcid extends AbstractNucleicAcid  {
 	 */
 	private Map<String, Set<NucleotideInteraction>> chain2InteractionMap;
 	/**
-	 * The minimum cycle basis computed for this nucleic acid 
-	 * Uses the CDK ringsearch implementation of Horton 1984
+	 * The minimum cycle basis computed for this nucleic acid Uses the CDK
+	 * ringsearch implementation of Horton 1984
 	 */
-	private List<Cycle<Nucleotide, InteractionEdge>> minimumCycleBasis;	
+	private List<Cycle<Nucleotide, InteractionEdge>> minimumCycleBasis;
 
 	/**
 	 * Construct a nucleic acid using a mapping of chains to their respective
@@ -113,9 +114,11 @@ public class NucleicAcid extends AbstractNucleicAcid  {
 		this.chain2InteractionMap = makeChain2InteractionMap(aSequenceMap,
 				someInteractions);
 		this.populateNucleicAcid();
-		//now compute the MCB
-		
+		// now compute the MCB
+		this.minimumCycleBasis = this.computeMCB();
+
 	}
+
 	/**
 	 * Constructed a nucleic acid from its secondary structure. The secondary
 	 * structure will only contain {@link BasePair} and
@@ -131,49 +134,46 @@ public class NucleicAcid extends AbstractNucleicAcid  {
 				.getInteractions());
 	}
 
-	
 	@SuppressWarnings("unchecked")
-	public List<Cycle<Nucleotide,InteractionEdge>> computeMCB() throws CycleException{
-		List<Cycle<Nucleotide, InteractionEdge>> rm = new ArrayList<Cycle<Nucleotide,InteractionEdge>>();
-		//create a org._3pq.jgrapht.graph.SimpleGraph representation of this 
-		SimpleGraph sg = this.makeSimpleGraph();
-		//compute mcb
-		CycleBasis cb = new CycleBasis(sg);
-		List<SimpleCycle> cycles =  (List<SimpleCycle>) cb.cycles();
-		//iterate over the org._3pq.jgrapht.graph.SimpleCycle list and convert them
-		if(cycles.size() == 0 || cycles == null){
-			throw new CycleException("Empty cycle basis!");
-		}
-		for (SimpleCycle sc: cycles){
-			//find all the vertices of this cycle
-			Set<Nucleotide> nucs = (Set<Nucleotide>)sc.vertexSet();
-			//find the first and last nucleotides in this set of vertices
-			Nucleotide first_nuc = null;
-			Nucleotide last_nuc = null;
-			int nuc_c = 0;
-			for(Nucleotide n : nucs){
-				if(nuc_c == 0){
-					first_nuc = n;
-				}
-				nuc_c ++;
-				if(nuc_c == nucs.size()){
-					last_nuc = n;
-				}
-			}			
-			List<InteractionEdge> el = new ArrayList<InteractionEdge>();
-			//iterate over the edges get the source and target nucs
-			//then query this for the corresponding interactin  edges
-			Iterator<org._3pq.jgrapht.Edge> sce_itr = sc.edgeSet().iterator();
-			while(sce_itr.hasNext()){
-				org._3pq.jgrapht.Edge anEdge = sce_itr.next();
-				Nucleotide s = (Nucleotide) anEdge.getSource();
-				Nucleotide t = (Nucleotide) anEdge.getTarget();
-				el.addAll(this.getAllEdges(s, t));
+	private List<Cycle<Nucleotide, InteractionEdge>> computeMCB() {
+		List<Cycle<Nucleotide, InteractionEdge>> rm = new ArrayList<Cycle<Nucleotide, InteractionEdge>>();
+		try {
+			// create a org._3pq.jgrapht.graph.SimpleGraph representation of
+			// this
+			SimpleGraph sg = this.makeSimpleGraph();
+			// compute mcb
+			CycleBasis cb = new CycleBasis(sg);
+			List<SimpleCycle> cycles = (List<SimpleCycle>) cb.cycles();
+			// iterate over the org._3pq.jgrapht.graph.SimpleCycle list and
+			// convert them
+			if (cycles.size() == 0 || cycles == null) {
+				throw new CycleException("Empty cycle basis!");
 			}
+			for (SimpleCycle sc : cycles) {
+				List<InteractionEdge> el = new ArrayList<InteractionEdge>();
+				Iterator<org._3pq.jgrapht.Edge> sce_itr = sc.edgeSet()
+						.iterator();
+				while (sce_itr.hasNext()) {
+					org._3pq.jgrapht.Edge anEdge = sce_itr.next();
+					Nucleotide source = (Nucleotide) anEdge.getSource();
+					Nucleotide target = (Nucleotide) anEdge.getTarget();
+					Set<InteractionEdge> x = this.getAllEdges(source, target);
+					el.addAll(x);
+				}
+				el = SimpleCycleConverter.sortEdgeList(el);
+				Nucleotide fv = SimpleCycleConverter.findFirstNucleotide(el);
+				Nucleotide lv = SimpleCycleConverter.findLastNucleotide(el);
+				// now create a cycle
+				Cycle<Nucleotide, InteractionEdge> c = new Cycle<Nucleotide, InteractionEdge>(
+						this, fv, lv, el, el.size());
+				rm.add(c);
+			}
+		} catch (CycleException e) {
+			e.printStackTrace();
 		}
 		return rm;
 	}
-	
+
 	/**
 	 * Populate the nucleic acid with the nucleotides and interactions present
 	 * in the molecule.
@@ -194,7 +194,7 @@ public class NucleicAcid extends AbstractNucleicAcid  {
 			// get the participating nucleotides
 			Nucleotide n1 = anInter.getFirstNucleotide();
 			Nucleotide n2 = anInter.getSecondNucleotide();
-			
+
 			String n1Chain = this.getChainIdentifier(anInter
 					.getFirstNucleotide());
 			String n2Chain = this.getChainIdentifier(anInter
@@ -230,7 +230,8 @@ public class NucleicAcid extends AbstractNucleicAcid  {
 			interactions.add(anInter);
 
 			// create Interaction an interaction edge
-			//a higher weight edge is given for interactions that stay within a chain
+			// a higher weight edge is given for interactions that stay within a
+			// chain
 			InteractionEdge edge = new InteractionEdge(interactions);
 			double edgeWeight = 0;
 			if (!this.getChainIdentifier(edge.getFirstNucleotide()).equals(
@@ -249,8 +250,8 @@ public class NucleicAcid extends AbstractNucleicAcid  {
 			this.removeEdge(this.getEdge(n1, n2));
 			this.addEdge(n1, n2, edge);
 			this.setEdgeWeight(edge, edgeWeight);
-			
-		}// 
+
+		}//
 	}
 
 	/**
@@ -294,26 +295,26 @@ public class NucleicAcid extends AbstractNucleicAcid  {
 
 	/**
 	 * Serialize a Nucleic acid as a cdk SimpleGraph
+	 * 
 	 * @return
 	 */
 	@TestClass("org.semanticscience.narf.graphs.nucleicacid.NucleicAcidTest")
-	public SimpleGraph makeSimpleGraph(){
+	private SimpleGraph makeSimpleGraph() {
 		SimpleGraph rm = new SimpleGraph();
-		//add all the vertices to rm
-		for(Nucleotide aNuc:this.vertexSet()){
+		// add all the vertices to rm
+		for (Nucleotide aNuc : this.vertexSet()) {
 			rm.addVertex(aNuc);
 		}
-		//add all of the edges to rm 
-		for (InteractionEdge anIntE : this.edgeSet()){
-			for(NucleotideInteraction aNucI : anIntE.getInteractions()){
-				rm.addEdge(aNucI.getFirstNucleotide(), aNucI.getSecondNucleotide());
+		// add all of the edges to rm
+		for (InteractionEdge anIntE : this.edgeSet()) {
+			for (NucleotideInteraction aNucI : anIntE.getInteractions()) {
+				rm.addEdge(aNucI.getFirstNucleotide(),
+						aNucI.getSecondNucleotide());
 			}
 		}
 		return rm;
 	}
-	
-	
-	
+
 	/**
 	 * Get a unmodifiable set of interactions for a given chain. The returned
 	 * set contains both intra- and inter-chain interactions.
@@ -437,11 +438,13 @@ public class NucleicAcid extends AbstractNucleicAcid  {
 
 	/**
 	 * Get the minimum cycle basis of this graph
+	 * 
 	 * @return the MCB as computed by CDK's ringsearch
 	 */
-	public List<Cycle<Nucleotide,InteractionEdge>> getMinimumCycleBasis(){
+	public List<Cycle<Nucleotide, InteractionEdge>> getMinimumCycleBasis() {
 		return this.minimumCycleBasis;
 	}
+
 	/**
 	 * Get a set of the chain identifiers present in the nucleic acid.
 	 * 
@@ -503,13 +506,14 @@ public class NucleicAcid extends AbstractNucleicAcid  {
 
 		return buf;
 	}
-/*
-	public CyclicMotifGraph getCyclicMotifGraph() {
-		return cyclicMotifGraph;
-	}*/
+
+	/*
+	 * public CyclicMotifGraph getCyclicMotifGraph() { return cyclicMotifGraph;
+	 * }
+	 */
 
 	public String getUniqueIdentifier() {
 		return String.valueOf(this.hashCode());
 	}
-	
+
 }

@@ -55,7 +55,7 @@ import org.semanticscience.narf.structures.parts.Nucleotide;
  * 
  */
 public class NucleicAcidTest {
-	private static String pdbId = "3Q50";
+	private static String pdbId = "1FFK";
 	private static Set<NucleicAcid> nas;
 
 	/**
@@ -95,9 +95,28 @@ public class NucleicAcidTest {
 		}
 	}
 	
-	@Test
+	
+	@Test 
+	public void testCycleBasis(){
+		for(NucleicAcid aNuc: nas){
+			Map<Double, Double> w = new HashMap<Double, Double>();
+			List<Cycle<Nucleotide, InteractionEdge>> mcb = aNuc.getMinimumCycleBasis();
+			for(Cycle<Nucleotide,InteractionEdge> anmc : mcb){
+				if (w.containsKey(anmc.getWeight())){
+					Double d =w.get(anmc.getWeight())+1.0;
+					w.put(anmc.getWeight(), d);
+				}else{
+					w.put(anmc.getWeight(), 1.0);
+				}
+			}
+			System.out.println("MCB weight distribution: (size => frequency)");
+			System.out.println(w);
+		}
+	}
+	/*@Test
 	@SuppressWarnings("unchecked")
 	public void testMakeSimpleGraph() throws IOException{
+		
 		for(NucleicAcid aNuc: nas){
 			SimpleGraph sg = aNuc.makeSimpleGraph();
 			CycleBasis cb = new CycleBasis(sg);
@@ -148,8 +167,7 @@ public class NucleicAcidTest {
 					}
 				}
 				*/
-				//try{
-					//pre-process the edge list
+				/*
 					List<InteractionEdge> l = processEdgeList(aNuc, el);
 					System.out.println("PROCESSING :"+el);
 					System.out.println("PROCESSED :"+l);
@@ -172,7 +190,7 @@ public class NucleicAcidTest {
 			FileUtils.writeStringToFile(new File("/tmp/freq.tsv"), buf);
 			FileUtils.writeStringToFile(new File("/tmp/lenghs.tsv"), lens);
 		}
-	}
+	}*/
 
 	/**
 	 * find a set of concatenated edges 
