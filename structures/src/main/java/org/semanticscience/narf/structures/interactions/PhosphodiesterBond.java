@@ -57,6 +57,14 @@ public class PhosphodiesterBond extends NucleotideInteraction {
 			throw new NonConsecutiveNucleotideException("A non consecutive nucleotide was found in creating a phosphodiester object");
 		}
 	}
+	
+	/**
+	 * 
+	 * @return an integer representation of this backbone class. Currently there is only 1 so 1 is always returned
+	 */
+	public Integer getNormalizedBackBone(){
+		return 1;
+	}
 
 	@Override
 	public String toString() {
