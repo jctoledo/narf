@@ -21,6 +21,8 @@
 package org.semanticscience.narf.structures.parts;
 
 import java.util.Comparator;
+import java.util.HashMap;
+import java.util.Map;
 
 import org.semanticscience.narf.structures.lib.exceptions.InvalidResidueException;
 
@@ -33,6 +35,10 @@ import org.semanticscience.narf.structures.lib.exceptions.InvalidResidueExceptio
  * @since 1.6
  */
 public class Nucleotide extends Residue {
+	/**
+	 * A mapping between the residue identifier and a unique integer
+	 */
+	private Map<String, Integer> normalizedNucleotideMapping;
 	/**
 	 * the Pdb id where tho
 	 */
@@ -112,11 +118,11 @@ public class Nucleotide extends Residue {
 			String aConformationLabel, String aPuckerAtom, String aPuckerQuality)
 			throws InvalidResidueException {
 		super(aResiduePosition, aResidueIdentifier);
-
 		residuePosition = aResiduePosition;
 		nucleotideConformation = aConformationLabel;
 		puckerAtom = aPuckerAtom;
 		puckerQuality = aPuckerQuality;
+		normalizedNucleotideMapping = this.makeNormalizedNucleotideMap();
 	}
 
 	/**
@@ -243,7 +249,37 @@ public class Nucleotide extends Residue {
 	public String getChainId() {
 		return chainId;
 	}
-
+	/**
+	 * REtrieve an integer representation of this nucleotide. The returned integer corresponds only to the nucleobase and not to its position on the sequence
+	 * @return an integer representation for a given nucleotide
+	 */
+	public Integer getNormalizedNucleotide(){
+		Map <String, Integer> m = this.getNormalizedNucleotideMapping();
+		String res_id = this.getResidueIdentifier();
+		return m.get(res_id);
+	}
+	/**
+	 * Make a map where the key is a residue identifier and the value is a
+	 * unique integer
+	 * 
+	 * @return mapping between a residue identifier and a unique integer
+	 */
+	private Map<String, Integer> makeNormalizedNucleotideMap(){
+		Map<String, Integer> rm = new HashMap<String, Integer>();
+		rm.put("A", 201);
+		rm.put("G", 202);
+		rm.put("U", 203);
+		rm.put("C", 204);
+		rm.put("T", 205);
+		rm.put("X", 206);
+		rm.put("Y", 207);
+		rm.put("R", 208);
+		return rm;
+	}
+	
+	public Map<String, Integer> getNormalizedNucleotideMapping(){
+		return this.normalizedNucleotideMapping;
+	}
 	/*
 	 * (non-Javadoc)
 	 * 

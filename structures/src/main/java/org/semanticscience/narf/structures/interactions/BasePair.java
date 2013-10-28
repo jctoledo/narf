@@ -42,7 +42,7 @@ import org.semanticscience.narf.structures.parts.Nucleotide;
  */
 public class BasePair extends NucleotideInteraction implements
 		Comparable<BasePair> {
-	
+
 	/**
 	 * A mapping between RNAO base pair classes and a unique integer
 	 */
@@ -616,26 +616,28 @@ public class BasePair extends NucleotideInteraction implements
 			return "http://purl.obolibrary.org/obo/RNAO_0000001";
 		}
 	}
-	
+
 	/**
-	 * This method returns an integer representation of the RNAO base pair class.
-	 * The mappings are arbitrary
+	 * This method returns an integer representation of the RNAO base pair
+	 * class. The mappings are arbitrary
+	 * 
 	 * @return an integer representation of a base pair class's RNAO annotation
 	 */
-	public Integer getNormalizedBasePairClass(){
+	public Integer getNormalizedBasePairClass() {
 		Map<String, Integer> m = this.getNormalizedBPMapping();
 		String anrnao = this.inferRnaOClass();
 		return m.get(anrnao);
 	}
 
-	
 	/**
-	 * Make a map where the key is an RNAO base pair URI and the value is a unique integer
+	 * Make a map where the key is an RNAO base pair URI and the value is a
+	 * unique integer
+	 * 
 	 * @return mapping between RNAO base pair classes and a unique integer
 	 */
-	private Map<String, Integer> makeNormalizedBasePairMap(){
+	private Map<String, Integer> makeNormalizedBasePairMap() {
 		Map<String, Integer> bpMap = new HashMap<String, Integer>();
-		//add all of the classes
+		// add all of the classes
 		bpMap.put("http://purl.obolibrary.org/obo/RNAO_0000001", 1);
 		bpMap.put("http://purl.obolibrary.org/obo/RNAO_0000002", 2);
 		bpMap.put("http://purl.obolibrary.org/obo/RNAO_0000004", 3);
@@ -653,11 +655,11 @@ public class BasePair extends NucleotideInteraction implements
 		bpMap.put("http://purl.obolibrary.org/obo/RNAO_0000014", 15);
 		return bpMap;
 	}
-	
-	public Map<String, Integer> getNormalizedBPMapping(){
+
+	public Map<String, Integer> getNormalizedBPMapping() {
 		return this.normalizedbasePairMapping;
 	}
-	
+
 	/*
 	 * (non-Javadoc)
 	 * 
