@@ -34,7 +34,7 @@ import org.openscience.cdk.annotations.TestClass;
 import org.openscience.cdk.ringsearch.cyclebasis.CycleBasis;
 import org.openscience.cdk.ringsearch.cyclebasis.SimpleCycle;
 import org.semanticscience.narf.graphs.lib.cycles.Cycle;
-import org.semanticscience.narf.graphs.lib.cycles.SimpleCycleConverter;
+import org.semanticscience.narf.graphs.lib.cycles.CycleHelper;
 import org.semanticscience.narf.graphs.lib.cycles.exceptions.CycleException;
 import org.semanticscience.narf.structures.interactions.BasePair;
 import org.semanticscience.narf.structures.interactions.BaseStack;
@@ -160,9 +160,9 @@ public class NucleicAcid extends AbstractNucleicAcid {
 					Set<InteractionEdge> x = this.getAllEdges(source, target);
 					el.addAll(x);
 				}
-				el = SimpleCycleConverter.sortEdgeList(el);
-				Nucleotide fv = SimpleCycleConverter.findFirstNucleotide(el);
-				Nucleotide lv = SimpleCycleConverter.findLastNucleotide(el);
+				el = CycleHelper.sortEdgeList(el);
+				Nucleotide fv = CycleHelper.findFirstNucleotide(el);
+				Nucleotide lv = CycleHelper.findLastNucleotide(el);
 				// now create a cycle
 				Cycle<Nucleotide, InteractionEdge> c = new Cycle<Nucleotide, InteractionEdge>(
 						this, fv, lv, el, el.size());

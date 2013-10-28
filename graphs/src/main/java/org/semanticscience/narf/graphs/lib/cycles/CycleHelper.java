@@ -33,7 +33,7 @@ import org.semanticscience.narf.structures.parts.Nucleotide;
  * @author Jose Cruz-Toledo
  * 
  */
-public class SimpleCycleConverter {
+public class CycleHelper {
 	
 	public static Nucleotide findFirstNucleotide(List<InteractionEdge> aSortedList){
 		InteractionEdge firstEdge = aSortedList.get(0);
