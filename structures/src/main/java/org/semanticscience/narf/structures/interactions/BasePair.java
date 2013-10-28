@@ -37,7 +37,6 @@ import org.semanticscience.narf.structures.parts.Nucleotide;
  * @see NucleotideInteraction
  * 
  */
-// TODO: Add ALL base pair parameters
 public class BasePair extends NucleotideInteraction implements
 		Comparable<BasePair> {
 

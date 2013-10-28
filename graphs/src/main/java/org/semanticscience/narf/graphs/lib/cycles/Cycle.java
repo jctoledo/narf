@@ -20,7 +20,6 @@
  */
 package org.semanticscience.narf.graphs.lib.cycles;
 
-import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Iterator;
 import java.util.LinkedList;
@@ -29,8 +28,6 @@ import java.util.List;
 import org.jgrapht.Graph;
 import org.jgrapht.graph.GraphPathImpl;
 import org.semanticscience.narf.graphs.lib.cycles.exceptions.CycleException;
-import org.semanticscience.narf.graphs.nucleicacid.InteractionEdge;
-import org.semanticscience.narf.structures.parts.Nucleotide;
 
 /**
  * @author Jose Cruz-Toledo
@@ -194,49 +191,6 @@ public class Cycle<V, E> extends GraphPathImpl<V, E> {
 				rm = this.getEdgeList().get(j);
 				break;
 			}
-		}
-		return rm;
-	}
-	
-	/**
-	 * From an unsorted set of edges, find a set of concatenated edges and return it. 
-	 * @param aListOfEdges
-	 * @return
-	 */
-	public List<InteractionEdge> initializeEdgeList(List<InteractionEdge> aListOfEdges){
-		List<InteractionEdge> rm = new ArrayList<InteractionEdge>();
-		boolean flag = true;
-		if(aListOfEdges.size()>0){
-			do{
-				//remove the first edge
-				InteractionEdge fe = aListOfEdges.remove(0);
-				//get the source for this edge
-				Nucleotide f = fe.getFirstNucleotide();
-				if(aListOfEdges.size()>0){
-					//find the edge that it binds to 
-					InteractionEdge curr = null;
-					Iterator<InteractionEdge> itr = aListOfEdges.iterator();
-					while(itr.hasNext()){
-						InteractionEdge ae = itr.next();
-						if(!ae.equals(fe)){
-							//get the source and the target for this second edge
-							Nucleotide f2 = ae.getFirstNucleotide();
-							Nucleotide s2 = ae.getSecondNucleotide();
-							if(f2.equals(f) || s2.equals(f)){
-								rm.add(fe);
-								rm.add(ae);
-								//now remove the edge from alistofedges
-								itr.remove();
-								break;
-							}
-						}
-					}
-				}else {
-					flag = false;
-				}
-			}while (flag == true);
-		}else{
-			return null;
 		}
 		return rm;
 	}
