@@ -34,39 +34,59 @@ import org.semanticscience.narf.structures.parts.Nucleotide;
  * 
  */
 public class CycleHelper {
-	
-	public static Nucleotide findFirstNucleotide(List<InteractionEdge> aSortedList){
+
+	/**
+	 * Rotate a list counterclockwise by one step. relative positioning of
+	 * elements remains the same for example: [a,b,c] -> [b,a,c]
+	 * 
+	 * @param aSortedList
+	 *            a sorted list of edges that belong to a cycle
+	 * @return a rotated edge list that preserves relative positioning of
+	 *         elements
+	 */
+	public static List<InteractionEdge> rotateCounterClockwise(
+			List<InteractionEdge> aSortedList) {
+		List<InteractionEdge> rm = new ArrayList<InteractionEdge>();
+		//remove the first element
+		InteractionEdge f = aSortedList.remove(0);
+		rm = aSortedList;
+		//now add it at the end 
+		rm.add(f);
+		return rm;
+	}
+
+	public static Nucleotide findFirstNucleotide(
+			List<InteractionEdge> aSortedList) {
 		InteractionEdge firstEdge = aSortedList.get(0);
 		InteractionEdge secondEdge = aSortedList.get(1);
 		Nucleotide f = firstEdge.getFirstNucleotide();
 		Nucleotide s = firstEdge.getSecondNucleotide();
 		Nucleotide f2 = secondEdge.getFirstNucleotide();
 		Nucleotide s2 = secondEdge.getSecondNucleotide();
-		if(f.equals(f2) || f.equals(s2)){
+		if (f.equals(f2) || f.equals(s2)) {
 			return f;
-		}else if(s.equals(f2) || s.equals(s2)){
+		} else if (s.equals(f2) || s.equals(s2)) {
 			return s;
 		}
 		return null;
 	}
-	
 
-	
-	public static Nucleotide findLastNucleotide(List<InteractionEdge> aSortedList){
+	public static Nucleotide findLastNucleotide(
+			List<InteractionEdge> aSortedList) {
 		InteractionEdge firstEdge = aSortedList.get(0);
-		InteractionEdge lastEdge = aSortedList.get(aSortedList.size()-1);
+		InteractionEdge lastEdge = aSortedList.get(aSortedList.size() - 1);
 		Nucleotide f = firstEdge.getFirstNucleotide();
 		Nucleotide s = firstEdge.getSecondNucleotide();
 		Nucleotide f2 = lastEdge.getFirstNucleotide();
 		Nucleotide s2 = lastEdge.getSecondNucleotide();
-		if(f.equals(f2) || f.equals(s2)){
+		if (f.equals(f2) || f.equals(s2)) {
 			return f;
-		}else if(s.equals(f2) || s.equals(s2)){
+		} else if (s.equals(f2) || s.equals(s2)) {
 			return s;
 		}
 		return null;
 	}
-	
+
 	/**
 	 * From an unsorted set of edges, find a set of concatenated edges and
 	 * return it.

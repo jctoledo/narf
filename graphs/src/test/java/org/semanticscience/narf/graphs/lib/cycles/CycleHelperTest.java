@@ -34,7 +34,7 @@ import org.semanticscience.narf.graphs.nucleicacid.NucleicAcid;
  * @author  Jose Cruz-Toledo
  *
  */
-public class SimpleCycleConverterTest {
+public class CycleHelperTest {
 	private static String pdbId = "1FFK";
 	private static Set<NucleicAcid> nas;
 	
