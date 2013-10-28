@@ -30,83 +30,114 @@ import org.semanticscience.narf.structures.parts.Nucleotide;
 /**
  * This class converts a SimpleCycle from CDK into a Cycle<V,E>
  * 
- * @author  Jose Cruz-Toledo
- *
+ * @author Jose Cruz-Toledo
+ * 
  */
 public class SimpleCycleConverter {
+	
+	public static Nucleotide findFirstNucleotide(List<InteractionEdge> aSortedList){
+		InteractionEdge firstEdge = aSortedList.get(0);
+		InteractionEdge secondEdge = aSortedList.get(1);
+		Nucleotide f = firstEdge.getFirstNucleotide();
+		Nucleotide s = firstEdge.getSecondNucleotide();
+		Nucleotide f2 = secondEdge.getFirstNucleotide();
+		Nucleotide s2 = secondEdge.getSecondNucleotide();
+		if(f.equals(f2) || f.equals(s2)){
+			return f;
+		}else if(s.equals(f2) || s.equals(s2)){
+			return s;
+		}
+		return null;
+	}
+	
+
+	
+	public static Nucleotide findLastNucleotide(List<InteractionEdge> aSortedList){
+		InteractionEdge firstEdge = aSortedList.get(0);
+		InteractionEdge lastEdge = aSortedList.get(aSortedList.size()-1);
+		Nucleotide f = firstEdge.getFirstNucleotide();
+		Nucleotide s = firstEdge.getSecondNucleotide();
+		Nucleotide f2 = lastEdge.getFirstNucleotide();
+		Nucleotide s2 = lastEdge.getSecondNucleotide();
+		if(f.equals(f2) || f.equals(s2)){
+			return f;
+		}else if(s.equals(f2) || s.equals(s2)){
+			return s;
+		}
+		return null;
+	}
+	
 	/**
-	 * From an unsorted set of edges, find a set of concatenated edges and return it. 
+	 * From an unsorted set of edges, find a set of concatenated edges and
+	 * return it.
+	 * 
 	 * @param aListOfEdges
 	 * @return
 	 */
-	public static List<InteractionEdge> initializeEdgeList(List<InteractionEdge> aListOfEdges){
+	public static List<InteractionEdge> sortEdgeList(
+			List<InteractionEdge> aListOfEdges) {
 		List<InteractionEdge> rm = new ArrayList<InteractionEdge>();
 		boolean flag = true;
-		if(aListOfEdges.size()>0){
-			do{
+		if (aListOfEdges.size() > 2) {
+			do {
 				InteractionEdge fe = null;
-				//ask whether the rm variable has any elements
-				if(rm.isEmpty()){
-					//remove the first edge
+				// ask whether the rm variable has any elements
+				if (rm.isEmpty()) {
+					// remove the first edge from aloe
 					fe = aListOfEdges.remove(0);
-					//check whether this edge needs to be flipped
-					fe = flipEdge(fe);
-					//get the source for this edge
+					rm.add(fe);
+					// get the source for this edge
 					Nucleotide f = fe.getFirstNucleotide();
-					if(aListOfEdges.size()>0){
-						//find the edge that it binds to 
-						InteractionEdge curr = null;
+					// find the edge that it binds to
+					Iterator<InteractionEdge> itr = aListOfEdges.iterator();
+					while (itr.hasNext()) {
+						InteractionEdge ae = itr.next();
+						// get the source and the target for this second edge
+						Nucleotide f2 = ae.getFirstNucleotide();
+						Nucleotide s2 = ae.getSecondNucleotide();
+						if (f2.equals(f) || s2.equals(f)) {
+							rm.add(ae);
+							// now remove the edge from alistofedges
+							itr.remove();
+							break;
+						}
+					}
+				} else {
+					// now use the last element in the returnme variable
+					fe = rm.get(rm.size() - 1);
+					// get the source for this edge
+					Nucleotide f = fe.getFirstNucleotide();
+					Nucleotide s = fe.getSecondNucleotide();
+					if (aListOfEdges.size() > 0) {
+						// find the edge that it binds to
 						Iterator<InteractionEdge> itr = aListOfEdges.iterator();
-						while(itr.hasNext()){
+						while (itr.hasNext()) {
 							InteractionEdge ae = itr.next();
-							//get the source and the target for this second edge
+							// get the source and the target for this second
+							// edge
 							Nucleotide f2 = ae.getFirstNucleotide();
 							Nucleotide s2 = ae.getSecondNucleotide();
-							if(f2.equals(f) || s2.equals(f)){
-								rm.add(fe);
+							if (f2.equals(f) || s2.equals(f)) {
 								rm.add(ae);
-								//now remove the edge from alistofedges
+								// now remove the edge from alistofedges
+								itr.remove();
+								break;
+							} else if (f2.equals(s) || s2.equals(s)) {
+								rm.add(ae);
 								itr.remove();
 								break;
 							}
 						}
-				}else{
-					//then get the last element in rm 
-					fe = rm.get(rm.size()-1);
-					
+					} else {
+						flag = false;
+					}
 				}
-				
-				}else {
-					flag = false;
-				}
-			}while (flag == true);
-		}else{
+				// flag = false;
+			} while (flag == true);
+		} else {
 			return null;
 		}
 		return rm;
 	}
-	
-	/**
-	 * This method "flips" an edge. The flipped edge always has a nucleotide with a lesser
-	 * residue position as the first nucleotide
-	 * @param fe
-	 * @return an edge with the nucleotide with the lesser residue position as the first nucleotide
-	 */
-	private static InteractionEdge flipEdge(InteractionEdge fe) {
-		//get the residue position of the first nucleotide
-		Nucleotide fp = fe.getFirstNucleotide();
-		//get the residue position of the second nucleotide 
-		Nucleotide sp = fe.getSecondNucleotide();
-		//now check their positions
-		if(fp.getResiduePosition() > sp.getResiduePosition()){
-			return fe;
-		}else{
-			InteractionEdge ie = new InteractionEdge();
-			
-		}
-		// TODO Auto-generated method stub
-		return null;
-	}
-	
 
 }

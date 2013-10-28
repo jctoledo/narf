@@ -530,19 +530,19 @@ public class Cycle<V, E> extends GraphPathImpl<V, E> {
 
 	public String toString() {
 		String r = "";
-		r += "Cycle: Size: [" + vertexList.size() + "] ,\nVertexList [";
+		r += "Cycle: Size: [" + vertexList.size() + "] ,\nVertexList: [\n";
 		for (V ver : vertexList) {
 			r += ver + "\n ";
 		}
 		r = r.substring(0, r.length() - 2);
-		r += "]\n EdgeList: [";
+		r += "]\n EdgeList: [\n";
 		for (E anEdge : this.getEdgeList()) {
 			r += anEdge + "\n";
 		}
 		r = r.substring(0, r.length() - 2);
-		r += "] \nStartVertex: " + this.getStartVertex() + ", EndVertex: "
+		r += "] \nStartVertex: " + this.getStartVertex() + ",\n EndVertex: "
 				+ this.getEndVertex();
-		r += " Weight: " + this.getWeight()+"\n\n";
+		r += " \nWeight: " + this.getWeight()+"\n\n\n";
 		return r;
 	}
 
