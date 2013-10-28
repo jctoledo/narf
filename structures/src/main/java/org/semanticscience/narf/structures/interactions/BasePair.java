@@ -20,6 +20,9 @@
  */
 package org.semanticscience.narf.structures.interactions;
 
+import java.util.HashMap;
+import java.util.Map;
+
 import org.semanticscience.narf.structures.lib.InferNucleotideParameters;
 import org.semanticscience.narf.structures.lib.exceptions.InvalidEdgeException;
 import org.semanticscience.narf.structures.lib.exceptions.InvalidGlycosidicOrientationException;
@@ -39,7 +42,11 @@ import org.semanticscience.narf.structures.parts.Nucleotide;
  */
 public class BasePair extends NucleotideInteraction implements
 		Comparable<BasePair> {
-
+	
+	/**
+	 * A mapping between RNAO base pair classes and a unique integer
+	 */
+	private Map<String, Integer> normalizedbasePairMapping;
 	/**
 	 * An identifying label for this base pair
 	 */
@@ -117,6 +124,7 @@ public class BasePair extends NucleotideInteraction implements
 		secondEdge = aSecondEdge;
 		glycosidicOrientation = aGlycosidicOrientation;
 		strandBPOrientation = aStrandBPOrientation;
+		normalizedbasePairMapping = makeNormalizedBasePairMap();
 	}
 
 	/**
@@ -608,7 +616,48 @@ public class BasePair extends NucleotideInteraction implements
 			return "http://purl.obolibrary.org/obo/RNAO_0000001";
 		}
 	}
+	
+	/**
+	 * This method returns an integer representation of the RNAO base pair class.
+	 * The mappings are arbitrary
+	 * @return an integer representation of a base pair class's RNAO annotation
+	 */
+	public Integer getNormalizedBasePairClass(){
+		Map<String, Integer> m = this.getNormalizedBPMapping();
+		String anrnao = this.inferRnaOClass();
+		return m.get(anrnao);
+	}
 
+	
+	/**
+	 * Make a map where the key is an RNAO base pair URI and the value is a unique integer
+	 * @return mapping between RNAO base pair classes and a unique integer
+	 */
+	private Map<String, Integer> makeNormalizedBasePairMap(){
+		Map<String, Integer> bpMap = new HashMap<String, Integer>();
+		//add all of the classes
+		bpMap.put("http://purl.obolibrary.org/obo/RNAO_0000001", 1);
+		bpMap.put("http://purl.obolibrary.org/obo/RNAO_0000002", 2);
+		bpMap.put("http://purl.obolibrary.org/obo/RNAO_0000004", 3);
+		bpMap.put("http://purl.obolibrary.org/obo/RNAO_0000005", 4);
+		bpMap.put("http://purl.obolibrary.org/obo/RNAO_0000006", 5);
+		bpMap.put("http://purl.obolibrary.org/obo/RNAO_0000007", 6);
+		bpMap.put("http://purl.obolibrary.org/obo/RNAO_0000008", 7);
+		bpMap.put("http://purl.obolibrary.org/obo/RNAO_0000009", 8);
+		bpMap.put("http://purl.obolibrary.org/obo/RNAO_0000010", 9);
+		bpMap.put("http://purl.obolibrary.org/obo/RNAO_0000011", 10);
+		bpMap.put("http://purl.obolibrary.org/obo/RNAO_0000012", 11);
+		bpMap.put("http://purl.obolibrary.org/obo/RNAO_0000013", 12);
+		bpMap.put("http://purl.obolibrary.org/obo/RNAO_0000116", 13);
+		bpMap.put("http://purl.obolibrary.org/obo/RNAO_0000117", 14);
+		bpMap.put("http://purl.obolibrary.org/obo/RNAO_0000014", 15);
+		return bpMap;
+	}
+	
+	public Map<String, Integer> getNormalizedBPMapping(){
+		return this.normalizedbasePairMapping;
+	}
+	
 	/*
 	 * (non-Javadoc)
 	 * 
