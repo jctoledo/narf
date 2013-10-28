@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2012  Jose Cruz-Toledo
+ * Copyright (c) 2013  Jose Cruz-Toledo
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
  * in the Software without restriction, including without limitation the rights
@@ -22,47 +22,33 @@ package org.semanticscience.narf.structures.interactions;
 
 import static org.junit.Assert.*;
 
-import org.junit.After;
-import org.junit.Before;
+import org.junit.AfterClass;
+import org.junit.BeforeClass;
 import org.junit.Test;
-import org.semanticscience.narf.structures.lib.exceptions.InvalidResidueException;
-import org.semanticscience.narf.structures.lib.exceptions.NonConsecutiveNucleotideException;
-import org.semanticscience.narf.structures.parts.Nucleotide;
 
 /**
  * @author  Jose Cruz-Toledo
  *
  */
-public class PhosphodiesterBondTest {
-	private PhosphodiesterBond aPdb = null; //3-4
-	private PhosphodiesterBond aPdb2 = null;//4-3
-	
-	@Before 
-	public void setUp() throws InvalidResidueException{
-		//create 2 phosphodiester bonds with the same nucleotides but in different order
-		Nucleotide n1 = new Nucleotide(4, "G");
-		Nucleotide n2 = new Nucleotide(3, "G");
-		try {
-			aPdb = new PhosphodiesterBond(n2, n1);
-			aPdb2 = new PhosphodiesterBond(n1, n2);
-		} catch (NonConsecutiveNucleotideException e) {
-			e.printStackTrace();
-		}
+public class NucleotideInteractionTest {
+
+	/**
+	 * @throws java.lang.Exception
+	 */
+	@BeforeClass
+	public static void setUpBeforeClass() throws Exception {
 	}
-	
-	@After
-	public void tearDown(){
-		aPdb = null;
-		aPdb2 = null;
+
+	/**
+	 * @throws java.lang.Exception
+	 */
+	@AfterClass
+	public static void tearDownAfterClass() throws Exception {
 	}
-	
+
 	@Test
-	public void testEquals(){
-		boolean f = true;
-		if(!aPdb.equals(aPdb2)){
-			f = false;
-		}
-		assertFalse(f);
+	public void test() {
+		fail("Not yet implemented");
 	}
 
 }

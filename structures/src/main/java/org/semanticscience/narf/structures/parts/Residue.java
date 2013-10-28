@@ -116,9 +116,9 @@ public abstract class Residue implements Comparable<Residue>{
 	
 	public int compareTo(Residue o) {
 		if( o.getResiduePosition() > this.getResiduePosition()){
-			return 1;
-		}else if ( o.getResiduePosition() < this.getResiduePosition()){
 			return -1;
+		}else if ( o.getResiduePosition() < this.getResiduePosition()){
+			return 1;
 		}
 		return 0;
 	}

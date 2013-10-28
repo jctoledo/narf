@@ -32,7 +32,7 @@ import org.semanticscience.narf.structures.lib.exceptions.InvalidResidueExceptio
  * @version %I%, %G%
  * @since 1.6
  */
-public class Nucleotide extends Residue implements Comparator<Nucleotide> {
+public class Nucleotide extends Residue {
 	/**
 	 * the Pdb id where tho
 	 */
@@ -325,15 +325,9 @@ public class Nucleotide extends Residue implements Comparator<Nucleotide> {
 				+ puckerAtom + ", puckerQuality=" + puckerQuality + "]";
 	}
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see java.util.Comparator#compare(java.lang.Object, java.lang.Object)
-	 */
-	@Override
-	public int compare(Nucleotide o1, Nucleotide o2) {
-		return (o1.getResiduePosition() > o2.getResiduePosition() ? -1 : (o1
-				.getResiduePosition() == o2.getResiduePosition() ? 0 : 1));
+	public int compareTo(Nucleotide other){
+		int pos = other.getResiduePosition();
+		return this.getResiduePosition() - pos;
 	}
 
 }

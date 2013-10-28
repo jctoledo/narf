@@ -25,6 +25,7 @@ import java.io.IOException;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
@@ -103,7 +104,9 @@ public class NucleicAcidTest {
 			List<SimpleCycle> cycles =  (List<SimpleCycle>) cb.cycles();
 			System.out.println(cycles.size());
 			Map<Double, Double> w = new HashMap<Double, Double>();
+			String lens = "";
 			for(SimpleCycle sc: cycles){
+				lens += sc.weight()+"\n";
 				if (w.containsKey(sc.weight())){
 					Double d =w.get(sc.weight())+1.0;
 					w.put(sc.weight(), d);
@@ -131,7 +134,7 @@ public class NucleicAcidTest {
 				
 				//System.out.println("Edges:");
 				//System.out.println(el);
-				/**/Nucleotide first_nuc = null;
+				/*Nucleotide first_nuc = null;
 				Nucleotide last_nuc = null;
 				int nuc_count = 0;
 			
@@ -144,14 +147,17 @@ public class NucleicAcidTest {
 						last_nuc = an;
 					}
 				}
-				try{
+				*/
+				//try{
 					//pre-process the edge list
-					List<InteractionEdge> l = processEdgeList(el);
-					Cycle <Nucleotide , InteractionEdge> c = new Cycle<Nucleotide, InteractionEdge>(aNuc, first_nuc, last_nuc, el, sc.weight());
-					System.out.println(c);
-				}catch(CycleException e){
-					e.printStackTrace();
-				} 
+					List<InteractionEdge> l = processEdgeList(aNuc, el);
+					System.out.println("PROCESSING :"+el);
+					System.out.println("PROCESSED :"+l);
+				//	Cycle <Nucleotide , InteractionEdge> c = new Cycle<Nucleotide, InteractionEdge>(aNuc, first_nuc, last_nuc, el, sc.weight());
+				//	System.out.println(c);
+				//}catch(CycleException e){
+				//	e.printStackTrace();
+				//} 
 				System.out.println("******");
 			}
 			//now write to file the frequency
@@ -164,18 +170,69 @@ public class NucleicAcidTest {
 				buf += k+"\t"+v+"\n";
 			}
 			FileUtils.writeStringToFile(new File("/tmp/freq.tsv"), buf);
+			FileUtils.writeStringToFile(new File("/tmp/lenghs.tsv"), lens);
 		}
 	}
 
 	/**
+	 * find a set of concatenated edges 
 	 * @param el
 	 * @return
 	 */
-	private List<InteractionEdge> processEdgeList(List<InteractionEdge> el) {
-		System.out.println(el);
-		System.exit(1);
-		return null;
+	private List<InteractionEdge> processEdgeList(NucleicAcid na, List<InteractionEdge> el) {
+		List<InteractionEdge> rm = new ArrayList<InteractionEdge>();
+		List<Nucleotide> uniqueNucs = new ArrayList<Nucleotide>();
+		//iterate over the interaction edge and add the unique vertices to the uniqueNucs
+		for (InteractionEdge anEdge:el){
+			Nucleotide s = anEdge.getFirstNucleotide();
+			Nucleotide t = anEdge.getSecondNucleotide();
+			
+			if(rm.isEmpty()){
+				rm.add(na.getEdge(s, t));
+			}else{
+				
+			}
+		}
+		//use unique nucs to figure out the correct order of
+		//edges. Assume start vertex is the first elemnt in uniqueNucs
+		//end vertex is the last one. 
+		for (int i = 0 ;i<uniqueNucs.size(); i++){
+			Nucleotide f = uniqueNucs.get(i);
+			Nucleotide s = null;
+			if(uniqueNucs.size()> i+1){
+				s = uniqueNucs.get(i+1);
+				//find the edge between f and s
+				InteractionEdge ie = na.getEdge(s, f);
+				rm.add(ie);
+			}
+			if(uniqueNucs.size() == i+1){
+				//Add the edge between the last vertex and the first one
+				s = uniqueNucs.get(i);
+				InteractionEdge ie = na.getEdge(uniqueNucs.get(0), s);
+				rm.add(ie);
+				break;
+			}
+		}
+		return rm;
 	}
+	
+	
+	
+	private List<Nucleotide> addInAscOrder(Nucleotide aNuc, List<Nucleotide> someNucs){
+		if(someNucs.size() == 0){
+			someNucs.add(aNuc);
+		}else{
+			//make sure that aNuc is not in someNucs
+			if(!someNucs.contains(aNuc)){
+				//add the nucleotide
+				someNucs.add(aNuc);
+				//re sort the list
+				Collections.sort(someNucs);
+			}
+		}
+		return someNucs;
+	}
+	
 	
 	
 	/*@Test
