@@ -69,12 +69,7 @@ public class Cycle<V, E> extends GraphPathImpl<V, E> {
 			// get the first and last edge
 			E lastE = edgeList.get(edgeList.size() - 1);
 			E firstE = edgeList.get(0);
-			E secondE = edgeList.get(1);
 			V firstV = this.getCommonVertex(firstE, lastE);
-			
-			//V aVert = this.getCommonVertex(firstE, secondE);
-			//V firstV = null;
-			
 			if (!vertexList.contains(firstV)) {
 				vertexList.add(firstV);
 			}
