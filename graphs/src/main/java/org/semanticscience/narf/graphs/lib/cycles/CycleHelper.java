@@ -44,74 +44,30 @@ import org.semanticscience.narf.structures.parts.Nucleotide;
 public class CycleHelper {
 
 	/**
-	 * This method iterates over the given list of cycles and serializes each
-	 * cycle as an integer by calling the makeNormalizedRepresentation method on
-	 * all edges and nucleotides
+	 * Make a Double representation of a Cycle<Nucleotide, InteractionEdge>
 	 * 
-	 * @param cycleRotations
-	 *            a list of rotations of a given cycle
-	 * @return a list of integers created from each cycle rotation
+	 * @param ac
+	 *            a cycle
+	 * @return a double representation of the cycle that includes the following
+	 *         features: Nucleotides, backbones and base pairs only
 	 */
-	public static List<Integer> makeCyclesAsIntegers(
-			List<Cycle<Nucleotide, InteractionEdge>> cycleRotations) {
-		List<Integer> rm = new ArrayList<Integer>();
-		for (Cycle<Nucleotide, InteractionEdge> aCyc : cycleRotations) {
-			List<Nucleotide> verts = aCyc.getVertexList();
-			List<Integer> tmpInts = new ArrayList<Integer>();
-			for (Nucleotide aNuc : verts) {
-				int n = aNuc.getNormalizedNucleotide();
-				tmpInts.add(n);
-				// now get the nextedge
-				InteractionEdge ie = aCyc.getNextEdge(aNuc);
-				Set<NucleotideInteraction> nis = ie.getInteractions();
-				for (NucleotideInteraction aNi : nis) {
-					if (aNi instanceof BasePair) {
-						try {
-							int bp = ((BasePair) aNi)
-									.getNormalizedBasePairClass();
-							tmpInts.add(bp);
-						} catch (NullPointerException e) {
-							// TODO fixme
-							e.printStackTrace();
-						}
-					} else if (aNi instanceof PhosphodiesterBond) {
-						int pdb = ((PhosphodiesterBond) aNi)
-								.getNormalizedBackBone();
-						tmpInts.add(pdb);
-					}
-				}
-			}
-			// print the cycle
-			//System.out.println(aCyc);
-			// print the integer list
-			//System.out.println(tmpInts);
-
-			int e = 2;
-			//System.out.println(e);
-
-		}
-		return null;
-	}
-
 	public static Double normalizeCycle(Cycle<Nucleotide, InteractionEdge> ac) {
 		List<Nucleotide> verts = ac.getVertexList();
-		LinkedList<Integer> tmpints= new LinkedList<Integer>();
-		for(Nucleotide aNuc: verts){
+		LinkedList<Integer> tmpints = new LinkedList<Integer>();
+		for (Nucleotide aNuc : verts) {
 			int nn = aNuc.getNormalizedNucleotide();
 			tmpints.add(nn);
 			InteractionEdge ie = ac.getNextEdge(aNuc);
 			Set<NucleotideInteraction> nis = ie.getInteractions();
-			for(NucleotideInteraction aNi:nis){
+			for (NucleotideInteraction aNi : nis) {
 				if (aNi instanceof BasePair) {
 					try {
-						int bp = ((BasePair) aNi)
-								.getNormalizedBasePairClass();
+						int bp = ((BasePair) aNi).getNormalizedBasePairClass();
 						tmpints.add(bp);
 					} catch (NullPointerException e) {
-						// TODO fixme
 						e.printStackTrace();
 					}
-				} 
+				}
 				if (aNi instanceof PhosphodiesterBond) {
 					int pdb = ((PhosphodiesterBond) aNi)
 							.getNormalizedBackBone();
@@ -120,18 +76,16 @@ public class CycleHelper {
 				break;
 			}
 		}
-		
-		String intStr= "";
-		for(Integer anInt : tmpints){
-			
+
+		String intStr = "";
+		for (Integer anInt : tmpints) {
+
 			intStr += anInt;
 		}
 		Double rm = null;
-		try{
+		try {
 			rm = Double.parseDouble(intStr);
-		}catch(NumberFormatException e){
-			System.out.println("MMMMMMMMMMMMMMMMaCycle:MMMMMMMMMMMMMMMM\n "+ac);
-			System.out.println("MMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMM");
+		} catch (NumberFormatException e) {
 			e.printStackTrace();
 		}
 		return rm;
