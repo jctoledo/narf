@@ -41,7 +41,6 @@ import org.semanticscience.narf.structures.parts.Nucleotide;
 public class CycleHelperTest {
 	private static String pdbId = "3Q50";
 	private static Set<NucleicAcid> nas;
-
 	/**
 	 * @throws java.lang.Exception
 	 */
@@ -62,7 +61,8 @@ public class CycleHelperTest {
 		nas = null;
 	}
 
-	@Test
+	@SuppressWarnings("unused")
+	@Test 
 	public void test() {
 		for (NucleicAcid aNuc : nas) {
 			List<Cycle<Nucleotide, InteractionEdge>> mcb = aNuc
@@ -71,14 +71,13 @@ public class CycleHelperTest {
 				// get all rotations of the cycle c
 				List<Cycle<Nucleotide, InteractionEdge>> c_rotations = CycleHelper
 						.findAllRotations(aNuc, c);
-
-				System.out.println(c);
-				System.out.println("rotations:");
-				for (Cycle<Nucleotide, InteractionEdge> aRot : c_rotations) {
-					System.out.println(aRot);
+				
+				for (Cycle<Nucleotide, InteractionEdge> rot:c_rotations){
+					Double i = CycleHelper.normalizeCycle(rot);
+					System.out.println("**************: "+i);
 				}
-				int p = 0;
 			}
 		}
 	}
+	
 }

@@ -94,6 +94,10 @@ public class BasePair extends NucleotideInteraction implements
 	 * The leontis westhof class that describes this base pair
 	 */
 	private String LWClass;
+	/**
+	 * The RNAO class uri that corresponds to this base pair
+	 */
+	private String rnaoclassuri;
 
 	/**
 	 * Construct a new base pairing interactions between two nucleotide
@@ -125,6 +129,7 @@ public class BasePair extends NucleotideInteraction implements
 		glycosidicOrientation = aGlycosidicOrientation;
 		strandBPOrientation = aStrandBPOrientation;
 		normalizedbasePairMapping = makeNormalizedBasePairMap();
+		//rnaoclassuri = inferRnaOClass();
 	}
 
 	/**
@@ -158,6 +163,7 @@ public class BasePair extends NucleotideInteraction implements
 		label = aLabel;
 		saengerClass = aSaengerClass;
 		LWClass = aLWClass;
+		rnaoclassuri = inferRnaOClass();
 	}
 
 	/**
@@ -236,6 +242,15 @@ public class BasePair extends NucleotideInteraction implements
 	 */
 	public String getGlycosidicOrientation() {
 		return glycosidicOrientation;
+	}
+
+	/**
+	 * The rnao class uri for this base pair
+	 * 
+	 * @return
+	 */
+	public String getRNAOClassUri() {
+		return this.rnaoclassuri;
 	}
 
 	/**
@@ -326,294 +341,300 @@ public class BasePair extends NucleotideInteraction implements
 	 */
 	public String inferRnaOClass() {
 		String lwclass = this.getLWClass();
-		if (lwclass.equals("cWW")) {
-			// check if the two nucleotides are guanine
-			if (this.getFirstNucleotide().getResidueIdentifier()
-					.equalsIgnoreCase("G")
-					&& this.getSecondNucleotide().getResidueIdentifier()
-							.equalsIgnoreCase("G")) {
-				return "http://purl.obolibrary.org/obo/RNAO_0000116";
+		if (lwclass != null) {
+			if (lwclass.equals("cWW")) {
+				// check if the two nucleotides are guanine
+				if (this.getFirstNucleotide().getResidueIdentifier()
+						.equalsIgnoreCase("G")
+						&& this.getSecondNucleotide().getResidueIdentifier()
+								.equalsIgnoreCase("G")) {
+					return "http://purl.obolibrary.org/obo/RNAO_0000116";
+				} else {
+					return "http://purl.obolibrary.org/obo/RNAO_0000003";
+				}
+			} else if (lwclass.equals("cSS")) {
+				return "http://purl.obolibrary.org/obo/RNAO_0000013";
+			} else if (lwclass.equals("cWH") || lwclass.equals("cHW")) {
+				// check for forbidden pairings
+				// CA
+				if ((this.getFirstNucleotide().getResidueIdentifier()
+						.equalsIgnoreCase("A") && this.getSecondNucleotide()
+						.getResidueIdentifier().equalsIgnoreCase("C"))
+						|| (this.getFirstNucleotide().getResidueIdentifier()
+								.equalsIgnoreCase("C") && this
+								.getSecondNucleotide().getResidueIdentifier()
+								.equalsIgnoreCase("A"))) {
+					return "http://purl.obolibrary.org/obo/RNAO_0000116";
+				}
+				// UC
+				else if ((this.getFirstNucleotide().getResidueIdentifier()
+						.equalsIgnoreCase("C") && this.getSecondNucleotide()
+						.getResidueIdentifier().equalsIgnoreCase("U"))
+						|| (this.getFirstNucleotide().getResidueIdentifier()
+								.equalsIgnoreCase("U") && this
+								.getSecondNucleotide().getResidueIdentifier()
+								.equalsIgnoreCase("C"))) {
+					return "http://purl.obolibrary.org/obo/RNAO_0000116";
+				}
+				// AA
+				else if (this.getFirstNucleotide().getResidueIdentifier()
+						.equalsIgnoreCase("A")
+						&& this.getSecondNucleotide().getResidueIdentifier()
+								.equalsIgnoreCase("A")) {
+					return "http://purl.obolibrary.org/obo/RNAO_0000116";
+				}
+				// GC
+				else if ((this.getFirstNucleotide().getResidueIdentifier()
+						.equalsIgnoreCase("C") && this.getSecondNucleotide()
+						.getResidueIdentifier().equalsIgnoreCase("G"))
+						|| (this.getFirstNucleotide().getResidueIdentifier()
+								.equalsIgnoreCase("G") && this
+								.getSecondNucleotide().getResidueIdentifier()
+								.equalsIgnoreCase("C"))) {
+					return "http://purl.obolibrary.org/obo/RNAO_0000116";
+				}
+				// GU
+				else if ((this.getFirstNucleotide().getResidueIdentifier()
+						.equalsIgnoreCase("U") && this.getSecondNucleotide()
+						.getResidueIdentifier().equalsIgnoreCase("G"))
+						|| (this.getFirstNucleotide().getResidueIdentifier()
+								.equalsIgnoreCase("G") && this
+								.getSecondNucleotide().getResidueIdentifier()
+								.equalsIgnoreCase("U"))) {
+					return "http://purl.obolibrary.org/obo/RNAO_0000116";
+				} else {
+					return "http://purl.obolibrary.org/obo/RNAO_0000005";
+				}
+			} else if (lwclass.equals("cWS") || lwclass.equals("cSW")) {
+				return "http://purl.obolibrary.org/obo/RNAO_0000007";
+			} else if (lwclass.equals("cHH")) {
+				// check for forbidden pairings
+				// CC
+				if (this.getFirstNucleotide().getResidueIdentifier()
+						.equalsIgnoreCase("A")
+						&& this.getSecondNucleotide().getResidueIdentifier()
+								.equalsIgnoreCase("A")) {
+					return "http://purl.obolibrary.org/obo/RNAO_0000116";
+				}
+				// CU
+				else if ((this.getFirstNucleotide().getResidueIdentifier()
+						.equalsIgnoreCase("C") && this.getSecondNucleotide()
+						.getResidueIdentifier().equalsIgnoreCase("U"))
+						|| (this.getFirstNucleotide().getResidueIdentifier()
+								.equalsIgnoreCase("U") && this
+								.getSecondNucleotide().getResidueIdentifier()
+								.equalsIgnoreCase("C"))) {
+					return "http://purl.obolibrary.org/obo/RNAO_0000116";
+				}
+				// CA
+				else if ((this.getFirstNucleotide().getResidueIdentifier()
+						.equalsIgnoreCase("C") && this.getSecondNucleotide()
+						.getResidueIdentifier().equalsIgnoreCase("A"))
+						|| (this.getFirstNucleotide().getResidueIdentifier()
+								.equalsIgnoreCase("A") && this
+								.getSecondNucleotide().getResidueIdentifier()
+								.equalsIgnoreCase("C"))) {
+					return "http://purl.obolibrary.org/obo/RNAO_0000116";
+				}
+				// UA
+				else if ((this.getFirstNucleotide().getResidueIdentifier()
+						.equalsIgnoreCase("U") && this.getSecondNucleotide()
+						.getResidueIdentifier().equalsIgnoreCase("A"))
+						|| (this.getFirstNucleotide().getResidueIdentifier()
+								.equalsIgnoreCase("A") && this
+								.getSecondNucleotide().getResidueIdentifier()
+								.equalsIgnoreCase("U"))) {
+					return "http://purl.obolibrary.org/obo/RNAO_0000116";
+				}
+				// UG
+				else if ((this.getFirstNucleotide().getResidueIdentifier()
+						.equalsIgnoreCase("U") && this.getSecondNucleotide()
+						.getResidueIdentifier().equalsIgnoreCase("G"))
+						|| (this.getFirstNucleotide().getResidueIdentifier()
+								.equalsIgnoreCase("G") && this
+								.getSecondNucleotide().getResidueIdentifier()
+								.equalsIgnoreCase("U"))) {
+					return "http://purl.obolibrary.org/obo/RNAO_0000116";
+				}
+				// UU
+				else if (this.getFirstNucleotide().getResidueIdentifier()
+						.equalsIgnoreCase("U")
+						&& this.getSecondNucleotide().getResidueIdentifier()
+								.equalsIgnoreCase("U")) {
+					return "http://purl.obolibrary.org/obo/RNAO_0000116";
+				}
+				// AA
+				else if (this.getFirstNucleotide().getResidueIdentifier()
+						.equalsIgnoreCase("A")
+						&& this.getSecondNucleotide().getResidueIdentifier()
+								.equalsIgnoreCase("A")) {
+					return "http://purl.obolibrary.org/obo/RNAO_0000116";
+				} else {
+					return "http://purl.obolibrary.org/obo/RNAO_0000009";
+				}
+			} else if (lwclass.equals("cHS") || lwclass.equals("cSH")) {
+				return "http://purl.obolibrary.org/obo/RNAO_0000011";
+			} else if (lwclass.equals("tHS") || lwclass.equals("tSH")) {
+				return "http://purl.obolibrary.org/obo/RNAO_0000012";
+			} else if (lwclass.equals("tSS")) {
+				// check for forbiden pairings
+				// CA
+				if ((this.getFirstNucleotide().getResidueIdentifier()
+						.equalsIgnoreCase("C") && this.getSecondNucleotide()
+						.getResidueIdentifier().equalsIgnoreCase("A"))
+						|| (this.getFirstNucleotide().getResidueIdentifier()
+								.equalsIgnoreCase("A") && this
+								.getSecondNucleotide().getResidueIdentifier()
+								.equalsIgnoreCase("C"))) {
+					return "http://purl.obolibrary.org/obo/RNAO_0000116";
+				}
+				// CC
+				else if (this.getFirstNucleotide().getResidueIdentifier()
+						.equalsIgnoreCase("C")
+						&& this.getSecondNucleotide().getResidueIdentifier()
+								.equalsIgnoreCase("C")) {
+					return "http://purl.obolibrary.org/obo/RNAO_0000116";
+				}
+				// CU
+				else if ((this.getFirstNucleotide().getResidueIdentifier()
+						.equalsIgnoreCase("C") && this.getSecondNucleotide()
+						.getResidueIdentifier().equalsIgnoreCase("U"))
+						|| (this.getFirstNucleotide().getResidueIdentifier()
+								.equalsIgnoreCase("U") && this
+								.getSecondNucleotide().getResidueIdentifier()
+								.equalsIgnoreCase("C"))) {
+					return "http://purl.obolibrary.org/obo/RNAO_0000116";
+				}
+				// CG
+				else if ((this.getFirstNucleotide().getResidueIdentifier()
+						.equalsIgnoreCase("C") && this.getSecondNucleotide()
+						.getResidueIdentifier().equalsIgnoreCase("G"))
+						|| (this.getFirstNucleotide().getResidueIdentifier()
+								.equalsIgnoreCase("G") && this
+								.getSecondNucleotide().getResidueIdentifier()
+								.equalsIgnoreCase("C"))) {
+					return "http://purl.obolibrary.org/obo/RNAO_0000116";
+				}
+				// UA
+				else if ((this.getFirstNucleotide().getResidueIdentifier()
+						.equalsIgnoreCase("U") && this.getSecondNucleotide()
+						.getResidueIdentifier().equalsIgnoreCase("A"))
+						|| (this.getFirstNucleotide().getResidueIdentifier()
+								.equalsIgnoreCase("A") && this
+								.getSecondNucleotide().getResidueIdentifier()
+								.equalsIgnoreCase("U"))) {
+					return "http://purl.obolibrary.org/obo/RNAO_0000116";
+				}
+				// UU
+				else if (this.getFirstNucleotide().getResidueIdentifier()
+						.equalsIgnoreCase("U")
+						&& this.getSecondNucleotide().getResidueIdentifier()
+								.equalsIgnoreCase("U")) {
+					return "http://purl.obolibrary.org/obo/RNAO_0000116";
+				}
+				// UG
+				else if ((this.getFirstNucleotide().getResidueIdentifier()
+						.equalsIgnoreCase("U") && this.getSecondNucleotide()
+						.getResidueIdentifier().equalsIgnoreCase("G"))
+						|| (this.getFirstNucleotide().getResidueIdentifier()
+								.equalsIgnoreCase("G") && this
+								.getSecondNucleotide().getResidueIdentifier()
+								.equalsIgnoreCase("U"))) {
+					return "http://purl.obolibrary.org/obo/RNAO_0000116";
+				} else {
+					return "http://purl.obolibrary.org/obo/RNAO_0000014";
+				}
+			} else if (lwclass.equals("tWW")) {
+				// only accepted pairings are GU, GG and GC
+				if ((this.getFirstNucleotide().getResidueIdentifier()
+						.equalsIgnoreCase("G") && this.getSecondNucleotide()
+						.getResidueIdentifier().equalsIgnoreCase("U"))
+						|| (this.getFirstNucleotide().getResidueIdentifier()
+								.equalsIgnoreCase("U") && this
+								.getSecondNucleotide().getResidueIdentifier()
+								.equalsIgnoreCase("G"))) {
+					return "http://purl.obolibrary.org/obo/RNAO_0000004";
+				} else if (this.getFirstNucleotide().getResidueIdentifier()
+						.equalsIgnoreCase("G")
+						&& this.getSecondNucleotide().getResidueIdentifier()
+								.equalsIgnoreCase("G")) {
+					return "http://purl.obolibrary.org/obo/RNAO_0000004";
+				} else if ((this.getFirstNucleotide().getResidueIdentifier()
+						.equalsIgnoreCase("G") && this.getSecondNucleotide()
+						.getResidueIdentifier().equalsIgnoreCase("C"))
+						|| (this.getFirstNucleotide().getResidueIdentifier()
+								.equalsIgnoreCase("C") && this
+								.getSecondNucleotide().getResidueIdentifier()
+								.equalsIgnoreCase("G"))) {
+					return "http://purl.obolibrary.org/obo/RNAO_0000004";
+				} else {
+					return "http://purl.obolibrary.org/obo/RNAO_0000117";
+				}
+			} else if (lwclass.equals("tWH") || lwclass.equals("tHW")) {
+				// check for forbidden pairings
+				// CU
+				if ((this.getFirstNucleotide().getResidueIdentifier()
+						.equalsIgnoreCase("C") && this.getSecondNucleotide()
+						.getResidueIdentifier().equalsIgnoreCase("U"))
+						|| (this.getFirstNucleotide().getResidueIdentifier()
+								.equalsIgnoreCase("U") && this
+								.getSecondNucleotide().getResidueIdentifier()
+								.equalsIgnoreCase("C"))) {
+					return "http://purl.obolibrary.org/obo/RNAO_0000117";
+				}
+				// AC
+				else if ((this.getFirstNucleotide().getResidueIdentifier()
+						.equalsIgnoreCase("A") && this.getSecondNucleotide()
+						.getResidueIdentifier().equalsIgnoreCase("C"))
+						|| (this.getFirstNucleotide().getResidueIdentifier()
+								.equalsIgnoreCase("C") && this
+								.getSecondNucleotide().getResidueIdentifier()
+								.equalsIgnoreCase("A"))) {
+					return "http://purl.obolibrary.org/obo/RNAO_0000117";
+				}
+				// AU
+				else if ((this.getFirstNucleotide().getResidueIdentifier()
+						.equalsIgnoreCase("A") && this.getSecondNucleotide()
+						.getResidueIdentifier().equalsIgnoreCase("U"))
+						|| (this.getFirstNucleotide().getResidueIdentifier()
+								.equalsIgnoreCase("U") && this
+								.getSecondNucleotide().getResidueIdentifier()
+								.equalsIgnoreCase("A"))) {
+					return "http://purl.obolibrary.org/obo/RNAO_0000117";
+				}
+				// GC
+				else if ((this.getFirstNucleotide().getResidueIdentifier()
+						.equalsIgnoreCase("C") && this.getSecondNucleotide()
+						.getResidueIdentifier().equalsIgnoreCase("G"))
+						|| (this.getFirstNucleotide().getResidueIdentifier()
+								.equalsIgnoreCase("G") && this
+								.getSecondNucleotide().getResidueIdentifier()
+								.equalsIgnoreCase("C"))) {
+					return "http://purl.obolibrary.org/obo/RNAO_0000117";
+				}
+				// GA
+				else if ((this.getFirstNucleotide().getResidueIdentifier()
+						.equalsIgnoreCase("G") && this.getSecondNucleotide()
+						.getResidueIdentifier().equalsIgnoreCase("A"))
+						|| (this.getFirstNucleotide().getResidueIdentifier()
+								.equalsIgnoreCase("A") && this
+								.getSecondNucleotide().getResidueIdentifier()
+								.equalsIgnoreCase("G"))) {
+					return "http://purl.obolibrary.org/obo/RNAO_0000117";
+				} else {
+					return "http://purl.obolibrary.org/obo/RNAO_0000006";
+				}
+			} else if (lwclass.equals("tWS") || lwclass.equals("tSW")) {
+				return "http://purl.obolibrary.org/obo/RNAO_0000008";
+			} else if (lwclass.equals("tHH")) {
+				return "http://purl.obolibrary.org/obo/RNAO_0000010";
 			} else {
-				return "http://purl.obolibrary.org/obo/RNAO_0000003";
+				return "http://purl.obolibrary.org/obo/RNAO_0000001";
 			}
-		} else if (lwclass.equals("cSS")) {
-			return "http://purl.obolibrary.org/obo/RNAO_0000013";
-		} else if (lwclass.equals("cWH") || lwclass.equals("cHW")) {
-			// check for forbidden pairings
-			// CA
-			if ((this.getFirstNucleotide().getResidueIdentifier()
-					.equalsIgnoreCase("A") && this.getSecondNucleotide()
-					.getResidueIdentifier().equalsIgnoreCase("C"))
-					|| (this.getFirstNucleotide().getResidueIdentifier()
-							.equalsIgnoreCase("C") && this
-							.getSecondNucleotide().getResidueIdentifier()
-							.equalsIgnoreCase("A"))) {
-				return "http://purl.obolibrary.org/obo/RNAO_0000116";
-			}
-			// UC
-			else if ((this.getFirstNucleotide().getResidueIdentifier()
-					.equalsIgnoreCase("C") && this.getSecondNucleotide()
-					.getResidueIdentifier().equalsIgnoreCase("U"))
-					|| (this.getFirstNucleotide().getResidueIdentifier()
-							.equalsIgnoreCase("U") && this
-							.getSecondNucleotide().getResidueIdentifier()
-							.equalsIgnoreCase("C"))) {
-				return "http://purl.obolibrary.org/obo/RNAO_0000116";
-			}
-			// AA
-			else if (this.getFirstNucleotide().getResidueIdentifier()
-					.equalsIgnoreCase("A")
-					&& this.getSecondNucleotide().getResidueIdentifier()
-							.equalsIgnoreCase("A")) {
-				return "http://purl.obolibrary.org/obo/RNAO_0000116";
-			}
-			// GC
-			else if ((this.getFirstNucleotide().getResidueIdentifier()
-					.equalsIgnoreCase("C") && this.getSecondNucleotide()
-					.getResidueIdentifier().equalsIgnoreCase("G"))
-					|| (this.getFirstNucleotide().getResidueIdentifier()
-							.equalsIgnoreCase("G") && this
-							.getSecondNucleotide().getResidueIdentifier()
-							.equalsIgnoreCase("C"))) {
-				return "http://purl.obolibrary.org/obo/RNAO_0000116";
-			}
-			// GU
-			else if ((this.getFirstNucleotide().getResidueIdentifier()
-					.equalsIgnoreCase("U") && this.getSecondNucleotide()
-					.getResidueIdentifier().equalsIgnoreCase("G"))
-					|| (this.getFirstNucleotide().getResidueIdentifier()
-							.equalsIgnoreCase("G") && this
-							.getSecondNucleotide().getResidueIdentifier()
-							.equalsIgnoreCase("U"))) {
-				return "http://purl.obolibrary.org/obo/RNAO_0000116";
-			} else {
-				return "http://purl.obolibrary.org/obo/RNAO_0000005";
-			}
-		} else if (lwclass.equals("cWS") || lwclass.equals("cSW")) {
-			return "http://purl.obolibrary.org/obo/RNAO_0000007";
-		} else if (lwclass.equals("cHH")) {
-			// check for forbidden pairings
-			// CC
-			if (this.getFirstNucleotide().getResidueIdentifier()
-					.equalsIgnoreCase("A")
-					&& this.getSecondNucleotide().getResidueIdentifier()
-							.equalsIgnoreCase("A")) {
-				return "http://purl.obolibrary.org/obo/RNAO_0000116";
-			}
-			// CU
-			else if ((this.getFirstNucleotide().getResidueIdentifier()
-					.equalsIgnoreCase("C") && this.getSecondNucleotide()
-					.getResidueIdentifier().equalsIgnoreCase("U"))
-					|| (this.getFirstNucleotide().getResidueIdentifier()
-							.equalsIgnoreCase("U") && this
-							.getSecondNucleotide().getResidueIdentifier()
-							.equalsIgnoreCase("C"))) {
-				return "http://purl.obolibrary.org/obo/RNAO_0000116";
-			}
-			// CA
-			else if ((this.getFirstNucleotide().getResidueIdentifier()
-					.equalsIgnoreCase("C") && this.getSecondNucleotide()
-					.getResidueIdentifier().equalsIgnoreCase("A"))
-					|| (this.getFirstNucleotide().getResidueIdentifier()
-							.equalsIgnoreCase("A") && this
-							.getSecondNucleotide().getResidueIdentifier()
-							.equalsIgnoreCase("C"))) {
-				return "http://purl.obolibrary.org/obo/RNAO_0000116";
-			}
-			// UA
-			else if ((this.getFirstNucleotide().getResidueIdentifier()
-					.equalsIgnoreCase("U") && this.getSecondNucleotide()
-					.getResidueIdentifier().equalsIgnoreCase("A"))
-					|| (this.getFirstNucleotide().getResidueIdentifier()
-							.equalsIgnoreCase("A") && this
-							.getSecondNucleotide().getResidueIdentifier()
-							.equalsIgnoreCase("U"))) {
-				return "http://purl.obolibrary.org/obo/RNAO_0000116";
-			}
-			// UG
-			else if ((this.getFirstNucleotide().getResidueIdentifier()
-					.equalsIgnoreCase("U") && this.getSecondNucleotide()
-					.getResidueIdentifier().equalsIgnoreCase("G"))
-					|| (this.getFirstNucleotide().getResidueIdentifier()
-							.equalsIgnoreCase("G") && this
-							.getSecondNucleotide().getResidueIdentifier()
-							.equalsIgnoreCase("U"))) {
-				return "http://purl.obolibrary.org/obo/RNAO_0000116";
-			}
-			// UU
-			else if (this.getFirstNucleotide().getResidueIdentifier()
-					.equalsIgnoreCase("U")
-					&& this.getSecondNucleotide().getResidueIdentifier()
-							.equalsIgnoreCase("U")) {
-				return "http://purl.obolibrary.org/obo/RNAO_0000116";
-			}
-			// AA
-			else if (this.getFirstNucleotide().getResidueIdentifier()
-					.equalsIgnoreCase("A")
-					&& this.getSecondNucleotide().getResidueIdentifier()
-							.equalsIgnoreCase("A")) {
-				return "http://purl.obolibrary.org/obo/RNAO_0000116";
-			} else {
-				return "http://purl.obolibrary.org/obo/RNAO_0000009";
-			}
-		} else if (lwclass.equals("cHS") || lwclass.equals("cSH")) {
-			return "http://purl.obolibrary.org/obo/RNAO_0000011";
-		} else if (lwclass.equals("tHS") || lwclass.equals("tSH")) {
-			return "http://purl.obolibrary.org/obo/RNAO_0000012";
-		} else if (lwclass.equals("tSS")) {
-			// check for forbiden pairings
-			// CA
-			if ((this.getFirstNucleotide().getResidueIdentifier()
-					.equalsIgnoreCase("C") && this.getSecondNucleotide()
-					.getResidueIdentifier().equalsIgnoreCase("A"))
-					|| (this.getFirstNucleotide().getResidueIdentifier()
-							.equalsIgnoreCase("A") && this
-							.getSecondNucleotide().getResidueIdentifier()
-							.equalsIgnoreCase("C"))) {
-				return "http://purl.obolibrary.org/obo/RNAO_0000116";
-			}
-			// CC
-			else if (this.getFirstNucleotide().getResidueIdentifier()
-					.equalsIgnoreCase("C")
-					&& this.getSecondNucleotide().getResidueIdentifier()
-							.equalsIgnoreCase("C")) {
-				return "http://purl.obolibrary.org/obo/RNAO_0000116";
-			}
-			// CU
-			else if ((this.getFirstNucleotide().getResidueIdentifier()
-					.equalsIgnoreCase("C") && this.getSecondNucleotide()
-					.getResidueIdentifier().equalsIgnoreCase("U"))
-					|| (this.getFirstNucleotide().getResidueIdentifier()
-							.equalsIgnoreCase("U") && this
-							.getSecondNucleotide().getResidueIdentifier()
-							.equalsIgnoreCase("C"))) {
-				return "http://purl.obolibrary.org/obo/RNAO_0000116";
-			}
-			// CG
-			else if ((this.getFirstNucleotide().getResidueIdentifier()
-					.equalsIgnoreCase("C") && this.getSecondNucleotide()
-					.getResidueIdentifier().equalsIgnoreCase("G"))
-					|| (this.getFirstNucleotide().getResidueIdentifier()
-							.equalsIgnoreCase("G") && this
-							.getSecondNucleotide().getResidueIdentifier()
-							.equalsIgnoreCase("C"))) {
-				return "http://purl.obolibrary.org/obo/RNAO_0000116";
-			}
-			// UA
-			else if ((this.getFirstNucleotide().getResidueIdentifier()
-					.equalsIgnoreCase("U") && this.getSecondNucleotide()
-					.getResidueIdentifier().equalsIgnoreCase("A"))
-					|| (this.getFirstNucleotide().getResidueIdentifier()
-							.equalsIgnoreCase("A") && this
-							.getSecondNucleotide().getResidueIdentifier()
-							.equalsIgnoreCase("U"))) {
-				return "http://purl.obolibrary.org/obo/RNAO_0000116";
-			}
-			// UU
-			else if (this.getFirstNucleotide().getResidueIdentifier()
-					.equalsIgnoreCase("U")
-					&& this.getSecondNucleotide().getResidueIdentifier()
-							.equalsIgnoreCase("U")) {
-				return "http://purl.obolibrary.org/obo/RNAO_0000116";
-			}
-			// UG
-			else if ((this.getFirstNucleotide().getResidueIdentifier()
-					.equalsIgnoreCase("U") && this.getSecondNucleotide()
-					.getResidueIdentifier().equalsIgnoreCase("G"))
-					|| (this.getFirstNucleotide().getResidueIdentifier()
-							.equalsIgnoreCase("G") && this
-							.getSecondNucleotide().getResidueIdentifier()
-							.equalsIgnoreCase("U"))) {
-				return "http://purl.obolibrary.org/obo/RNAO_0000116";
-			} else {
-				return "http://purl.obolibrary.org/obo/RNAO_0000014";
-			}
-		} else if (lwclass.equals("tWW")) {
-			// only accepted pairings are GU, GG and GC
-			if ((this.getFirstNucleotide().getResidueIdentifier()
-					.equalsIgnoreCase("G") && this.getSecondNucleotide()
-					.getResidueIdentifier().equalsIgnoreCase("U"))
-					|| (this.getFirstNucleotide().getResidueIdentifier()
-							.equalsIgnoreCase("U") && this
-							.getSecondNucleotide().getResidueIdentifier()
-							.equalsIgnoreCase("G"))) {
-				return "http://purl.obolibrary.org/obo/RNAO_0000004";
-			} else if (this.getFirstNucleotide().getResidueIdentifier()
-					.equalsIgnoreCase("G")
-					&& this.getSecondNucleotide().getResidueIdentifier()
-							.equalsIgnoreCase("G")) {
-				return "http://purl.obolibrary.org/obo/RNAO_0000004";
-			} else if ((this.getFirstNucleotide().getResidueIdentifier()
-					.equalsIgnoreCase("G") && this.getSecondNucleotide()
-					.getResidueIdentifier().equalsIgnoreCase("C"))
-					|| (this.getFirstNucleotide().getResidueIdentifier()
-							.equalsIgnoreCase("C") && this
-							.getSecondNucleotide().getResidueIdentifier()
-							.equalsIgnoreCase("G"))) {
-				return "http://purl.obolibrary.org/obo/RNAO_0000004";
-			} else {
-				return "http://purl.obolibrary.org/obo/RNAO_0000117";
-			}
-		} else if (lwclass.equals("tWH") || lwclass.equals("tHW")) {
-			// check for forbidden pairings
-			// CU
-			if ((this.getFirstNucleotide().getResidueIdentifier()
-					.equalsIgnoreCase("C") && this.getSecondNucleotide()
-					.getResidueIdentifier().equalsIgnoreCase("U"))
-					|| (this.getFirstNucleotide().getResidueIdentifier()
-							.equalsIgnoreCase("U") && this
-							.getSecondNucleotide().getResidueIdentifier()
-							.equalsIgnoreCase("C"))) {
-				return "http://purl.obolibrary.org/obo/RNAO_0000117";
-			}
-			// AC
-			else if ((this.getFirstNucleotide().getResidueIdentifier()
-					.equalsIgnoreCase("A") && this.getSecondNucleotide()
-					.getResidueIdentifier().equalsIgnoreCase("C"))
-					|| (this.getFirstNucleotide().getResidueIdentifier()
-							.equalsIgnoreCase("C") && this
-							.getSecondNucleotide().getResidueIdentifier()
-							.equalsIgnoreCase("A"))) {
-				return "http://purl.obolibrary.org/obo/RNAO_0000117";
-			}
-			// AU
-			else if ((this.getFirstNucleotide().getResidueIdentifier()
-					.equalsIgnoreCase("A") && this.getSecondNucleotide()
-					.getResidueIdentifier().equalsIgnoreCase("U"))
-					|| (this.getFirstNucleotide().getResidueIdentifier()
-							.equalsIgnoreCase("U") && this
-							.getSecondNucleotide().getResidueIdentifier()
-							.equalsIgnoreCase("A"))) {
-				return "http://purl.obolibrary.org/obo/RNAO_0000117";
-			}
-			// GC
-			else if ((this.getFirstNucleotide().getResidueIdentifier()
-					.equalsIgnoreCase("C") && this.getSecondNucleotide()
-					.getResidueIdentifier().equalsIgnoreCase("G"))
-					|| (this.getFirstNucleotide().getResidueIdentifier()
-							.equalsIgnoreCase("G") && this
-							.getSecondNucleotide().getResidueIdentifier()
-							.equalsIgnoreCase("C"))) {
-				return "http://purl.obolibrary.org/obo/RNAO_0000117";
-			}
-			// GA
-			else if ((this.getFirstNucleotide().getResidueIdentifier()
-					.equalsIgnoreCase("G") && this.getSecondNucleotide()
-					.getResidueIdentifier().equalsIgnoreCase("A"))
-					|| (this.getFirstNucleotide().getResidueIdentifier()
-							.equalsIgnoreCase("A") && this
-							.getSecondNucleotide().getResidueIdentifier()
-							.equalsIgnoreCase("G"))) {
-				return "http://purl.obolibrary.org/obo/RNAO_0000117";
-			} else {
-				return "http://purl.obolibrary.org/obo/RNAO_0000006";
-			}
-		} else if (lwclass.equals("tWS") || lwclass.equals("tSW")) {
-			return "http://purl.obolibrary.org/obo/RNAO_0000008";
-		} else if (lwclass.equals("tHH")) {
-			return "http://purl.obolibrary.org/obo/RNAO_0000010";
 		} else {
-			return "http://purl.obolibrary.org/obo/RNAO_0000001";
+			System.out.println("Invalid edge! or null?");
+			System.out.println(this);
+			return "-1";
 		}
 	}
 
@@ -624,9 +645,16 @@ public class BasePair extends NucleotideInteraction implements
 	 * @return an integer representation of a base pair class's RNAO annotation
 	 */
 	public Integer getNormalizedBasePairClass() {
-		Map<String, Integer> m = this.getNormalizedBPMapping();
-		String anrnao = this.inferRnaOClass();
-		return m.get(anrnao);
+		String anrano = null;
+		try {
+			Map<String, Integer> m = this.getNormalizedBPMapping();
+			anrano = this.getRNAOClassUri();
+			return m.get(anrano);
+		} catch (NullPointerException e) {
+			System.out.println("Tried to get: " + anrano);
+			e.printStackTrace();
+		}
+		return null;
 	}
 
 	/**
@@ -640,6 +668,7 @@ public class BasePair extends NucleotideInteraction implements
 		// add all of the classes
 		bpMap.put("http://purl.obolibrary.org/obo/RNAO_0000001", 1);
 		bpMap.put("http://purl.obolibrary.org/obo/RNAO_0000002", 2);
+		bpMap.put("http://purl.obolibrary.org/obo/RNAO_0000003", 16);
 		bpMap.put("http://purl.obolibrary.org/obo/RNAO_0000004", 3);
 		bpMap.put("http://purl.obolibrary.org/obo/RNAO_0000005", 4);
 		bpMap.put("http://purl.obolibrary.org/obo/RNAO_0000006", 5);
