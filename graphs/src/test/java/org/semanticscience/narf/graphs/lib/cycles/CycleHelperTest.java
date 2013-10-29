@@ -35,13 +35,13 @@ import org.semanticscience.narf.graphs.nucleicacid.NucleicAcid;
 import org.semanticscience.narf.structures.parts.Nucleotide;
 
 /**
- * @author  Jose Cruz-Toledo
- *
+ * @author Jose Cruz-Toledo
+ * 
  */
 public class CycleHelperTest {
 	private static String pdbId = "3Q50";
 	private static Set<NucleicAcid> nas;
-	
+
 	/**
 	 * @throws java.lang.Exception
 	 */
@@ -63,16 +63,18 @@ public class CycleHelperTest {
 	}
 
 	@Test
-	public void test(){
-		for(NucleicAcid aNuc: nas){
-			List<Cycle<Nucleotide, InteractionEdge>> mcb = aNuc.getMinimumCycleBasis();
-			for(Cycle<Nucleotide,InteractionEdge> c:mcb){
-				//get all rotations of the cycle c
-				List<Cycle<Nucleotide, InteractionEdge>> c_rotations = CycleHelper.findAllRotations(aNuc, c);
-			
+	public void test() {
+		for (NucleicAcid aNuc : nas) {
+			List<Cycle<Nucleotide, InteractionEdge>> mcb = aNuc
+					.getMinimumCycleBasis();
+			for (Cycle<Nucleotide, InteractionEdge> c : mcb) {
+				// get all rotations of the cycle c
+				List<Cycle<Nucleotide, InteractionEdge>> c_rotations = CycleHelper
+						.findAllRotations(aNuc, c);
+
 				System.out.println(c);
 				System.out.println("rotations:");
-				for(Cycle<Nucleotide,InteractionEdge> aRot: c_rotations){
+				for (Cycle<Nucleotide, InteractionEdge> aRot : c_rotations) {
 					System.out.println(aRot);
 				}
 				int p = 0;

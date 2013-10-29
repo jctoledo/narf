@@ -38,6 +38,7 @@ public class Cycle<V, E> extends GraphPathImpl<V, E> {
 	 * The vertices that compose this cycle
 	 */
 	private LinkedList<V> vertexList;
+	private LinkedList<E> edgeLinkedList;
 
 	/**
 	 * Create a Cycle that starts at startVertex ends at endVertex traversing
@@ -60,7 +61,11 @@ public class Cycle<V, E> extends GraphPathImpl<V, E> {
 			List<E> edgeList, double weight) throws CycleException {
 		super(aGraph, startVertex, endVertex, edgeList, weight);
 		vertexList = new LinkedList<V>();
-		
+		edgeLinkedList = new LinkedList<E>();
+		//add the edges from the edgelist
+		for(E anEdge: edgeList){
+			edgeLinkedList.add(anEdge);
+		}
 		// check that you have at least 3 edges
 		if (edgeList.size() < 3) {
 			throw new CycleException(
@@ -585,5 +590,7 @@ public class Cycle<V, E> extends GraphPathImpl<V, E> {
 				+ ((vertexList == null) ? 0 : vertexList.hashCode());
 		return result;
 	}
-
+	public LinkedList<E> getEdgeLinkedList(){
+		return this.edgeLinkedList;
+	}
 }

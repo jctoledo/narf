@@ -22,6 +22,7 @@ package org.semanticscience.narf.graphs.lib.cycles;
 
 import java.util.ArrayList;
 import java.util.Iterator;
+import java.util.LinkedList;
 import java.util.List;
 
 import org.semanticscience.narf.graphs.lib.cycles.exceptions.CycleException;
@@ -55,17 +56,17 @@ public class CycleHelper {
 		rm.add(aCycle);
 		for (int i = 0; i < rotations; i++) {
 			try {
-				List<InteractionEdge> el = aCycle.getEdgeList();
-				
+				LinkedList<InteractionEdge> el = aCycle.getEdgeLinkedList();
 				// rotate the list
-				el = CycleHelper.rotateCounterClockwise(el);
-				
+				LinkedList<InteractionEdge> new_el = CycleHelper
+						.rotateCounterClockwise(el);
 				// now find a new start and end vertex
-				Nucleotide sv = CycleHelper.findFirstNucleotide(el);
-				Nucleotide ev = CycleHelper.findLastNucleotide(el);
-				//create a new  cycle with the rotated edges
+				Nucleotide sv = CycleHelper.findFirstNucleotide(new_el);
+				Nucleotide ev = CycleHelper.findLastNucleotide(new_el);
+				// create a new cycle with the rotated edges
+				aCycle = null;
 				aCycle = new Cycle<Nucleotide, InteractionEdge>(aNuc, sv, ev,
-						el, el.size());
+						new_el, new_el.size());
 				rm.add(aCycle);
 			} catch (CycleException e) {
 				e.printStackTrace();
@@ -84,12 +85,12 @@ public class CycleHelper {
 	 * @return a rotated edge list that preserves relative positioning of
 	 *         elements
 	 */
-	private static List<InteractionEdge> rotateCounterClockwise(
-			List<InteractionEdge> aSortedList) {
-		List<InteractionEdge> rm = new ArrayList<InteractionEdge>();
-		// remove the first element
-		InteractionEdge f = aSortedList.remove(0);
+	private static LinkedList<InteractionEdge> rotateCounterClockwise(
+			LinkedList<InteractionEdge> aSortedList) {
+		LinkedList<InteractionEdge> rm = new LinkedList<InteractionEdge>();
 		rm = aSortedList;
+		// remove the first element
+		InteractionEdge f = rm.remove(0);
 		// now add it at the end
 		rm.add(f);
 		return rm;
