@@ -63,7 +63,7 @@ public class PhosphodiesterBond extends NucleotideInteraction {
 	 * @return an integer representation of this backbone class. Currently there is only 1 so 1 is always returned
 	 */
 	public Integer getNormalizedBackBone(){
-		return 100;
+		return 17;
 	}
 
 	@Override

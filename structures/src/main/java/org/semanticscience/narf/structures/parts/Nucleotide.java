@@ -266,14 +266,14 @@ public class Nucleotide extends Residue {
 	 */
 	private Map<String, Integer> makeNormalizedNucleotideMap(){
 		Map<String, Integer> rm = new HashMap<String, Integer>();
-		rm.put("A", 201);
-		rm.put("G", 202);
-		rm.put("U", 203);
-		rm.put("C", 204);
-		rm.put("T", 205);
-		rm.put("X", 206);
-		rm.put("Y", 207);
-		rm.put("R", 208);
+		rm.put("A", 21);
+		rm.put("G", 22);
+		rm.put("U", 23);
+		rm.put("C", 24);
+		rm.put("T", 25);
+		rm.put("X", 26);
+		rm.put("Y", 27);
+		rm.put("R", 28);
 		return rm;
 	}
 	

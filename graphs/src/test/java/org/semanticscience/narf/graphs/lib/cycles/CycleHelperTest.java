@@ -67,12 +67,12 @@ public class CycleHelperTest {
 		for (NucleicAcid aNuc : nas) {
 			List<Cycle<Nucleotide, InteractionEdge>> mcb = aNuc
 					.getMinimumCycleBasis();
-			for (Cycle<Nucleotide, InteractionEdge> c : mcb) {
+			for (Cycle<Nucleotide, InteractionEdge> aCycle : mcb) {
 				// get all rotations of the cycle c
-				List<Cycle<Nucleotide, InteractionEdge>> c_rotations = CycleHelper
-						.findAllRotations(aNuc, c);
+				List<Cycle<Nucleotide, InteractionEdge>> rotatedCycles = CycleHelper
+						.findAllRotations(aNuc, aCycle);
 				
-				for (Cycle<Nucleotide, InteractionEdge> rot:c_rotations){
+				for (Cycle<Nucleotide, InteractionEdge> rot:rotatedCycles){
 					Double i = CycleHelper.normalizeCycle(rot);
 					System.out.println("**************: "+i);
 				}
