@@ -24,7 +24,9 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
+import org.semanticscience.narf.graphs.lib.cycles.exceptions.CycleException;
 import org.semanticscience.narf.graphs.nucleicacid.InteractionEdge;
+import org.semanticscience.narf.graphs.nucleicacid.NucleicAcid;
 import org.semanticscience.narf.structures.parts.Nucleotide;
 
 /**
@@ -36,6 +38,44 @@ import org.semanticscience.narf.structures.parts.Nucleotide;
 public class CycleHelper {
 
 	/**
+	 * Calculate all counter clockwise rotations of the given cycle and return
+	 * them as a list of cycles
+	 * 
+	 * @param aCycle
+	 *            a cycle for which you wish to find all possible rotations
+	 * @return a list of cycles containing all non identical rotations of the
+	 *         parameter cycle
+	 */
+	public static List<Cycle<Nucleotide, InteractionEdge>> findAllRotations(
+			NucleicAcid aNuc, Cycle<Nucleotide, InteractionEdge> aCycle) {
+		List<Cycle<Nucleotide, InteractionEdge>> rm = new ArrayList<Cycle<Nucleotide, InteractionEdge>>();
+		// find out how many times we need to rotate this cycle
+		int rotations = aCycle.size() - 1;
+		// add the parameter cycle
+		rm.add(aCycle);
+		for (int i = 0; i < rotations; i++) {
+			try {
+				List<InteractionEdge> el = aCycle.getEdgeList();
+				
+				// rotate the list
+				el = CycleHelper.rotateCounterClockwise(el);
+				
+				// now find a new start and end vertex
+				Nucleotide sv = CycleHelper.findFirstNucleotide(el);
+				Nucleotide ev = CycleHelper.findLastNucleotide(el);
+				//create a new  cycle with the rotated edges
+				aCycle = new Cycle<Nucleotide, InteractionEdge>(aNuc, sv, ev,
+						el, el.size());
+				rm.add(aCycle);
+			} catch (CycleException e) {
+				e.printStackTrace();
+			}
+		}
+
+		return rm;
+	}
+
+	/**
 	 * Rotate a list counterclockwise by one step. relative positioning of
 	 * elements remains the same for example: [a,b,c] -> [b,a,c]
 	 * 
@@ -44,13 +84,13 @@ public class CycleHelper {
 	 * @return a rotated edge list that preserves relative positioning of
 	 *         elements
 	 */
-	public static List<InteractionEdge> rotateCounterClockwise(
+	private static List<InteractionEdge> rotateCounterClockwise(
 			List<InteractionEdge> aSortedList) {
 		List<InteractionEdge> rm = new ArrayList<InteractionEdge>();
-		//remove the first element
+		// remove the first element
 		InteractionEdge f = aSortedList.remove(0);
 		rm = aSortedList;
-		//now add it at the end 
+		// now add it at the end
 		rm.add(f);
 		return rm;
 	}
@@ -64,9 +104,9 @@ public class CycleHelper {
 		Nucleotide f2 = secondEdge.getFirstNucleotide();
 		Nucleotide s2 = secondEdge.getSecondNucleotide();
 		if (f.equals(f2) || f.equals(s2)) {
-			return f;
-		} else if (s.equals(f2) || s.equals(s2)) {
 			return s;
+		} else if (s.equals(f2) || s.equals(s2)) {
+			return f;
 		}
 		return null;
 	}
@@ -79,10 +119,10 @@ public class CycleHelper {
 		Nucleotide s = firstEdge.getSecondNucleotide();
 		Nucleotide f2 = lastEdge.getFirstNucleotide();
 		Nucleotide s2 = lastEdge.getSecondNucleotide();
-		if (f.equals(f2) || f.equals(s2)) {
-			return f;
-		} else if (s.equals(f2) || s.equals(s2)) {
-			return s;
+		if (f2.equals(f) || f2.equals(s)) {
+			return s2;
+		} else if (s2.equals(f) || s2.equals(s)) {
+			return f2;
 		}
 		return null;
 	}
