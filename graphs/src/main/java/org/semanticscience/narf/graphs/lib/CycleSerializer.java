@@ -21,13 +21,16 @@
 package org.semanticscience.narf.graphs.lib;
 
 import java.io.IOException;
+import java.math.BigDecimal;
 import java.util.List;
 import java.util.Random;
 import java.util.Set;
 
 import org.apache.commons.io.FileUtils;
 import org.semanticscience.narf.graphs.lib.cycles.Cycle;
+import org.semanticscience.narf.graphs.lib.cycles.CycleHelper;
 import org.semanticscience.narf.graphs.nucleicacid.InteractionEdge;
+import org.semanticscience.narf.graphs.nucleicacid.NucleicAcid;
 import org.semanticscience.narf.structures.interactions.BasePair;
 import org.semanticscience.narf.structures.interactions.NucleotideInteraction;
 import org.semanticscience.narf.structures.interactions.PhosphodiesterBond;
@@ -52,9 +55,11 @@ public class CycleSerializer {
 	 *            the list of cycles computed from a pdb id
 	 * @return a TSV string representation of the list of cycles
 	 */
-	public static String createNarfTsv(String aPdbId, List<Cycle<Nucleotide, InteractionEdge>> aCycleList){
+	public static String createNarfTsv(String aPdbId, NucleicAcid aNucleicAcid,List<Cycle<Nucleotide, InteractionEdge>> aCycleList){
 		String rm = null;
 		for (Cycle<Nucleotide, InteractionEdge> cycle : aCycleList) {
+			//get the  min normalization number
+			BigDecimal min_norm = CycleHelper.findMinmalNormalization(aNucleicAcid, cycle);
 			int cLen = cycle.size();
 			String sV = cycle.getStartVertex()
 					.getResidueIdentifier()
@@ -90,7 +95,7 @@ public class CycleSerializer {
 					vertexSummary.length() - 2);
 			String data = aPdbId + "\t" + cLen + "\t" + sV + "\t"
 					+ eV + "\t" + edgeSummary + "\t" + bpSummary
-					+ "\t" + vertexSummary + "\n";
+					+ "\t" + vertexSummary +"\ta"+min_norm+ "\n";
 			rm += data;
 		}//for		
 		return rm;

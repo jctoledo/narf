@@ -20,6 +20,7 @@
  */
 package org.semanticscience.narf.graphs.lib.cycles;
 
+import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.LinkedList;
@@ -35,6 +36,7 @@ import org.semanticscience.narf.structures.interactions.NucleotideInteraction;
 import org.semanticscience.narf.structures.interactions.PhosphodiesterBond;
 import org.semanticscience.narf.structures.parts.Nucleotide;
 
+
 /**
  * This class converts a SimpleCycle from CDK into a Cycle<V,E>
  * 
@@ -44,6 +46,33 @@ import org.semanticscience.narf.structures.parts.Nucleotide;
 public class CycleHelper {
 
 	/**
+	 * For a given cycle, compute all counter-clockwise 1-step unique rotations
+	 * of aCycle, and return the double representation of the smallest one
+	 * 
+	 * @param aNucleicAcid
+	 * @param aCycle
+	 * @return
+	 */
+	public static BigDecimal findMinmalNormalization(NucleicAcid aNucleicAcid,
+			Cycle<Nucleotide, InteractionEdge> aCycle) {
+		// find all rotations of the parameter cycle
+		List<Cycle<Nucleotide, InteractionEdge>> rotatedCycles = CycleHelper
+				.findAllRotations(aNucleicAcid, aCycle);
+		// now find the smallest double
+		BigDecimal min = BigDecimal.valueOf(Double.MAX_VALUE);
+		for (Cycle<Nucleotide, InteractionEdge> rot : rotatedCycles) {
+			BigDecimal ad = CycleHelper.normalizeCycle(rot);
+			
+			//if (ad < min) {
+			if (ad.compareTo(min) < 0) {
+				min = ad;
+			}
+			
+		}
+		return min;
+	}
+ 
+	/**
 	 * Make a Double representation of a Cycle<Nucleotide, InteractionEdge>
 	 * 
 	 * @param ac
@@ -51,7 +80,7 @@ public class CycleHelper {
 	 * @return a double representation of the cycle that includes the following
 	 *         features: Nucleotides, backbones and base pairs only
 	 */
-	public static Double normalizeCycle(Cycle<Nucleotide, InteractionEdge> ac) {
+	public static BigDecimal normalizeCycle(Cycle<Nucleotide, InteractionEdge> ac) {
 		List<Nucleotide> verts = ac.getVertexList();
 		LinkedList<Integer> tmpints = new LinkedList<Integer>();
 		for (Nucleotide aNuc : verts) {
@@ -73,22 +102,21 @@ public class CycleHelper {
 							.getNormalizedBackBone();
 					tmpints.add(pdb);
 				}
-				break;
+				//break;
 			}
 		}
-
 		String intStr = "";
 		for (Integer anInt : tmpints) {
-
 			intStr += anInt;
 		}
-		Double rm = null;
+		
+		BigDecimal d= null;
 		try {
-			rm = Double.parseDouble(intStr);
+		  d = new BigDecimal(intStr);
 		} catch (NumberFormatException e) {
 			e.printStackTrace();
 		}
-		return rm;
+		return d;
 	}
 
 	/**
@@ -121,6 +149,7 @@ public class CycleHelper {
 				aCycle = new Cycle<Nucleotide, InteractionEdge>(aNuc, sv, ev,
 						new_el, new_el.size());
 				rm.add(aCycle);
+				
 			} catch (CycleException e) {
 				e.printStackTrace();
 			}

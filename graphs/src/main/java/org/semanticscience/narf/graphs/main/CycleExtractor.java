@@ -99,10 +99,8 @@ public class CycleExtractor {
 				// only one model
 				if (nucs.size() == 1) {
 					for (NucleicAcid aNuc : nucs) {
-						FundamentalCycleBasis<Nucleotide, InteractionEdge> cb = new FundamentalCycleBasis<Nucleotide, InteractionEdge>(
-								aNuc);
-						List<Cycle<Nucleotide, InteractionEdge>> ccb = cb
-								.getCycleBasis();
+						
+						List<Cycle<Nucleotide, InteractionEdge>> ccb = aNuc.getMinimumCycleBasis();
 						// the pdbid
 						String aPdbId = CycleExtractor
 								.getPdbIdFromFilePath(aFilePath);
@@ -119,7 +117,7 @@ public class CycleExtractor {
 							m.write(fop);
 							fop.close();
 						} else if (format.equals("tsv")) {
-							String tsv = CycleSerializer.createNarfTsv(aPdbId,
+							String tsv = CycleSerializer.createNarfTsv(aPdbId,aNuc,
 									ccb);
 							File outputFile = new File(
 									outputDir.getAbsolutePath() + "/" + aPdbId

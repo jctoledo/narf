@@ -21,6 +21,7 @@
 package org.semanticscience.narf.graphs.lib.cycles;
 
 import java.io.File;
+import java.math.BigDecimal;
 import java.net.URL;
 import java.util.List;
 import java.util.Set;
@@ -39,7 +40,7 @@ import org.semanticscience.narf.structures.parts.Nucleotide;
  * 
  */
 public class CycleHelperTest {
-	private static String pdbId = "3Q50";
+	private static String pdbId = "1Y26";
 	private static Set<NucleicAcid> nas;
 	/**
 	 * @throws java.lang.Exception
@@ -67,15 +68,18 @@ public class CycleHelperTest {
 		for (NucleicAcid aNuc : nas) {
 			List<Cycle<Nucleotide, InteractionEdge>> mcb = aNuc
 					.getMinimumCycleBasis();
+			System.out.println("Total cycles in mcb: "+mcb.size());
 			for (Cycle<Nucleotide, InteractionEdge> aCycle : mcb) {
+				BigDecimal d = CycleHelper.findMinmalNormalization(aNuc, aCycle);
 				// get all rotations of the cycle c
 				List<Cycle<Nucleotide, InteractionEdge>> rotatedCycles = CycleHelper
 						.findAllRotations(aNuc, aCycle);
-				
 				for (Cycle<Nucleotide, InteractionEdge> rot:rotatedCycles){
-					Double i = CycleHelper.normalizeCycle(rot);
-					System.out.println("**************: "+i);
+					BigDecimal i = CycleHelper.normalizeCycle(rot);
+					System.out.println("norm: "+i);
 				}
+				System.out.println("min: "+d);
+				System.out.println("*****************");
 			}
 		}
 	}
