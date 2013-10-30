@@ -56,7 +56,7 @@ public class CycleSerializer {
 	 * @return a TSV string representation of the list of cycles
 	 */
 	public static String createNarfTsv(String aPdbId, NucleicAcid aNucleicAcid,List<Cycle<Nucleotide, InteractionEdge>> aCycleList){
-		String rm = null;
+		String rm = "";
 		for (Cycle<Nucleotide, InteractionEdge> cycle : aCycleList) {
 			//get the  min normalization number
 			BigDecimal min_norm = CycleHelper.findMinmalNormalization(aNucleicAcid, cycle);
@@ -111,7 +111,7 @@ public class CycleSerializer {
 	 * @return a jena model that completely describes these cycles
 	 * @throws IOException
 	 */
-	public static Model createNarfModel(String aPdbId,
+	public static Model createNarfModel(String aPdbId, NucleicAcid aNucleicAcid,
 			List<Cycle<Nucleotide, InteractionEdge>> acycleList)
 			throws IOException {
 		Model rm = ModelFactory.createDefaultModel();
@@ -136,6 +136,14 @@ public class CycleSerializer {
 			sizeRes.addLiteral(Vocab.hasValue, (double) acyc.size());
 			// connect the sizeRes to the cycleRes
 			cycleRes.addProperty(Vocab.hasAttribute, sizeRes);
+			//add the normalized string attribute
+			Resource norm_str = rm.createResource(Vocab.narf_resource+CycleSerializer.MD5("norm_string"+randp));
+			//type it
+			norm_str.addProperty(Vocab.rdftype, Vocab.narf_normalized_string);
+			//add the value
+			norm_str.addLiteral(Vocab.hasValue, "a"+CycleHelper.findMinmalNormalization(aNucleicAcid, acyc));
+			// connect norm_str back to the cycleRes
+			cycleRes.addProperty(Vocab.hasAttribute, norm_str);
 			// get the interaction edges
 			List<InteractionEdge> edges = acyc.getEdgeList();
 			for (InteractionEdge anEdge : edges) {
@@ -290,6 +298,7 @@ public class CycleSerializer {
 				.createResource(narf_vocabulary + "phosphodiester_bond");
 		public static Resource narf_cycle_size = m.createResource(narf_vocabulary
 				+ "cycle_size");
+		public static Resource narf_normalized_string = m.createResource(narf_vocabulary + "cycle_normalized_string");
 
 	}
 }

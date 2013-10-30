@@ -40,6 +40,7 @@ import org.apache.commons.io.FileUtils;
 import org.semanticscience.narf.graphs.lib.CycleSerializer;
 import org.semanticscience.narf.graphs.lib.cycles.Cycle;
 import org.semanticscience.narf.graphs.lib.cycles.FundamentalCycleBasis;
+import org.semanticscience.narf.graphs.lib.cycles.exceptions.CycleException;
 import org.semanticscience.narf.graphs.nucleicacid.ExtractedNucleicAcid;
 import org.semanticscience.narf.graphs.nucleicacid.InteractionEdge;
 import org.semanticscience.narf.graphs.nucleicacid.NucleicAcid;
@@ -96,33 +97,39 @@ public class CycleExtractor {
 					inputDir, "pdb");
 			for (String aFilePath : inputFiles) {
 				Set<NucleicAcid> nucs = CycleExtractor.runX3DNADSSR(aFilePath);
-				// only one model
-				if (nucs.size() == 1) {
-					for (NucleicAcid aNuc : nucs) {
-						
-						List<Cycle<Nucleotide, InteractionEdge>> ccb = aNuc.getMinimumCycleBasis();
-						// the pdbid
-						String aPdbId = CycleExtractor
-								.getPdbIdFromFilePath(aFilePath);
-						if (format.equals("RDF")) {
-							Model m = CycleSerializer.createNarfModel(aPdbId,
-									ccb);
-							// make an output file
-							File outputFile = new File(
-									outputDir.getAbsolutePath() + "/" + aPdbId
-											+ "_cycles.rdf");
-							// create a fop
-							FileOutputStream fop = new FileOutputStream(
-									outputFile);
-							m.write(fop);
-							fop.close();
-						} else if (format.equals("tsv")) {
-							String tsv = CycleSerializer.createNarfTsv(aPdbId,aNuc,
-									ccb);
-							File outputFile = new File(
-									outputDir.getAbsolutePath() + "/" + aPdbId
-											+ "_cycles.tsv");
-							FileUtils.writeStringToFile(outputFile, tsv);
+				if (nucs == null || nucs.size() == 0) {
+					throw new CycleException("Could not extract cycles from :"
+							+ aFilePath);
+				} else {
+					// only one model
+					if (nucs.size() == 1) {
+						for (NucleicAcid aNuc : nucs) {
+
+							List<Cycle<Nucleotide, InteractionEdge>> ccb = aNuc
+									.getMinimumCycleBasis();
+							// the pdbid
+							String aPdbId = CycleExtractor
+									.getPdbIdFromFilePath(aFilePath);
+							if (format.equals("RDF")) {
+								Model m = CycleSerializer.createNarfModel(
+										aPdbId,aNuc, ccb);
+								// make an output file
+								File outputFile = new File(
+										outputDir.getAbsolutePath() + "/"
+												+ aPdbId + "_cycles.rdf");
+								// create a fop
+								FileOutputStream fop = new FileOutputStream(
+										outputFile);
+								m.write(fop);
+								fop.close();
+							} else if (format.equals("tsv")) {
+								String tsv = CycleSerializer.createNarfTsv(
+										aPdbId, aNuc, ccb);
+								File outputFile = new File(
+										outputDir.getAbsolutePath() + "/"
+												+ aPdbId + "_cycles.tsv");
+								FileUtils.writeStringToFile(outputFile, tsv);
+							}
 						}
 					}
 				}

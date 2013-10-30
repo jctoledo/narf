@@ -106,11 +106,11 @@ public class CycleSerializerTest {
 		cycleBasisList = null;
 	}
 
-	@Test
+	/*@Test
 	public void testRDFizer() throws IOException {
 		List<Cycle<Nucleotide, InteractionEdge>> cycleBasisList = fcb.getCycleBasis();
 		Model m = CycleSerializer.createNarfModel(pdbId, cycleBasisList);
 		m.write(System.out);	
-	}
+	}*/
 
 }

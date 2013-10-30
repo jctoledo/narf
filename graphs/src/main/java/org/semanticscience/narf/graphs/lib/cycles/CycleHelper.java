@@ -86,7 +86,6 @@ public class CycleHelper {
 		for (Nucleotide aNuc : verts) {
 			try{
 				int nn = aNuc.getNormalizedNucleotide();
-				
 				tmpints.add(nn);
 			}catch(NullPointerException e){
 				System.out.println("offending nucleotide: "+ aNuc);
