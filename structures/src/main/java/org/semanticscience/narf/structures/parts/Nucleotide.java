@@ -153,6 +153,8 @@ public class Nucleotide extends Residue {
 				aPuckerAtom, aPuckerQuality);
 		pdbId = aPdbId;
 		chainId = aChainId;
+		normalizedNucleotideMapping = this.makeNormalizedNucleotideMap();
+
 	}
 
 	/**
@@ -274,6 +276,7 @@ public class Nucleotide extends Residue {
 		rm.put("X", 26);
 		rm.put("Y", 27);
 		rm.put("R", 28);
+		rm.put("GTP", 30);
 		return rm;
 	}
 	

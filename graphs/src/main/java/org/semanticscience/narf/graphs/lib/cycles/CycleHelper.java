@@ -84,8 +84,15 @@ public class CycleHelper {
 		List<Nucleotide> verts = ac.getVertexList();
 		LinkedList<Integer> tmpints = new LinkedList<Integer>();
 		for (Nucleotide aNuc : verts) {
-			int nn = aNuc.getNormalizedNucleotide();
-			tmpints.add(nn);
+			try{
+				int nn = aNuc.getNormalizedNucleotide();
+				
+				tmpints.add(nn);
+			}catch(NullPointerException e){
+				System.out.println("offending nucleotide: "+ aNuc);
+				e.printStackTrace();
+				System.exit(1);
+			}
 			InteractionEdge ie = ac.getNextEdge(aNuc);
 			Set<NucleotideInteraction> nis = ie.getInteractions();
 			for (NucleotideInteraction aNi : nis) {
