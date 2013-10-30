@@ -45,7 +45,7 @@ public abstract class Residue implements Comparable<Residue>{
 	protected Residue(int aResiduePosition, String aResidueIdentifier)
 			throws InvalidResidueException {
 		// check for length of residue identifier
-		if (aResiduePosition < 1) {
+		if (aResiduePosition < 0) {
 			throw new InvalidResidueException(
 					"The provided residue position : " + aResiduePosition
 							+ " may not be negative.");
