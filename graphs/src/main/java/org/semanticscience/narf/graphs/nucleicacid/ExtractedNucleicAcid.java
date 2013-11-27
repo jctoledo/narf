@@ -238,9 +238,14 @@ public class ExtractedNucleicAcid extends NucleicAcid implements
 	 *             if there is a problem with the pdb file
 	 */
 	public static Set<NucleicAcid> x3dnaDssr(File aPdbFile)
-			throws FileNotFoundException, IOException, InvalidResidueException {
+			throws FileNotFoundException, IOException {
+		try{
 		ExtractedTertiaryStructureFactory x3dnaDssr = new X3DnaDssr();
 		return annotateStructures(aPdbFile, x3dnaDssr);
+		}catch(InvalidResidueException e ){
+			System.out.println("Check File : "+ aPdbFile);
+		}
+		return null;
 	}
 
 	/**

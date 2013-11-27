@@ -149,9 +149,7 @@ public class CycleExtractor {
 			e.printStackTrace();
 		} catch (IOException e) {
 			e.printStackTrace();
-		} catch (InvalidResidueException e) {
-			e.printStackTrace();
-		}
+		} 
 		return null;
 	}
 
