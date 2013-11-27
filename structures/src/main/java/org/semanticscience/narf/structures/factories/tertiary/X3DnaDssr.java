@@ -91,6 +91,7 @@ public class X3DnaDssr extends ExtractedTertiaryStructureFactory {
 		// key => chain, value(k => position, v=>nucleotide)
 		Map<String, Map<Integer, Nucleotide>> nucleotideMapping = PdbHelper
 				.getNucleotideMapping(aPdbFile);
+		
 		if (nucleotideMapping.size() == 0) {
 			throw new IOException(
 					"invalid nucleotide mapping! Sorry, but you failed!");

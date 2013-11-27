@@ -125,19 +125,29 @@ public class ExtractedNucleicAcid extends NucleicAcid implements
 	private static Set<NucleicAcid> annotateStructures(
 			File aPdbFile,
 			ExtractedTertiaryStructureFactory anExtractedTertiaryStructureFactory)
-			throws FileNotFoundException, IOException, InvalidResidueException {
+			throws FileNotFoundException, IOException {
 
 		int modelNumber = 1;
 
 		Set<NucleicAcid> nucleicAcids = new LinkedHashSet<NucleicAcid>();
-		for (ExtractedTertiaryStructure aStructure : anExtractedTertiaryStructureFactory
-				.getStructures(aPdbFile)) {
-			nucleicAcids.add(new ExtractedNucleicAcid(
-					anExtractedTertiaryStructureFactory.getProgramName(),
-					anExtractedTertiaryStructureFactory.getProgramVersion(),
-					aPdbFile, modelNumber++, aStructure));
+		
+		try{
+			for (ExtractedTertiaryStructure aStructure : anExtractedTertiaryStructureFactory
+					.getStructures(aPdbFile)) {
+				nucleicAcids
+						.add(new ExtractedNucleicAcid(
+								anExtractedTertiaryStructureFactory
+										.getProgramName(),
+								anExtractedTertiaryStructureFactory
+										.getProgramVersion(), aPdbFile,
+								modelNumber++, aStructure));
 
+			}
+		}catch(InvalidResidueException e){
+			System.out.println("*********");
+			e.printStackTrace();
 		}
+		
 		return nucleicAcids;
 	}
 
@@ -239,13 +249,10 @@ public class ExtractedNucleicAcid extends NucleicAcid implements
 	 */
 	public static Set<NucleicAcid> x3dnaDssr(File aPdbFile)
 			throws FileNotFoundException, IOException {
-		try{
+
 		ExtractedTertiaryStructureFactory x3dnaDssr = new X3DnaDssr();
 		return annotateStructures(aPdbFile, x3dnaDssr);
-		}catch(InvalidResidueException e ){
-			System.out.println("Check File : "+ aPdbFile);
-		}
-		return null;
+
 	}
 
 	/**

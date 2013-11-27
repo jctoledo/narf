@@ -101,11 +101,19 @@ public class PdbHelper {
 					residueCounter = startingPositions.get(chain);
 				}
 				for (int i = 4; i < values.length; i++) {
-					returnMe.get(chain).put(
-							residueCounter,
-							new Nucleotide(aPdbId, chain, residueCounter,
-									values[i], null, null, null));
-					residueCounter++;
+					Nucleotide an = null;
+					try {
+						an = new Nucleotide(aPdbId, chain, residueCounter,
+								values[i], null, null, null);
+					} catch (InvalidResidueException e) {
+						System.out.println("PLEASE Check File: "
+								+ aFile.getName());
+						return null;
+					}
+					if (an != null) {
+						returnMe.get(chain).put(residueCounter, an);
+						residueCounter++;
+					}
 				}
 			}
 		}

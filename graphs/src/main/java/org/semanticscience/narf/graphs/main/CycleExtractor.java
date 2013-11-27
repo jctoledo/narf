@@ -54,7 +54,7 @@ import com.hp.hpl.jena.rdf.model.Model;
  * 
  */
 public class CycleExtractor {
-	public static void main(String[] args) throws Exception {
+	public static void main(String[] args)  {
 		Options options = createOptions();
 		CommandLineParser p = createCliParser();
 		String inputdirStr = null;
@@ -138,6 +138,10 @@ public class CycleExtractor {
 			System.out.println("Unable to parse specified options.");
 			printUsage();
 			System.exit(1);
+		} catch (CycleException e) {
+			e.printStackTrace();
+		} catch (IOException e) {
+			e.printStackTrace();
 		}
 	}
 
