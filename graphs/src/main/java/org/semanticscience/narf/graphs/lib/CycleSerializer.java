@@ -95,7 +95,7 @@ public class CycleSerializer {
 					vertexSummary.length() - 2);
 			String data = aPdbId + "\t" + cLen + "\t" + sV + "\t"
 					+ eV + "\t" + edgeSummary + "\t" + bpSummary
-					+ "\t" + vertexSummary +"\ta"+min_norm+ "\n";
+					+ "\t" + vertexSummary +"\t#"+min_norm+ "\n";
 			rm += data;
 		}//for		
 		return rm;
@@ -141,7 +141,7 @@ public class CycleSerializer {
 			//type it
 			norm_str.addProperty(Vocab.rdftype, Vocab.narf_normalized_string);
 			//add the value
-			norm_str.addLiteral(Vocab.hasValue, "a"+CycleHelper.findMinmalNormalization(aNucleicAcid, acyc));
+			norm_str.addLiteral(Vocab.hasValue, "#"+CycleHelper.findMinmalNormalization(aNucleicAcid, acyc).toString());
 			// connect norm_str back to the cycleRes
 			cycleRes.addProperty(Vocab.hasAttribute, norm_str);
 			// get the interaction edges

@@ -77,7 +77,7 @@ public class CycleHelper {
 	 * 
 	 * @param ac
 	 *            a cycle
-	 * @return a double representation of the cycle that includes the following
+	 * @return a string representation of the cycle that includes the following
 	 *         features: Nucleotides, backbones and base pairs only
 	 */
 	public static BigDecimal normalizeCycle(Cycle<Nucleotide, InteractionEdge> ac) {
