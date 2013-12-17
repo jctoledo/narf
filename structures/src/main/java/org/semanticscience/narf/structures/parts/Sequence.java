@@ -264,7 +264,7 @@ public class Sequence implements Iterable<Nucleotide> {
 	 * @since 1.6
 	 */
 	private boolean checkStringSequence(String aSequence) {
-		Pattern p = Pattern.compile("[ACGTURYKMSWBDHVNX-]+");
+		Pattern p = Pattern.compile("[AaCcGgTtUuRrYyKkMmSsWwBbDdHhVvNnXx-]+");
 		Matcher m = p.matcher(aSequence);
 		if (m.matches()) {
 			return true;
