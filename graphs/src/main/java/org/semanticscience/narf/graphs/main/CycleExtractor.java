@@ -44,8 +44,12 @@ import org.semanticscience.narf.graphs.lib.cycles.exceptions.CycleException;
 import org.semanticscience.narf.graphs.nucleicacid.ExtractedNucleicAcid;
 import org.semanticscience.narf.graphs.nucleicacid.InteractionEdge;
 import org.semanticscience.narf.graphs.nucleicacid.NucleicAcid;
+import org.semanticscience.narf.graphs.nucleicacid.PredictedNucleicAcid;
+import org.semanticscience.narf.structures.lib.exceptions.InvalidDotBracketNotationException;
 import org.semanticscience.narf.structures.lib.exceptions.InvalidResidueException;
+import org.semanticscience.narf.structures.lib.exceptions.InvalidSequenceException;
 import org.semanticscience.narf.structures.parts.Nucleotide;
+import org.semanticscience.narf.structures.parts.Sequence;
 
 import com.hp.hpl.jena.rdf.model.Model;
 
@@ -148,7 +152,10 @@ public class CycleExtractor {
 						}
 					}
 				}
-			}//if inputPDBDir
+			}else if(inputSeqFile != null){
+				
+			}
+			
 		} catch (ParseException e) {
 			System.out.println("Unable to parse specified options.");
 			printUsage();
@@ -170,6 +177,35 @@ public class CycleExtractor {
 			e.printStackTrace();
 		}
 		return null;
+	}
+	
+	/**
+	 * Runs Mfold on the given sequence string
+	 * @param aSequence a string of valid sequence characters
+	 *  which should only contain these characters: [AaCcGgTtUuRrYyKkMmSsWwBbDdHhVvNnXx-]+
+	 * @return a set of Nucleic acids
+	 */
+	private static Set<NucleicAcid> runMfold(String aSequence){
+		Set<NucleicAcid> rm = null;
+			try {
+				Sequence s = new Sequence(aSequence);
+				rm = PredictedNucleicAcid.rnafold(s);
+				return rm;
+			} catch (InvalidSequenceException e) {
+				System.out.println("invalid sequence: "+aSequence);
+				return null;
+			} catch (InvalidResidueException e) {
+				System.out.println("invalid sequence: "+aSequence);
+				return null;
+			} catch (InvalidDotBracketNotationException e) {
+				e.printStackTrace();
+				return null;
+			} catch (IOException e) {
+				e.printStackTrace();
+				return null;
+			}
+		
+		return rm;
 	}
 
 	/**
