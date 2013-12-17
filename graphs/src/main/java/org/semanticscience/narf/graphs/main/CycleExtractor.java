@@ -204,8 +204,6 @@ public class CycleExtractor {
 				e.printStackTrace();
 				return null;
 			}
-		
-		return rm;
 	}
 
 	/**

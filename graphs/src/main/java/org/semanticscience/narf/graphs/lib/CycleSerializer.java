@@ -111,6 +111,7 @@ public class CycleSerializer {
 	 * @return a jena model that completely describes these cycles
 	 * @throws IOException
 	 */
+	//TODO: deal with provenance of program used
 	public static Model createNarfModel(String aPdbId, NucleicAcid aNucleicAcid,
 			List<Cycle<Nucleotide, InteractionEdge>> acycleList)
 			throws IOException {
