@@ -78,15 +78,16 @@ public class CycleExtractor {
 
 			if (c.hasOption("inputSeqFile")) {
 				inputSeqFileStr = c.getOptionValue("inputSeqFile");
-				try {
-					inputSeqFile = new File(inputSeqFileStr);
-				} catch (NullPointerException e) {
-					System.out.println("Invalid input sequence file!");
-					printUsage();
-					System.exit(1);
-				}
+				inputSeqFile = new File(inputSeqFileStr);
 			}
-
+			// check that either the input sequence file or the input PDB
+			// directory are specified
+			if (inputSeqFile == null && inputPDBDir == null) {
+				System.out
+						.println("Either an input PDB directory or an input sequence file must be specified!");
+				printUsage();
+				System.exit(1);
+			}
 			if (c.hasOption("outputDir")) {
 				outputdirStr = c.getOptionValue("outputDir");
 				outputDir = new File(outputdirStr);
@@ -102,48 +103,52 @@ public class CycleExtractor {
 				printUsage();
 				System.exit(1);
 			}
-			// from the input directory get a list of input files<String>
-			List<String> inputFiles = CycleExtractor.getFilePathsFromDir(
-					inputPDBDir, "pdb");
-			for (String aFilePath : inputFiles) {
-				Set<NucleicAcid> nucs = CycleExtractor.runX3DNADSSR(aFilePath);
-				if (nucs == null || nucs.size() == 0) {
-					throw new CycleException("Could not extract cycles from :"
-							+ aFilePath);
-				} else {
-					// only one model
-					if (nucs.size() == 1) {
-						for (NucleicAcid aNuc : nucs) {
+			if (inputPDBDir != null) {
+				// from the input directory get a list of input files<String>
+				List<String> inputFiles = CycleExtractor.getFilePathsFromDir(
+						inputPDBDir, "pdb");
+				for (String aFilePath : inputFiles) {
+					Set<NucleicAcid> nucs = CycleExtractor
+							.runX3DNADSSR(aFilePath);
+					if (nucs == null || nucs.size() == 0) {
+						throw new CycleException(
+								"Could not extract cycles from :" + aFilePath);
+					} else {
+						// only one model
+						if (nucs.size() == 1) {
+							for (NucleicAcid aNuc : nucs) {
 
-							List<Cycle<Nucleotide, InteractionEdge>> ccb = aNuc
-									.getMinimumCycleBasis();
-							// the pdbid
-							String aPdbId = CycleExtractor
-									.getPdbIdFromFilePath(aFilePath);
-							if (format.equals("RDF")) {
-								Model m = CycleSerializer.createNarfModel(
-										aPdbId, aNuc, ccb);
-								// make an output file
-								File outputFile = new File(
-										outputDir.getAbsolutePath() + "/"
-												+ aPdbId + "_cycles.rdf");
-								// create a fop
-								FileOutputStream fop = new FileOutputStream(
-										outputFile);
-								m.write(fop);
-								fop.close();
-							} else if (format.equals("tsv")) {
-								String tsv = CycleSerializer.createNarfTsv(
-										aPdbId, aNuc, ccb);
-								File outputFile = new File(
-										outputDir.getAbsolutePath() + "/"
-												+ aPdbId + "_cycles.tsv");
-								FileUtils.writeStringToFile(outputFile, tsv);
+								List<Cycle<Nucleotide, InteractionEdge>> ccb = aNuc
+										.getMinimumCycleBasis();
+								// the pdbid
+								String aPdbId = CycleExtractor
+										.getPdbIdFromFilePath(aFilePath);
+								if (format.equals("RDF")) {
+									Model m = CycleSerializer.createNarfModel(
+											aPdbId, aNuc, ccb);
+									// make an output file
+									File outputFile = new File(
+											outputDir.getAbsolutePath() + "/"
+													+ aPdbId + "_cycles.rdf");
+									// create a fop
+									FileOutputStream fop = new FileOutputStream(
+											outputFile);
+									m.write(fop);
+									fop.close();
+								} else if (format.equals("tsv")) {
+									String tsv = CycleSerializer.createNarfTsv(
+											aPdbId, aNuc, ccb);
+									File outputFile = new File(
+											outputDir.getAbsolutePath() + "/"
+													+ aPdbId + "_cycles.tsv");
+									FileUtils
+											.writeStringToFile(outputFile, tsv);
+								}
 							}
 						}
 					}
 				}
-			}
+			}//if inputPDBDir
 		} catch (ParseException e) {
 			System.out.println("Unable to parse specified options.");
 			printUsage();
