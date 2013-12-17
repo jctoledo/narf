@@ -153,7 +153,12 @@ public class CycleExtractor {
 					}
 				}
 			}else if(inputSeqFile != null){
-				
+				//open the file
+				//foreach line in the file
+					//get a sequence 
+					//call runMfold
+					//get the MCB of each prediction
+					//store the output as RDF
 			}
 			
 		} catch (ParseException e) {
