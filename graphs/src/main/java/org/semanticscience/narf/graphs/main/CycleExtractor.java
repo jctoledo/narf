@@ -54,11 +54,13 @@ import com.hp.hpl.jena.rdf.model.Model;
  * 
  */
 public class CycleExtractor {
-	public static void main(String[] args)  {
+	public static void main(String[] args) {
 		Options options = createOptions();
 		CommandLineParser p = createCliParser();
-		String inputdirStr = null;
-		File inputDir = null;
+		String inputPDBDirStr = null;
+		String inputSeqFileStr = null;
+		File inputSeqFile = null;
+		File inputPDBDir = null;
 		String outputdirStr = null;
 		File outputDir = null;
 
@@ -69,14 +71,22 @@ public class CycleExtractor {
 				printUsage();
 				System.exit(1);
 			}
-			if (c.hasOption("inputDir")) {
-				inputdirStr = c.getOptionValue("inputDir");
-				inputDir = new File(inputdirStr);
-			} else {
-				System.out.println("You must specify an input directory!");
-				printUsage();
-				System.exit(1);
+			if (c.hasOption("inputPDBDir")) {
+				inputPDBDirStr = c.getOptionValue("inputPDBDir");
+				inputPDBDir = new File(inputPDBDirStr);
 			}
+
+			if (c.hasOption("inputSeqFile")) {
+				inputSeqFileStr = c.getOptionValue("inputSeqFile");
+				try {
+					inputSeqFile = new File(inputSeqFileStr);
+				} catch (NullPointerException e) {
+					System.out.println("Invalid input sequence file!");
+					printUsage();
+					System.exit(1);
+				}
+			}
+
 			if (c.hasOption("outputDir")) {
 				outputdirStr = c.getOptionValue("outputDir");
 				outputDir = new File(outputdirStr);
@@ -94,7 +104,7 @@ public class CycleExtractor {
 			}
 			// from the input directory get a list of input files<String>
 			List<String> inputFiles = CycleExtractor.getFilePathsFromDir(
-					inputDir, "pdb");
+					inputPDBDir, "pdb");
 			for (String aFilePath : inputFiles) {
 				Set<NucleicAcid> nucs = CycleExtractor.runX3DNADSSR(aFilePath);
 				if (nucs == null || nucs.size() == 0) {
@@ -112,7 +122,7 @@ public class CycleExtractor {
 									.getPdbIdFromFilePath(aFilePath);
 							if (format.equals("RDF")) {
 								Model m = CycleSerializer.createNarfModel(
-										aPdbId,aNuc, ccb);
+										aPdbId, aNuc, ccb);
 								// make an output file
 								File outputFile = new File(
 										outputDir.getAbsolutePath() + "/"
@@ -153,7 +163,7 @@ public class CycleExtractor {
 			e.printStackTrace();
 		} catch (IOException e) {
 			e.printStackTrace();
-		} 
+		}
 		return null;
 	}
 
@@ -196,11 +206,16 @@ public class CycleExtractor {
 	private static Options createOptions() {
 		Options o = new Options();
 		OptionBuilder.withArgName("/path/to/input/dir");
-		Option inputDir = OptionBuilder
+		Option inputPDBDir = OptionBuilder
 				.hasArg(true)
 				.withDescription(
 						"The directory where your input PDB files are located")
-				.create("inputDir");
+				.create("inputPDBDir");
+		Option inputSeqFile = OptionBuilder
+				.hasArg(true)
+				.withDescription(
+						"The path to the file of one aptamer sequence per line")
+				.create("inputSeqFile");
 		Option outputDir = OptionBuilder
 				.withArgName("/path/to/output/dir")
 				.hasArg(true)
@@ -211,8 +226,9 @@ public class CycleExtractor {
 				.hasArg(true)
 				.withDescription("The output format for the cycles (RDF|tsv)")
 				.isRequired().create("outputFormat");
+		o.addOption(inputSeqFile);
 		o.addOption(outputFormat);
-		o.addOption(inputDir);
+		o.addOption(inputPDBDir);
 		o.addOption(outputDir);
 		return o;
 	}
