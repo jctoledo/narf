@@ -66,7 +66,7 @@ public abstract class Residue implements Comparable<Residue>{
 	 * @since 1.6
 	 */
 	public String getResidueIdentifier() {
-		return residueIdentifier;
+		return residueIdentifier.toUpperCase();
 	}
 
 	/**

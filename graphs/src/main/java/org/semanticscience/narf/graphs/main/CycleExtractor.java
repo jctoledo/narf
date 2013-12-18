@@ -27,6 +27,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Random;
 import java.util.Set;
 
 import org.apache.commons.cli.CommandLine;
@@ -172,13 +173,26 @@ public class CycleExtractor {
 					} else {
 						if (nas.size() == 1) {
 							for (NucleicAcid aNuc : nas) {
+								Random r = new Random();
+								int rand = r.nextInt()+1;
 								// get the MCB of each prediction
 								List<Cycle<Nucleotide, InteractionEdge>> ccb = aNuc
 										.getMinimumCycleBasis();
+								System.out.println(ccb);
 								//get the selex experiment mid
 								String se_mid = sl.get(4).replace("\"", "");
+								se_mid = se_mid.replace("\\/", "");
+								if(format.equals("RDF")){
+									
+								}else if(format.equals("tsv")){
+									String tsv = CycleSerializer.createNarfTsv(se_mid, aNuc, ccb);
+									File outputFile = new File(
+											outputDir.getAbsolutePath() + "/"
+													+ se_mid + "_cycles.rdf");
+									FileUtils
+									.writeStringToFile(outputFile, tsv);
+								}
 								
-								// store the output as RDF
 							}
 
 						}

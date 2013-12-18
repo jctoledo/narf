@@ -52,8 +52,8 @@ public class CycleExtractorTest {
 				"-inputSeqFile",
 				"/home/jose/Documents/research/aptamerbase_trends/data/dbn-distinct-test.csv",
 				"-outputDir",
-				"/tmp/poto.rdf",
-				"-outputFormat", "RDF" };
+				"/tmp/poto",
+				"-outputFormat", "tsv" };
 		try {
 			CycleExtractor.main(args);
 		} catch (Exception e) {

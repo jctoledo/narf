@@ -184,10 +184,13 @@ public class CycleSerializer {
 								+ CycleSerializer.MD5(fN.toString() + sN.toString()
 										+ rand));
 						// create a resource from the rnaoclass
-						Resource rnaoClass = rm.createResource(((BasePair) ni)
-								.inferRnaOClass());
-						// type it using the rnaoClass resource
-						bpRes.addProperty(Vocab.rdftype, rnaoClass);
+						String rnaoClassStr = ((BasePair) ni)
+								.inferRnaOClass();
+						Resource rnaoClass = rm.createResource(rnaoClassStr);
+						if(rnaoClass != null){
+							// type it using the rnaoClass resource
+							bpRes.addProperty(Vocab.rdftype, rnaoClass);
+						}
 						// base pair has part residues
 						bpRes.addProperty(Vocab.hasPart, firstNucRes);
 						bpRes.addProperty(Vocab.hasPart, secondNucRes);
