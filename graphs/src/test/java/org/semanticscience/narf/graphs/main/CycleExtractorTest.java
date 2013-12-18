@@ -50,7 +50,7 @@ public class CycleExtractorTest {
 	public void test() {
 		String[] args = new String[] {
 				"-inputSeqFile",
-				"/home/jose/Documents/research/aptamerbase_trends/data/dbn-distinct.csv",
+				"/home/jose/Documents/research/aptamerbase_trends/data/dbn-distinct-test.csv",
 				"-outputDir",
 				"/tmp/poto.rdf",
 				"-outputFormat", "RDF" };

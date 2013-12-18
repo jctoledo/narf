@@ -22,6 +22,8 @@ package org.semanticscience.narf.graphs.lib;
 
 import java.io.IOException;
 import java.math.BigDecimal;
+import java.security.MessageDigest;
+import java.security.NoSuchAlgorithmException;
 import java.util.List;
 import java.util.Random;
 import java.util.Set;
@@ -249,7 +251,7 @@ public class CycleSerializer {
 
 	private static String MD5(String md5) {
 		try {
-			java.security.MessageDigest md = java.security.MessageDigest
+			MessageDigest md = MessageDigest
 					.getInstance("MD5");
 			byte[] array = md.digest(md5.getBytes());
 			StringBuffer sb = new StringBuffer();
@@ -258,7 +260,7 @@ public class CycleSerializer {
 						.substring(1, 3));
 			}
 			return sb.toString();
-		} catch (java.security.NoSuchAlgorithmException e) {
+		} catch (NoSuchAlgorithmException e) {
 		}
 		return null;
 	}
