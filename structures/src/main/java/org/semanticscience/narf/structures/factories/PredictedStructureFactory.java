@@ -70,4 +70,5 @@ public abstract class PredictedStructureFactory extends
 	 */
 	protected abstract String execute(Sequence aSequence, String[] commands)
 			throws InvalidSequenceException, IOException;
+	
 }

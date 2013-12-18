@@ -18,9 +18,13 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
  */
-package org.semanticscience.narf.graphs.main;
+package org.semanticscience.narf.graphs.nucleicacid;
 
 import static org.junit.Assert.*;
+
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStreamReader;
 
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
@@ -30,7 +34,7 @@ import org.junit.Test;
  * @author Jose Cruz-Toledo
  * 
  */
-public class CycleExtractorTest {
+public class AbstractNucleicAcidTest {
 
 	/**
 	 * @throws java.lang.Exception
@@ -47,18 +51,26 @@ public class CycleExtractorTest {
 	}
 
 	@Test
-	public void test() {
-		String[] args = new String[] {
-				"-inputSeqFile",
-				"/home/jose/Documents/research/aptamerbase_trends/data/dbn-distinct.csv",
-				"-outputDir",
-				"/tmp/poto.rdf",
-				"-outputFormat", "RDF" };
-		try {
-			CycleExtractor.main(args);
-		} catch (Exception e) {
-			e.printStackTrace();
+	public void test() throws IOException, InterruptedException {
+		// Runtime rt = Runtime.getRuntime();
+		// String [] cmds = {"python",
+		// "/home/jose/Documents/research/aptamerbase_trends/python-scripts/mfold_seqs.py"};
+		ProcessBuilder ps = new ProcessBuilder(
+				"python",
+				"/home/jose/Documents/research/aptamerbase_trends/python-scripts/mfold_one.py",
+				"AGGGCUCUAGUUCUAUGUCUAGUAGUCAGUCUAGUCAGUUUGGGGCCCCCCCCUUUUCUCUCUCUCG");
+		ps.redirectErrorStream(true);
+		Process pr = ps.start();
+		BufferedReader in = new BufferedReader(new InputStreamReader(
+				pr.getInputStream()));
+		String line;
+		while ((line = in.readLine()) != null) {
+			System.out.println(line);
 		}
+		pr.waitFor();
+		System.out.println("ok!");
+
+		in.close();
 	}
 
 }

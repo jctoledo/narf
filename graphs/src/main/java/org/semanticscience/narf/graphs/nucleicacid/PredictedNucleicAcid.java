@@ -145,7 +145,6 @@ public class PredictedNucleicAcid extends NucleicAcid implements
 			throws InvalidDotBracketNotationException,
 			InvalidSequenceException, IOException {
 		PredictedSecondaryStructureFactory rnafold = new Rnafold();
-
 		return predictStructures(aSequence, rnafold);
 	}
 

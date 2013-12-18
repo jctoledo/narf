@@ -25,6 +25,7 @@ import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Set;
 
@@ -121,7 +122,6 @@ public class CycleExtractor {
 						// only one model
 						if (nucs.size() == 1) {
 							for (NucleicAcid aNuc : nucs) {
-
 								List<Cycle<Nucleotide, InteractionEdge>> ccb = aNuc
 										.getMinimumCycleBasis();
 								// the pdbid
@@ -152,15 +152,40 @@ public class CycleExtractor {
 						}
 					}
 				}
-			}else if(inputSeqFile != null){
-				//open the file
-				//foreach line in the file
-					//get a sequence 
-					//call runMfold
-					//get the MCB of each prediction
-					//store the output as RDF
+			} else if (inputSeqFile != null) {
+				// open the file
+				List<String> lines = FileUtils.readLines(inputSeqFile);
+				// foreach line in the file
+				for (String aLine : lines) {
+					// get a sequence
+					List<String> sl = Arrays.asList(aLine.split(","));
+					// skip the first line
+					if (sl.get(0).equals("sequence")) {
+						continue;
+					}
+					String aSeq = sl.get(0).replace("\"", "");
+					// call runMfold
+					Set<NucleicAcid> nas = CycleExtractor.runMfold(aSeq);
+					if (nas == null || nas.size() == 0) {
+						throw new CycleException(
+								"Could not extract cycles from :" + sl);
+					} else {
+						if (nas.size() == 1) {
+							for (NucleicAcid aNuc : nas) {
+								// get the MCB of each prediction
+								List<Cycle<Nucleotide, InteractionEdge>> ccb = aNuc
+										.getMinimumCycleBasis();
+								//get the selex experiment mid
+								String se_mid = sl.get(4).replace("\"", "");
+								
+								// store the output as RDF
+							}
+
+						}
+
+					}
+				}
 			}
-			
 		} catch (ParseException e) {
 			System.out.println("Unable to parse specified options.");
 			printUsage();
@@ -183,32 +208,35 @@ public class CycleExtractor {
 		}
 		return null;
 	}
-	
+
 	/**
 	 * Runs Mfold on the given sequence string
-	 * @param aSequence a string of valid sequence characters
-	 *  which should only contain these characters: [AaCcGgTtUuRrYyKkMmSsWwBbDdHhVvNnXx-]+
+	 * 
+	 * @param aSequence
+	 *            a string of valid sequence characters which should only
+	 *            contain these characters:
+	 *            [AaCcGgTtUuRrYyKkMmSsWwBbDdHhVvNnXx-]+
 	 * @return a set of Nucleic acids
 	 */
-	private static Set<NucleicAcid> runMfold(String aSequence){
+	private static Set<NucleicAcid> runMfold(String aSequence) {
 		Set<NucleicAcid> rm = null;
-			try {
-				Sequence s = new Sequence(aSequence);
-				rm = PredictedNucleicAcid.rnafold(s);
-				return rm;
-			} catch (InvalidSequenceException e) {
-				System.out.println("invalid sequence: "+aSequence);
-				return null;
-			} catch (InvalidResidueException e) {
-				System.out.println("invalid sequence: "+aSequence);
-				return null;
-			} catch (InvalidDotBracketNotationException e) {
-				e.printStackTrace();
-				return null;
-			} catch (IOException e) {
-				e.printStackTrace();
-				return null;
-			}
+		try {
+			Sequence s = new Sequence(aSequence);
+			rm = PredictedNucleicAcid.rnafold(s);
+			return rm;
+		} catch (InvalidSequenceException e) {
+			System.out.println("invalid sequence: " + aSequence);
+			return null;
+		} catch (InvalidResidueException e) {
+			System.out.println("invalid sequence: " + aSequence);
+			return null;
+		} catch (InvalidDotBracketNotationException e) {
+			e.printStackTrace();
+			return null;
+		} catch (IOException e) {
+			e.printStackTrace();
+			return null;
+		}
 	}
 
 	/**
