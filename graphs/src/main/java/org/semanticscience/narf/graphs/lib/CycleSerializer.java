@@ -59,7 +59,7 @@ public class CycleSerializer {
 	 * @return a TSV string representation of the list of cycles
 	 */
 	public static String createNarfTsv(String aPdbId, NucleicAcid aNucleicAcid,
-			List<Cycle<Nucleotide, InteractionEdge>> aCycleList, String aptamerType) {
+			List<Cycle<Nucleotide, InteractionEdge>> aCycleList, String aptamerType, int structureId) {
 		String rm = "";
 		for (Cycle<Nucleotide, InteractionEdge> cycle : aCycleList) {
 			// get the min normalization number
@@ -105,9 +105,11 @@ public class CycleSerializer {
 			if(aptamerType != null){
 				data+= "\t"+aptamerType;
 			}
+			if(structureId > 0){
+				data += "\t"+structureId;
+			}
 			rm += data+"\n";
 		}// for
-		//String r = "experimentid\tcyclesize\tstartv\tendv\tedgesummary\tbpsummary\tvertexsummary\tnormstr\n"+rm;
 		return rm;
 	}
 
