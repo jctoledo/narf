@@ -142,7 +142,7 @@ public class CycleExtractor {
 									fop.close();
 								} else if (format.equals("tsv")) {
 									String tsv = CycleSerializer.createNarfTsv(
-											aPdbId, aNuc, ccb);
+											aPdbId, aNuc, ccb, null);
 									File outputFile = new File(
 											outputDir.getAbsolutePath() + "/"
 													+ aPdbId + "_cycles.tsv");
@@ -178,14 +178,17 @@ public class CycleExtractor {
 								// get the MCB of each prediction
 								List<Cycle<Nucleotide, InteractionEdge>> ccb = aNuc
 										.getMinimumCycleBasis();
+								//get the aptamer type
+								String apt_type = sl.get(5).replace("\"", "");
 								//get the selex experiment mid
+								
 								String se_mid = sl.get(4).replace("\"", "");
 								se_mid = se_mid.replace("\\/", "");
 								se_mid += rand;
 								if(format.equals("RDF")){
 									
 								}else if(format.equals("tsv")){
-									String tsv = CycleSerializer.createNarfTsv(se_mid, aNuc, ccb);
+									String tsv = CycleSerializer.createNarfTsv(se_mid, aNuc, ccb,apt_type);
 									File outputFile = new File(
 											outputDir.getAbsolutePath() + "/"
 													+ se_mid + "_cycles.tsv");
