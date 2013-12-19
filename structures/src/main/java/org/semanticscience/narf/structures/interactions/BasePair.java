@@ -30,7 +30,7 @@ import org.semanticscience.narf.structures.parts.Edge;
 import org.semanticscience.narf.structures.parts.Nucleotide;
 
 /**
- * Representation of a base pairisng interaction between two nucleotides in a
+ * Representation of a base pairing interaction between two nucleotides in a
  * nucleic acid.
  * 
  * @author Jose Cruz-Toledo
@@ -129,7 +129,7 @@ public class BasePair extends NucleotideInteraction implements
 		glycosidicOrientation = aGlycosidicOrientation;
 		strandBPOrientation = aStrandBPOrientation;
 		normalizedbasePairMapping = makeNormalizedBasePairMap();
-		//rnaoclassuri = inferRnaOClass();
+		rnaoclassuri = inferRnaOClass();
 	}
 
 	/**
@@ -163,6 +163,7 @@ public class BasePair extends NucleotideInteraction implements
 		label = aLabel;
 		saengerClass = aSaengerClass;
 		LWClass = aLWClass;
+		normalizedbasePairMapping = makeNormalizedBasePairMap();
 		rnaoclassuri = inferRnaOClass();
 	}
 
@@ -195,6 +196,8 @@ public class BasePair extends NucleotideInteraction implements
 				aGlycosidicOrientation, InferNucleotideParameters
 						.findStrandBasePairOrientation(aFirstEdge, aSecondEdge,
 								aGlycosidicOrientation));
+		normalizedbasePairMapping = makeNormalizedBasePairMap();
+		rnaoclassuri = this.inferRnaOClass();
 	}
 
 	/**
@@ -210,6 +213,10 @@ public class BasePair extends NucleotideInteraction implements
 	 */
 	public BasePair(Nucleotide aFirstNucleotide, Nucleotide aSecondNucleotide) {
 		super(aFirstNucleotide, aSecondNucleotide);
+		normalizedbasePairMapping = makeNormalizedBasePairMap();
+		rnaoclassuri = this.inferRnaOClass();
+		
+		
 	}
 
 	/**
@@ -632,9 +639,8 @@ public class BasePair extends NucleotideInteraction implements
 				return "http://purl.obolibrary.org/obo/RNAO_0000001";
 			}
 		} else {
-			System.out.println("Invalid edge! or null?");
-			System.out.println(this);
-			return "-1";
+			//no edge information is found. All we can assert is that it is a base pair
+			return "http://purl.obolibrary.org/obo/RNAO_0000001";
 		}
 	}
 

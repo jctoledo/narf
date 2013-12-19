@@ -251,22 +251,27 @@ public class Nucleotide extends Residue {
 	public String getChainId() {
 		return chainId;
 	}
+
 	/**
-	 * REtrieve an integer representation of this nucleotide. The returned integer corresponds only to the nucleobase and not to its position on the sequence
+	 * REtrieve an integer representation of this nucleotide. The returned
+	 * integer corresponds only to the nucleobase and not to its position on the
+	 * sequence
+	 * 
 	 * @return an integer representation for a given nucleotide
 	 */
-	public Integer getNormalizedNucleotide(){
-		Map <String, Integer> m = this.getNormalizedNucleotideMapping();
+	public Integer getNormalizedNucleotide() {
+		Map<String, Integer> m = this.getNormalizedNucleotideMapping();
 		String res_id = this.getResidueIdentifier();
 		return m.get(res_id);
 	}
+
 	/**
 	 * Make a map where the key is a residue identifier and the value is a
 	 * unique integer
 	 * 
 	 * @return mapping between a residue identifier and a unique integer
 	 */
-	private Map<String, Integer> makeNormalizedNucleotideMap(){
+	private Map<String, Integer> makeNormalizedNucleotideMap() {
 		Map<String, Integer> rm = new HashMap<String, Integer>();
 		rm.put("A", 21);
 		rm.put("G", 22);
@@ -276,114 +281,114 @@ public class Nucleotide extends Residue {
 		rm.put("X", 26);
 		rm.put("Y", 27);
 		rm.put("R", 28);
-		rm.put("218",30);
-		rm.put("10C",31);
-		rm.put("1PE",32);
-		rm.put("23G",33);
-		rm.put("2BP",34);
-		rm.put("ARG",35);
-		rm.put("2TB",36);
-		rm.put("3AD",37);
-		rm.put("3AW",38);
-		rm.put("3AY",39);
-		rm.put("5AZ",40);
-		rm.put("5BU",41);
-		rm.put("5GP",42);
-		rm.put("6AP",43);
-		rm.put("6GO",44);
-		rm.put("6GU",45);
-		rm.put("A23",46);
-		rm.put("A2F",47);
-		rm.put("AAR",48);
-		rm.put("ACA",49);
-		rm.put("ACT",50);
-		rm.put("ADE",51);
-		rm.put("AMP",52);
-		rm.put("AP7",53);
-		rm.put("ARM",54);
-		rm.put("B12",55);
-		rm.put("B1Z",56);
-		rm.put("BA",57);
-		rm.put("BDG",58);
-		rm.put("BDR",59);
-		rm.put("BFT",60);
-		rm.put("BR",61);
-		rm.put("BTN",62);
-		rm.put("C2E",63);
-		rm.put("CA",64);
-		rm.put("CCC",65);
-		rm.put("CIR",66);
-		rm.put("CNC",67);
-		rm.put("CS",68);
-		rm.put("D2X",69);
-		rm.put("DGP",70);
-		rm.put("DX4",71);
-		rm.put("EEM",72);
-		rm.put("EU",73);
-		rm.put("F",74);
-		rm.put("FFO",75);
-		rm.put("FMN",76);
-		rm.put("FOZ",77);
-		rm.put("G",78);
-		rm.put("GDP",79);
-		rm.put("GLP",80);
-		rm.put("GLY",81);
-		rm.put("GND",82);
-		rm.put("GNG",83);
-		rm.put("GTP",84);
-		rm.put("HPA",85);
-		rm.put("HRG",86);
-		rm.put("I2A",87);
-		rm.put("IDG",88);
-		rm.put("IEL",89);
-		rm.put("IPA",90);
-		rm.put("IR3",91);
-		rm.put("IRI",92);
-		rm.put("K",93);
-		rm.put("LCA",94);
-		rm.put("MG",95);
-		rm.put("MGR",96);
-		rm.put("MN",97);
-		rm.put("N68",98);
-		rm.put("NA",99);
-		rm.put("NCO",100);
-		rm.put("NEB",101);
-		rm.put("NME",102);
-		rm.put("OLZ",103);
-		rm.put("OS",104);
-		rm.put("PO2",105);
-		rm.put("PO4",106);
-		rm.put("PQ0",107);
-		rm.put("PRF",108);
-		rm.put("PYI",109);
-		rm.put("RBF",110);
-		rm.put("RIO",111);
-		rm.put("ROS",112);
-		rm.put("RS3",113);
-		rm.put("SAH",114);
-		rm.put("SAM",115);
-		rm.put("SFG",116);
-		rm.put("SIN",117);
-		rm.put("SLZ",118);
-		rm.put("SO4",119);
-		rm.put("SR",120);
-		rm.put("SRY",121);
-		rm.put("TEP",122);
-		rm.put("TL",123);
-		rm.put("TOA",124);
-		rm.put("TOB",125);
-		rm.put("TOC",126);
-		rm.put("THF",127);
-		rm.put("TPP",128);
-		rm.put("TPS",129);
-		rm.put("SS0",130);
-		rm.put("XAN",131);
+		rm.put("218", 30);
+		rm.put("10C", 31);
+		rm.put("1PE", 32);
+		rm.put("23G", 33);
+		rm.put("2BP", 34);
+		rm.put("ARG", 35);
+		rm.put("2TB", 36);
+		rm.put("3AD", 37);
+		rm.put("3AW", 38);
+		rm.put("3AY", 39);
+		rm.put("5AZ", 40);
+		rm.put("5BU", 41);
+		rm.put("5GP", 42);
+		rm.put("6AP", 43);
+		rm.put("6GO", 44);
+		rm.put("6GU", 45);
+		rm.put("A23", 46);
+		rm.put("A2F", 47);
+		rm.put("AAR", 48);
+		rm.put("ACA", 49);
+		rm.put("ACT", 50);
+		rm.put("ADE", 51);
+		rm.put("AMP", 52);
+		rm.put("AP7", 53);
+		rm.put("ARM", 54);
+		rm.put("B12", 55);
+		rm.put("B1Z", 56);
+		rm.put("BA", 57);
+		rm.put("BDG", 58);
+		rm.put("BDR", 59);
+		rm.put("BFT", 60);
+		rm.put("BR", 61);
+		rm.put("BTN", 62);
+		rm.put("C2E", 63);
+		rm.put("CA", 64);
+		rm.put("CCC", 65);
+		rm.put("CIR", 66);
+		rm.put("CNC", 67);
+		rm.put("CS", 68);
+		rm.put("D2X", 69);
+		rm.put("DGP", 70);
+		rm.put("DX4", 71);
+		rm.put("EEM", 72);
+		rm.put("EU", 73);
+		rm.put("F", 74);
+		rm.put("FFO", 75);
+		rm.put("FMN", 76);
+		rm.put("FOZ", 77);
+		rm.put("GDP", 79);
+		rm.put("GLP", 80);
+		rm.put("GLY", 81);
+		rm.put("GND", 82);
+		rm.put("GNG", 83);
+		rm.put("GTP", 84);
+		rm.put("HPA", 85);
+		rm.put("HRG", 86);
+		rm.put("I2A", 87);
+		rm.put("IDG", 88);
+		rm.put("IEL", 89);
+		rm.put("IPA", 90);
+		rm.put("IR3", 91);
+		rm.put("IRI", 92);
+		rm.put("K", 93);
+		rm.put("LCA", 94);
+		rm.put("MG", 95);
+		rm.put("MGR", 96);
+		rm.put("MN", 97);
+		rm.put("N68", 98);
+		rm.put("NA", 99);
+		rm.put("NCO", 100);
+		rm.put("NEB", 101);
+		rm.put("NME", 102);
+		rm.put("OLZ", 103);
+		rm.put("OS", 104);
+		rm.put("PO2", 105);
+		rm.put("PO4", 106);
+		rm.put("PQ0", 107);
+		rm.put("PRF", 108);
+		rm.put("PYI", 109);
+		rm.put("RBF", 110);
+		rm.put("RIO", 111);
+		rm.put("ROS", 112);
+		rm.put("RS3", 113);
+		rm.put("SAH", 114);
+		rm.put("SAM", 115);
+		rm.put("SFG", 116);
+		rm.put("SIN", 117);
+		rm.put("SLZ", 118);
+		rm.put("SO4", 119);
+		rm.put("SR", 120);
+		rm.put("SRY", 121);
+		rm.put("TEP", 122);
+		rm.put("TL", 123);
+		rm.put("TOA", 124);
+		rm.put("TOB", 125);
+		rm.put("TOC", 126);
+		rm.put("THF", 127);
+		rm.put("TPP", 128);
+		rm.put("TPS", 129);
+		rm.put("SS0", 130);
+		rm.put("XAN", 131);
 		return rm;
 	}
-	
-	public Map<String, Integer> getNormalizedNucleotideMapping(){
+
+	public Map<String, Integer> getNormalizedNucleotideMapping() {
 		return this.normalizedNucleotideMapping;
 	}
+
 	/*
 	 * (non-Javadoc)
 	 * 
@@ -465,7 +470,7 @@ public class Nucleotide extends Residue {
 				+ puckerAtom + ", puckerQuality=" + puckerQuality + "]";
 	}
 
-	public int compareTo(Nucleotide other){
+	public int compareTo(Nucleotide other) {
 		int pos = other.getResiduePosition();
 		return this.getResiduePosition() - pos;
 	}

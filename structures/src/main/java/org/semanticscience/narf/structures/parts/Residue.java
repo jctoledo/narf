@@ -29,7 +29,7 @@ import org.semanticscience.narf.structures.lib.exceptions.InvalidResidueExceptio
  * @author Jose Cruz-Toledo
  * 
  */
-public abstract class Residue implements Comparable<Residue>{
+public abstract class Residue implements Comparable<Residue> {
 
 	/**
 	 * The PDB chemical identifier for the molecule. Eg: A-> Adenine, G->
@@ -112,16 +112,14 @@ public abstract class Residue implements Comparable<Residue>{
 			return false;
 		return true;
 	}
-	
-	
+
 	public int compareTo(Residue o) {
-		if( o.getResiduePosition() > this.getResiduePosition()){
+		if (o.getResiduePosition() > this.getResiduePosition()) {
 			return -1;
-		}else if ( o.getResiduePosition() < this.getResiduePosition()){
+		} else if (o.getResiduePosition() < this.getResiduePosition()) {
 			return 1;
 		}
 		return 0;
 	}
-
 
 }

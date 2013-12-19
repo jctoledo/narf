@@ -36,7 +36,6 @@ import org.semanticscience.narf.structures.interactions.NucleotideInteraction;
 import org.semanticscience.narf.structures.interactions.PhosphodiesterBond;
 import org.semanticscience.narf.structures.parts.Nucleotide;
 
-
 /**
  * This class converts a SimpleCycle from CDK into a Cycle<V,E>
  * 
@@ -62,16 +61,16 @@ public class CycleHelper {
 		BigDecimal min = BigDecimal.valueOf(Double.MAX_VALUE);
 		for (Cycle<Nucleotide, InteractionEdge> rot : rotatedCycles) {
 			BigDecimal ad = CycleHelper.normalizeCycle(rot);
-			
-			//if (ad < min) {
+
+			// if (ad < min) {
 			if (ad.compareTo(min) < 0) {
 				min = ad;
 			}
-			
+
 		}
 		return min;
 	}
- 
+
 	/**
 	 * Make a Double representation of a Cycle<Nucleotide, InteractionEdge>
 	 * 
@@ -80,15 +79,16 @@ public class CycleHelper {
 	 * @return a string representation of the cycle that includes the following
 	 *         features: Nucleotides, backbones and base pairs only
 	 */
-	public static BigDecimal normalizeCycle(Cycle<Nucleotide, InteractionEdge> ac) {
+	public static BigDecimal normalizeCycle(
+			Cycle<Nucleotide, InteractionEdge> ac) {
 		List<Nucleotide> verts = ac.getVertexList();
 		LinkedList<Integer> tmpints = new LinkedList<Integer>();
 		for (Nucleotide aNuc : verts) {
-			try{
+			try {
 				int nn = aNuc.getNormalizedNucleotide();
 				tmpints.add(nn);
-			}catch(NullPointerException e){
-				System.out.println("offending nucleotide: "+ aNuc);
+			} catch (NullPointerException e) {
+				System.out.println("offending nucleotide: " + aNuc);
 				e.printStackTrace();
 				System.exit(1);
 			}
@@ -108,17 +108,17 @@ public class CycleHelper {
 							.getNormalizedBackBone();
 					tmpints.add(pdb);
 				}
-				//break;
+				// break;
 			}
 		}
 		String intStr = "";
 		for (Integer anInt : tmpints) {
 			intStr += anInt;
 		}
-		
-		BigDecimal d= null;
+
+		BigDecimal d = null;
 		try {
-		  d = new BigDecimal(intStr);
+			d = new BigDecimal(intStr);
 		} catch (NumberFormatException e) {
 			e.printStackTrace();
 		}
@@ -155,7 +155,7 @@ public class CycleHelper {
 				aCycle = new Cycle<Nucleotide, InteractionEdge>(aNuc, sv, ev,
 						new_el, new_el.size());
 				rm.add(aCycle);
-				
+
 			} catch (CycleException e) {
 				e.printStackTrace();
 			}

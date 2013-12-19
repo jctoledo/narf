@@ -178,17 +178,17 @@ public class CycleExtractor {
 								// get the MCB of each prediction
 								List<Cycle<Nucleotide, InteractionEdge>> ccb = aNuc
 										.getMinimumCycleBasis();
-								System.out.println(ccb);
 								//get the selex experiment mid
 								String se_mid = sl.get(4).replace("\"", "");
 								se_mid = se_mid.replace("\\/", "");
+								se_mid += rand;
 								if(format.equals("RDF")){
 									
 								}else if(format.equals("tsv")){
 									String tsv = CycleSerializer.createNarfTsv(se_mid, aNuc, ccb);
 									File outputFile = new File(
 											outputDir.getAbsolutePath() + "/"
-													+ se_mid + "_cycles.rdf");
+													+ se_mid + "_cycles.tsv");
 									FileUtils
 									.writeStringToFile(outputFile, tsv);
 								}

@@ -151,9 +151,12 @@ public class InteractionEdge extends DefaultWeightedEdge {
 		for (NucleotideInteraction i : this.interactions) {
 			if (i.getClass().equals(BasePair.class)) {
 				BasePair bp = (BasePair) i;
-				if (bp.getFirstEdge().toString() != ""
-						&& bp.getSecondEdge().toString() != "") {
-					returnMe += bp.getGlycosidicOrientation()+bp.getFirstEdge() + "/" + bp.getSecondEdge();
+				if (bp.getFirstEdge() != null && bp.getFirstEdge() != null) {
+					if (bp.getFirstEdge().toString() != ""
+							&& bp.getSecondEdge().toString() != "") {
+						returnMe += bp.getGlycosidicOrientation()
+								+ bp.getFirstEdge() + "/" + bp.getSecondEdge();
+					}
 				}
 			}
 		}
