@@ -46,13 +46,28 @@ public class CycleExtractorTest {
 	public static void tearDownAfterClass() throws Exception {
 	}
 
-	@Test
-	public void test() {
+	/*@Test
+	public void test1() {
 		String[] args = new String[] {
 				"-inputSeqFile",
 				"/home/jose/Documents/research/aptamerbase_trends/data/dbn-distinct-clean.csv",
 				"-outputDir",
 				"/tmp/poto",
+				"-outputFormat", "tsv" };
+		try {
+			CycleExtractor.main(args);
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+	}*/
+	
+	@Test
+	public void test2() {
+		String[] args = new String[] {
+				"-inputPDBDir",
+				"/home/jose/Documents/research/aptamers_inPDB/pdb_retriever/Nov2013/pdb/rna",
+				"-outputDir",
+				"/tmp/pico",
 				"-outputFormat", "tsv" };
 		try {
 			CycleExtractor.main(args);

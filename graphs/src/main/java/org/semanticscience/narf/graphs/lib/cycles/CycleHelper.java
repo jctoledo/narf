@@ -50,18 +50,22 @@ public class CycleHelper {
 	 * 
 	 * @param aNucleicAcid
 	 * @param aCycle
+	 * @param basepaironly
+	 *            a boolean flag that specifies the level of desired annotation
+	 *            for the base pair class if set to true base pairs classes will
+	 *            not make use neither glycosidic bond orientation nor of
+	 *            edge-edge interactions
 	 * @return
 	 */
 	public static BigDecimal findMinmalNormalization(NucleicAcid aNucleicAcid,
-			Cycle<Nucleotide, InteractionEdge> aCycle) {
+			Cycle<Nucleotide, InteractionEdge> aCycle, boolean basepaironly) {
 		// find all rotations of the parameter cycle
 		List<Cycle<Nucleotide, InteractionEdge>> rotatedCycles = CycleHelper
 				.findAllRotations(aNucleicAcid, aCycle);
 		// now find the smallest double
 		BigDecimal min = BigDecimal.valueOf(Double.MAX_VALUE);
 		for (Cycle<Nucleotide, InteractionEdge> rot : rotatedCycles) {
-			BigDecimal ad = CycleHelper.normalizeCycle(rot);
-
+			BigDecimal ad = CycleHelper.normalizeCycle(rot, basepaironly);
 			// if (ad < min) {
 			if (ad.compareTo(min) < 0) {
 				min = ad;
@@ -80,7 +84,7 @@ public class CycleHelper {
 	 *         features: Nucleotides, backbones and base pairs only
 	 */
 	public static BigDecimal normalizeCycle(
-			Cycle<Nucleotide, InteractionEdge> ac) {
+			Cycle<Nucleotide, InteractionEdge> ac, boolean basepaironly) {
 		List<Nucleotide> verts = ac.getVertexList();
 		LinkedList<Integer> tmpints = new LinkedList<Integer>();
 		for (Nucleotide aNuc : verts) {
@@ -97,8 +101,14 @@ public class CycleHelper {
 			for (NucleotideInteraction aNi : nis) {
 				if (aNi instanceof BasePair) {
 					try {
-						int bp = ((BasePair) aNi).getNormalizedBasePairClass();
-						tmpints.add(bp);
+						if (basepaironly == false) {
+							int bp = ((BasePair) aNi)
+									.getNormalizedBasePairClass();
+							tmpints.add(bp);
+						} else {
+							int bp = 1;
+							tmpints.add(bp);
+						}
 					} catch (NullPointerException e) {
 						e.printStackTrace();
 					}
@@ -155,7 +165,6 @@ public class CycleHelper {
 				aCycle = new Cycle<Nucleotide, InteractionEdge>(aNuc, sv, ev,
 						new_el, new_el.size());
 				rm.add(aCycle);
-
 			} catch (CycleException e) {
 				e.printStackTrace();
 			}

@@ -64,7 +64,8 @@ public class CycleSerializer {
 		for (Cycle<Nucleotide, InteractionEdge> cycle : aCycleList) {
 			// get the min normalization number
 			BigDecimal min_norm = CycleHelper.findMinmalNormalization(
-					aNucleicAcid, cycle);
+					aNucleicAcid, cycle, false);
+			BigDecimal min_norm_no_edges_no_glybond = CycleHelper.findMinmalNormalization(aNucleicAcid, cycle, true);
 			int cLen = cycle.size();
 			String sV = cycle.getStartVertex().getResidueIdentifier()
 					+ cycle.getStartVertex().getResiduePosition();
@@ -101,7 +102,7 @@ public class CycleSerializer {
 					vertexSummary.length() - 2);
 			String data = aPdbId + "\t" + cLen + "\t" + sV + "\t" + eV + "\t"
 					+ edgeSummary + "\t" + bpSummary + "\t" + vertexSummary
-					+ "\t#" + min_norm ;
+					+ "\t#" + min_norm + "\t#"+min_norm_no_edges_no_glybond;
 			if(aptamerType != null){
 				data+= "\t"+aptamerType;
 			}
@@ -158,7 +159,7 @@ public class CycleSerializer {
 			norm_str.addProperty(Vocab.rdftype, Vocab.narf_normalized_string);
 			// add the value
 			norm_str.addLiteral(Vocab.hasValue, "#"
-					+ CycleHelper.findMinmalNormalization(aNucleicAcid, acyc)
+					+ CycleHelper.findMinmalNormalization(aNucleicAcid, acyc,false)
 							.toString());
 			// connect norm_str back to the cycleRes
 			cycleRes.addProperty(Vocab.hasAttribute, norm_str);

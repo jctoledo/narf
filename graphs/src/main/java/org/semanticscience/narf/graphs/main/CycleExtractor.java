@@ -175,7 +175,6 @@ public class CycleExtractor {
 							for (NucleicAcid aNuc : nas) {
 								Random r = new Random();
 								int rand = (r.nextInt(65536)-32768);
-								
 								// get the MCB of each prediction
 								List<Cycle<Nucleotide, InteractionEdge>> ccb = aNuc
 										.getMinimumCycleBasis();
@@ -191,7 +190,7 @@ public class CycleExtractor {
 									String tsv = CycleSerializer.createNarfTsv(se_mid, aNuc, ccb,apt_type,rand);
 									File outputFile = new File(
 											outputDir.getAbsolutePath() + "/"
-													+ se_mid+rand + "_cycles.tsv");
+													+ se_mid+"-"+rand + "_cycles.tsv");
 									FileUtils
 									.writeStringToFile(outputFile, tsv);
 								}
@@ -300,6 +299,9 @@ public class CycleExtractor {
 				.withDescription(
 						"The directory where your input PDB files are located")
 				.create("inputPDBDir");
+		/*Option bpAnnotationLevel = OptionBuilder
+				.hasArg(true)
+				.withDescription("The l")*/
 		Option inputSeqFile = OptionBuilder
 				.hasArg(true)
 				.withDescription(
