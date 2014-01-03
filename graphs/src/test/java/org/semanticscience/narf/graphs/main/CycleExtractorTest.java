@@ -65,7 +65,7 @@ public class CycleExtractorTest {
 	public void test2() {
 		String[] args = new String[] {
 				"-inputPDBDir",
-				"/home/jose/Documents/research/aptamers_inPDB/pdb_retriever/Nov2013/pdb/rna",
+				"/home/jose/Documents/research/aptamers_inPDB/pdb_retriever/Nov2013/pdb_sample/rna",
 				"-outputDir",
 				"/tmp/pico",
 				"-outputFormat", "tsv" };

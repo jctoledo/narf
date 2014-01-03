@@ -57,20 +57,38 @@ public class CycleSerializer {
 	 * @param acycleList
 	 *            the list of cycles computed from a pdb id
 	 * @param basepaironly
-	 *            if set to true glycosidic bond orientation and nucleobase
-	 *            edge-edge interactions will be ignored
+	 *            a boolean flag that specifies the level of desired annotation
+	 *            for the base pair class if set to true base pairs classes will
+	 *            not make use neither glycosidic bond orientation nor of
+	 *            edge-edge interactions
 	 * @return a TSV string representation of the list of cycles
 	 */
 	public static String createNarfTsv(String aPdbId, NucleicAcid aNucleicAcid,
 			List<Cycle<Nucleotide, InteractionEdge>> aCycleList,
-			String aptamerType, int structureId) {
+			String aptamerType, int structureId, boolean basepaironly) {
 		String rm = "";
+		// put the header in
+		if (basepaironly) {
+			rm += "id\tcycle_len\tstart_vertex\tend_vertex\tedge_summary\tvertex_summary\tmin_norm_no_gly_no_edges\taptamertype\tstructure_id\n";
+		} else {
+			rm += "pdbid\tcycle_len\tstart_vertex\tend_vertex\tedge_summary\tvertex_summary\tmin_norm\tmin_norm_no_gly_no_edges\n";
+		}
 		for (Cycle<Nucleotide, InteractionEdge> cycle : aCycleList) {
-			// get the min normalization number
-			BigDecimal min_norm = CycleHelper.findMinmalNormalization(
-					aNucleicAcid, cycle, false);
-			BigDecimal min_norm_no_edges_no_glybond = CycleHelper
-					.findMinmalNormalization(aNucleicAcid, cycle, true);
+			BigDecimal min_norm = null;
+			// if basepaironly was set to false then compute the basepair only
+			// version aswell
+			BigDecimal min_norm_no_edges_no_glybond = null;
+			if (basepaironly) {
+				min_norm_no_edges_no_glybond = CycleHelper
+						.findMinmalNormalization(aNucleicAcid, cycle,
+								basepaironly);
+			} else {
+				min_norm_no_edges_no_glybond = CycleHelper
+						.findMinmalNormalization(aNucleicAcid, cycle,
+								true);
+				min_norm = CycleHelper.findMinmalNormalization(aNucleicAcid,
+						cycle, false);
+			}
 			int cLen = cycle.size();
 			String sV = cycle.getStartVertex().getResidueIdentifier()
 					+ cycle.getStartVertex().getResiduePosition();
@@ -105,15 +123,23 @@ public class CycleSerializer {
 			}
 			vertexSummary = vertexSummary.substring(0,
 					vertexSummary.length() - 2);
-			String data = aPdbId + "\t" + cLen + "\t" + sV + "\t" + eV + "\t"
-					+ edgeSummary + "\t" + bpSummary + "\t" + vertexSummary
-					+ "\t#" + min_norm + "\t#" + min_norm_no_edges_no_glybond;
-			if (aptamerType != null) {
-				data += "\t" + aptamerType;
-			}
-			if (structureId > 0) {
-				data += "\t" + structureId;
-			}
+			String data = null;
+			if (basepaironly) {
+				data = aPdbId + "\t" + cLen + "\t" + sV + "\t" + eV + "\t"
+						+ edgeSummary + "\t" + bpSummary + "\t" + vertexSummary
+						+ "\t#" + min_norm_no_edges_no_glybond;
+				if (aptamerType != null) {
+					data += "\t" + aptamerType;
+				}
+				if (structureId > 0) {
+					data += "\t" + structureId;
+				}
+			} else {
+				data = aPdbId + "\t" + cLen + "\t" + sV + "\t" + eV + "\t"
+						+ edgeSummary + "\t" + bpSummary + "\t" + vertexSummary
+						+ "\t#" + min_norm + "\t#"
+						+ min_norm_no_edges_no_glybond;
+			}// else
 			rm += data + "\n";
 		}// for
 		return rm;

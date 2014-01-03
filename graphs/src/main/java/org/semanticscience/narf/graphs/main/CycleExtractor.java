@@ -142,7 +142,7 @@ public class CycleExtractor {
 									fop.close();
 								} else if (format.equals("tsv")) {
 									String tsv = CycleSerializer.createNarfTsv(
-											aPdbId, aNuc, ccb, null, -1);
+											aPdbId, aNuc, ccb, null, -1, false);
 									File outputFile = new File(
 											outputDir.getAbsolutePath() + "/"
 													+ aPdbId + "_cycles.tsv");
@@ -187,7 +187,7 @@ public class CycleExtractor {
 								if(format.equals("RDF")){
 									
 								}else if(format.equals("tsv")){
-									String tsv = CycleSerializer.createNarfTsv(se_mid, aNuc, ccb,apt_type,rand);
+									String tsv = CycleSerializer.createNarfTsv(se_mid, aNuc, ccb,apt_type,rand, true);
 									File outputFile = new File(
 											outputDir.getAbsolutePath() + "/"
 													+ se_mid+"-"+rand + "_cycles.tsv");
