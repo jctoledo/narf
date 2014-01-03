@@ -80,6 +80,9 @@ public class CycleHelper {
 	 * 
 	 * @param ac
 	 *            a cycle
+	 * @param basepaironly
+	 *            if set to true glycosidic bond orientation and nucleobase
+	 *            edge-edge interactions will be ignored
 	 * @return a string representation of the cycle that includes the following
 	 *         features: Nucleotides, backbones and base pairs only
 	 */

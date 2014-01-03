@@ -299,9 +299,6 @@ public class CycleExtractor {
 				.withDescription(
 						"The directory where your input PDB files are located")
 				.create("inputPDBDir");
-		/*Option bpAnnotationLevel = OptionBuilder
-				.hasArg(true)
-				.withDescription("The l")*/
 		Option inputSeqFile = OptionBuilder
 				.hasArg(true)
 				.withDescription(
