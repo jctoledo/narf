@@ -110,6 +110,8 @@ public class CycleExtractor {
 				System.exit(1);
 			}
 			if (inputPDBDir != null) {
+				//create a cycle serializer object
+				
 				// from the input directory get a list of input files<String>
 				List<String> inputFiles = CycleExtractor.getFilePathsFromDir(
 						inputPDBDir, "pdb");

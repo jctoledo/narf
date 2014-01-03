@@ -20,6 +20,7 @@
  */
 package org.semanticscience.narf.graphs.lib;
 
+import java.io.File;
 import java.io.IOException;
 import java.math.BigDecimal;
 import java.security.MessageDigest;
@@ -48,6 +49,7 @@ import com.hp.hpl.jena.rdf.model.Resource;
  * 
  */
 public class CycleSerializer {
+	
 	/**
 	 * Create a TSV representation from a list of cycles
 	 * 
@@ -103,8 +105,10 @@ public class CycleSerializer {
 			// edgeclass
 			String edgeSummary = "";
 			String bpSummary = "";
+			
 			List<InteractionEdge> edges = cycle.getEdgeList();
 			for (InteractionEdge anEdge : edges) {
+				
 				String bpC = anEdge.extractBasePairClasses();
 				if (bpC.length() > 0) {
 					bpSummary += bpC + ", ";
@@ -134,13 +138,21 @@ public class CycleSerializer {
 				if (structureId > 0) {
 					data += "\t" + structureId;
 				}
+				/*try {
+					FileUtils.writeStringToFile(f, min_norm_no_edges_no_glybond.toString());
+				} catch (IOException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}*/
+				rm += data + "\n";
 			} else {
 				data = aPdbId + "\t" + cLen + "\t" + sV + "\t" + eV + "\t"
 						+ edgeSummary + "\t" + bpSummary + "\t" + vertexSummary
 						+ "\t#" + min_norm + "\t#"
 						+ min_norm_no_edges_no_glybond;
+				rm += data + "\n";
 			}// else
-			rm += data + "\n";
+			
 		}// for
 		return rm;
 	}

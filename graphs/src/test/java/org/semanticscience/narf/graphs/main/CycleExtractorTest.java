@@ -22,6 +22,7 @@ package org.semanticscience.narf.graphs.main;
 
 import static org.junit.Assert.*;
 
+import org.apache.commons.io.FileUtils;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.Test;
@@ -46,11 +47,11 @@ public class CycleExtractorTest {
 	public static void tearDownAfterClass() throws Exception {
 	}
 
-	/*@Test
+	@Test
 	public void test1() {
 		String[] args = new String[] {
 				"-inputSeqFile",
-				"/home/jose/Documents/research/aptamerbase_trends/data/dbn-distinct-clean.csv",
+				"/home/jose/Documents/research/aptamerbase_trends/data/dbn-distint-clean-sample.csv",
 				"-outputDir",
 				"/tmp/poto",
 				"-outputFormat", "tsv" };
@@ -59,7 +60,7 @@ public class CycleExtractorTest {
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
-	}*/
+	}
 	
 	@Test
 	public void test2() {
