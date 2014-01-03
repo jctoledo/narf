@@ -56,16 +56,21 @@ public class CycleSerializer {
 	 *            derived
 	 * @param acycleList
 	 *            the list of cycles computed from a pdb id
+	 * @param basepaironly
+	 *            if set to true glycosidic bond orientation and nucleobase
+	 *            edge-edge interactions will be ignored
 	 * @return a TSV string representation of the list of cycles
 	 */
 	public static String createNarfTsv(String aPdbId, NucleicAcid aNucleicAcid,
-			List<Cycle<Nucleotide, InteractionEdge>> aCycleList, String aptamerType, int structureId) {
+			List<Cycle<Nucleotide, InteractionEdge>> aCycleList,
+			String aptamerType, int structureId) {
 		String rm = "";
 		for (Cycle<Nucleotide, InteractionEdge> cycle : aCycleList) {
 			// get the min normalization number
 			BigDecimal min_norm = CycleHelper.findMinmalNormalization(
 					aNucleicAcid, cycle, false);
-			BigDecimal min_norm_no_edges_no_glybond = CycleHelper.findMinmalNormalization(aNucleicAcid, cycle, true);
+			BigDecimal min_norm_no_edges_no_glybond = CycleHelper
+					.findMinmalNormalization(aNucleicAcid, cycle, true);
 			int cLen = cycle.size();
 			String sV = cycle.getStartVertex().getResidueIdentifier()
 					+ cycle.getStartVertex().getResiduePosition();
@@ -102,14 +107,14 @@ public class CycleSerializer {
 					vertexSummary.length() - 2);
 			String data = aPdbId + "\t" + cLen + "\t" + sV + "\t" + eV + "\t"
 					+ edgeSummary + "\t" + bpSummary + "\t" + vertexSummary
-					+ "\t#" + min_norm + "\t#"+min_norm_no_edges_no_glybond;
-			if(aptamerType != null){
-				data+= "\t"+aptamerType;
+					+ "\t#" + min_norm + "\t#" + min_norm_no_edges_no_glybond;
+			if (aptamerType != null) {
+				data += "\t" + aptamerType;
 			}
-			if(structureId > 0){
-				data += "\t"+structureId;
+			if (structureId > 0) {
+				data += "\t" + structureId;
 			}
-			rm += data+"\n";
+			rm += data + "\n";
 		}// for
 		return rm;
 	}
@@ -158,9 +163,11 @@ public class CycleSerializer {
 			// type it
 			norm_str.addProperty(Vocab.rdftype, Vocab.narf_normalized_string);
 			// add the value
-			norm_str.addLiteral(Vocab.hasValue, "#"
-					+ CycleHelper.findMinmalNormalization(aNucleicAcid, acyc,false)
-							.toString());
+			norm_str.addLiteral(
+					Vocab.hasValue,
+					"#"
+							+ CycleHelper.findMinmalNormalization(aNucleicAcid,
+									acyc, false).toString());
 			// connect norm_str back to the cycleRes
 			cycleRes.addProperty(Vocab.hasAttribute, norm_str);
 			// get the interaction edges
