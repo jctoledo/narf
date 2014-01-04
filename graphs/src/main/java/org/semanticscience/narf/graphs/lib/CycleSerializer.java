@@ -58,14 +58,14 @@ public class CycleSerializer {
 	 * cycle fingerprints. These cycles will include glycosidic bond orientation
 	 * and edge-edge interactions
 	 */
-	private HashMap<String, List<String>> complete_mcb_map_rich = new HashMap<String, List<String>>();
+	private HashMap<String, List<String>> level_2_mcb = new HashMap<String, List<String>>();
 	/**
 	 * A map where the key is an identfier of the structure (eg: PDBID) where
 	 * the cycle basis was obtained from and the value is a list of the mcb
 	 * cycle fingerprints. These cycles will **NOT** include glycosidic bond
 	 * orientation and edge-edge interactions
 	 */
-	private HashMap<String, List<String>> complete_mcb_map_poor = new HashMap<String, List<String>>();
+	private HashMap<String, List<String>> level_1_mcb = new HashMap<String, List<String>>();
 
 	/**
 	 * Create a TSV representation from a list of cycles
@@ -188,8 +188,8 @@ public class CycleSerializer {
 	 */
 	private void keepTrack(String anId, List<String> richFps,
 			List<String> poorFps) {
-		this.complete_mcb_map_rich.put(anId, richFps);
-		this.complete_mcb_map_poor.put(anId, poorFps);
+		this.level_2_mcb.put(anId, richFps);
+		this.level_1_mcb.put(anId, poorFps);
 	}
 
 	/**
@@ -200,7 +200,7 @@ public class CycleSerializer {
 	 */
 	public List<String> getUniqueCycleTypesRich() {
 		List<String> rm = new ArrayList<String>();
-		Map<String, List<String>> x = this.getComplete_mcb_map_rich();
+		Map<String, List<String>> x = this.get_complete_level_2_mcb();
 		for (Map.Entry<String, List<String>> entry : x.entrySet()) {
 			String key = entry.getKey();
 			List<String> value = entry.getValue();
@@ -220,7 +220,7 @@ public class CycleSerializer {
 	 */
 	public List<String> getPDBIds() {
 		List<String> rm = new ArrayList<String>();
-		rm.addAll(this.complete_mcb_map_poor.keySet());
+		rm.addAll(this.level_1_mcb.keySet());
 		return rm;
 	}
 
@@ -232,7 +232,7 @@ public class CycleSerializer {
 	 */
 	public List<String> getUniqueCycleTypesPoor() {
 		List<String> rm = new ArrayList<String>();
-		Map<String, List<String>> x = this.getComplete_mcb_map_poor();
+		Map<String, List<String>> x = this.get_complete_level_1_mcb();
 		for (Map.Entry<String, List<String>> entry : x.entrySet()) {
 			String key = entry.getKey();
 			List<String> value = entry.getValue();
@@ -466,8 +466,8 @@ public class CycleSerializer {
 	 * 
 	 * @return the complete_mcb_map_rich
 	 */
-	public HashMap<String, List<String>> getComplete_mcb_map_rich() {
-		return complete_mcb_map_rich;
+	public HashMap<String, List<String>> get_complete_level_2_mcb() {
+		return level_2_mcb;
 	}
 
 	/**
@@ -481,24 +481,24 @@ public class CycleSerializer {
 	 * @param complete_mcb_map_rich
 	 *            the complete_mcb_map_rich to set
 	 */
-	private void setComplete_mcb_map_rich(
-			HashMap<String, List<String>> complete_mcb_map_rich) {
-		this.complete_mcb_map_rich = complete_mcb_map_rich;
+	private void set_complete_level_2_mcb(
+			HashMap<String, List<String>> x) {
+		this.level_2_mcb = x;
 	}
 
 	/**
 	 * @return the complete_mcb_map_poor
 	 */
-	public HashMap<String, List<String>> getComplete_mcb_map_poor() {
-		return complete_mcb_map_poor;
+	public HashMap<String, List<String>> get_complete_level_1_mcb() {
+		return level_1_mcb;
 	}
 
 	/**
 	 * @param complete_mcb_map_poor
 	 *            the complete_mcb_map_poor to set
 	 */
-	private void setComplete_mcb_map_poor(
-			HashMap<String, List<String>> complete_mcb_map_poor) {
-		this.complete_mcb_map_poor = complete_mcb_map_poor;
+	private void set_complete_level_1_mcb(
+			HashMap<String, List<String>> y) {
+		this.level_1_mcb = y;
 	}
 }
