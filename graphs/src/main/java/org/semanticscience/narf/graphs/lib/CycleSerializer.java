@@ -241,7 +241,7 @@ public class CycleSerializer {
 	 */
 	public int get_level_1_basis_size() {
 		int rm = 0;
-		HashMap<String,List<String>> y = this.get_complete_level_1;_mcb();
+		HashMap<String,List<String>> y = this.get_complete_level_1_mcb();
 		for(Map.Entry<String, List<String>> entry : y.entrySet()){
 			List<String> v = entry.getValue();
 			rm += v.size();
