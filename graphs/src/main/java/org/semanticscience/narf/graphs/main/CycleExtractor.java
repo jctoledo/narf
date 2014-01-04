@@ -24,8 +24,10 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Date;
 import java.util.List;
 import java.util.Random;
 import java.util.Set;
@@ -154,8 +156,12 @@ public class CycleExtractor {
 						}
 					}
 				}
-				System.out.println(cs.getUniquelevel1());
-				System.out.println(cs.getUniqueLevel2());
+				//now write a report in a separate output file
+				//print a summary file
+				String summary = cs.makeSummary();
+				File readme_out = new File(outputDir.getAbsolutePath()+"/cycle_summary.txt");
+				FileUtils.writeStringToFile(readme_out, summary);
+				
 			} else if (inputSeqFile != null) {
 				//create a cycle serializer object
 				CycleSerializer cs = new CycleSerializer();
@@ -206,6 +212,9 @@ public class CycleExtractor {
 
 					}
 				}
+				String summary = cs.makeSummary();
+				File readme_out = new File(outputDir.getAbsolutePath()+"/cycle_summary.txt");
+				FileUtils.writeStringToFile(readme_out, summary);
 			}
 		} catch (ParseException e) {
 			System.out.println("Unable to parse specified options.");

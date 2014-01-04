@@ -24,7 +24,9 @@ import java.io.IOException;
 import java.math.BigDecimal;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -168,7 +170,6 @@ public class CycleSerializer {
 						+ "\t#" + min_norm + "\t#"
 						+ min_norm_no_edges_no_glybond;
 				rm += data + "\n";
-
 			}// else
 
 		}// for
@@ -214,35 +215,88 @@ public class CycleSerializer {
 		return rm;
 	}
 
+	public String makeSummary() {
+		List<String> x = this.getPDBIds();
+		List<String> y = this.getUniquelevel1();
+		List<String> z = this.getUniqueLevel2();
+
+		Date myDate = new Date();
+		SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd:HH-mm-ss");
+		String date = sdf.format(myDate);
+		String rm_c = "Minimum cycle basis extracted from : "
+				+ this.getPDBIds().size() + " structures computed on:" + date
+				+ "\n";
+		rm_c += "PDBIDs used: ";
+		for (String a : x) {
+			rm_c += a + ",";
+		}
+		rm_c = rm_c.substring(0, rm_c.length() - 1);
+		rm_c += "\nLevel 1 Unique MCBs :\n";
+		for (String b : y) {
+			rm_c += b + ",";
+		}
+		rm_c = rm_c.substring(0, rm_c.length() - 1);
+		rm_c += "\n\n";
+		if (z != null && z.size()>0) {
+			rm_c += "\nLevel 2 Unique MCBs :\n";
+			for (String c : z) {
+				rm_c += c + ",";
+			}
+			rm_c = rm_c.substring(0, rm_c.length() - 1);
+		}
+		rm_c += "\n\n";
+		rm_c += "pdbid\tlevel_1_cycles\n";
+		for (Map.Entry<String, List<String>> w : this
+				.get_complete_level_1_mcb().entrySet()) {
+			String anId = w.getKey();
+			List<String> mcb = w.getValue();
+			for (String amcb : mcb) {
+				rm_c += anId + "\t" + amcb + "\n";
+			}
+		}
+		rm_c += "\n\n";
+		if (z != null && z.size()>0) {
+			rm_c += "pdbid\tlevel_2_cycles\n";
+			for (Map.Entry<String, List<String>> w : this
+					.get_complete_level_2_mcb().entrySet()) {
+				String anId = w.getKey();
+				List<String> mcb = w.getValue();
+				for (String amcb : mcb) {
+					rm_c += anId + "\t" + amcb + "\n";
+				}
+			}
+		}
+		return rm_c;
+	}
+
 	/**
-	 * retrieve the total size of the mcb level 2. This is the total count of all
-	 * minimum cycles found in every structure in this run
+	 * retrieve the total size of the mcb level 2. This is the total count of
+	 * all minimum cycles found in every structure in this run
 	 * 
 	 * @return the total size of the mcb level 2. This is the total count of all
-	 * minimum cycles found in every structure in this run
+	 *         minimum cycles found in every structure in this run
 	 */
 	public int get_level_2_basis_size() {
 		int rm = 0;
-		HashMap<String,List<String>> y = this.get_complete_level_2_mcb();
-		for(Map.Entry<String, List<String>> entry : y.entrySet()){
+		Map<String, List<String>> y = this.get_complete_level_2_mcb();
+		for (Map.Entry<String, List<String>> entry : y.entrySet()) {
 			List<String> v = entry.getValue();
 			rm += v.size();
 		}
 		return rm;
 	}
 
-	
 	/**
-	 * retrieve the total size of the mcb level 1. This is the total count of all
-	 * minimum cycles found in every structure in this run
+	 * retrieve the total size of the mcb level 1. This is the total count of
+	 * all minimum cycles found in every structure in this run
 	 * 
 	 * @return the total size of the mcb level 1. This is the total count of all
-	 * minimum cycles found in every structure in this run
+	 *         minimum cycles found in every structure in this run
 	 */
 	public int get_level_1_basis_size() {
 		int rm = 0;
-		HashMap<String,List<String>> y = this.get_complete_level_1_mcb();
-		for(Map.Entry<String, List<String>> entry : y.entrySet()){
+		Map<String, List<String>> y = this.get_complete_level_1_mcb();
+		for (Map.Entry<String, List<String>> entry : y.entrySet()) {
 			List<String> v = entry.getValue();
 			rm += v.size();
 		}
@@ -502,7 +556,7 @@ public class CycleSerializer {
 	 * 
 	 * @return the complete_mcb_map_rich
 	 */
-	public HashMap<String, List<String>> get_complete_level_2_mcb() {
+	public Map<String, List<String>> get_complete_level_2_mcb() {
 		return level_2_mcb;
 	}
 
@@ -524,7 +578,7 @@ public class CycleSerializer {
 	/**
 	 * @return the complete_mcb_map_poor
 	 */
-	public HashMap<String, List<String>> get_complete_level_1_mcb() {
+	public Map<String, List<String>> get_complete_level_1_mcb() {
 		return level_1_mcb;
 	}
 
