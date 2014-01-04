@@ -92,8 +92,10 @@ public class CycleSerializer {
 		} else {
 			rm += "pdbid\tcycle_len\tstart_vertex\tend_vertex\tedge_summary\tvertex_summary\tmin_norm\tmin_norm_no_gly_no_edges\n";
 		}
-		List<String> richFingerPrints = new ArrayList<String>();
-		List<String> poorFingerPrints = new ArrayList<String>();
+		List<String> level_2 = new ArrayList<String>();
+		// no edge-edge interaction information and no glycosidic bond
+		// orientation info
+		List<String> level_1 = new ArrayList<String>();
 		for (Cycle<Nucleotide, InteractionEdge> cycle : aCycleList) {
 			BigDecimal min_norm = null;
 			// if basepaironly was set to false then compute the basepair only
@@ -103,14 +105,14 @@ public class CycleSerializer {
 				min_norm_no_edges_no_glybond = CycleHelper
 						.findMinmalNormalization(aNucleicAcid, cycle,
 								basepaironly);
-				poorFingerPrints.add("#" + min_norm_no_edges_no_glybond);
+				level_1.add("#" + min_norm_no_edges_no_glybond);
 			} else {
 				min_norm_no_edges_no_glybond = CycleHelper
 						.findMinmalNormalization(aNucleicAcid, cycle, true);
-				poorFingerPrints.add("#" + min_norm_no_edges_no_glybond);
+				level_1.add("#" + min_norm_no_edges_no_glybond);
 				min_norm = CycleHelper.findMinmalNormalization(aNucleicAcid,
 						cycle, false);
-				richFingerPrints.add("#" + min_norm);
+				level_2.add("#" + min_norm);
 			}
 			int cLen = cycle.size();
 			String sV = cycle.getStartVertex().getResidueIdentifier()
@@ -170,7 +172,7 @@ public class CycleSerializer {
 			}// else
 
 		}// for
-		this.keepTrack(aPdbId, richFingerPrints, poorFingerPrints);
+		this.keepTrack(aPdbId, level_2, level_1);
 		return rm;
 	}
 
@@ -198,17 +200,51 @@ public class CycleSerializer {
 	 * @return a unique set of rich cycles computed for this round as extracted
 	 *         from this.getCompleteRichMap()
 	 */
-	public List<String> getUniqueCycleTypesRich() {
+	public List<String> getUniqueLevel2() {
 		List<String> rm = new ArrayList<String>();
 		Map<String, List<String>> x = this.get_complete_level_2_mcb();
 		for (Map.Entry<String, List<String>> entry : x.entrySet()) {
-			String key = entry.getKey();
 			List<String> value = entry.getValue();
 			for (String aFp : value) {
 				if (!rm.contains(aFp)) {
 					rm.add(aFp);
 				}
 			}
+		}
+		return rm;
+	}
+
+	/**
+	 * retrieve the total size of the mcb level 2. This is the total count of all
+	 * minimum cycles found in every structure in this run
+	 * 
+	 * @return the total size of the mcb level 2. This is the total count of all
+	 * minimum cycles found in every structure in this run
+	 */
+	public int get_level_2_basis_size() {
+		int rm = 0;
+		HashMap<String,List<String>> y = this.get_complete_level_2_mcb();
+		for(Map.Entry<String, List<String>> entry : y.entrySet()){
+			List<String> v = entry.getValue();
+			rm += v.size();
+		}
+		return rm;
+	}
+
+	
+	/**
+	 * retrieve the total size of the mcb level 1. This is the total count of all
+	 * minimum cycles found in every structure in this run
+	 * 
+	 * @return the total size of the mcb level 1. This is the total count of all
+	 * minimum cycles found in every structure in this run
+	 */
+	public int get_level_1_basis_size() {
+		int rm = 0;
+		HashMap<String,List<String>> y = this.get_complete_level_1;_mcb();
+		for(Map.Entry<String, List<String>> entry : y.entrySet()){
+			List<String> v = entry.getValue();
+			rm += v.size();
 		}
 		return rm;
 	}
@@ -230,7 +266,7 @@ public class CycleSerializer {
 	 * @return a unique set of rich cycles computed for this round as extracted
 	 *         from this.getCompletePoorMap()
 	 */
-	public List<String> getUniqueCycleTypesPoor() {
+	public List<String> getUniquelevel1() {
 		List<String> rm = new ArrayList<String>();
 		Map<String, List<String>> x = this.get_complete_level_1_mcb();
 		for (Map.Entry<String, List<String>> entry : x.entrySet()) {
@@ -481,8 +517,7 @@ public class CycleSerializer {
 	 * @param complete_mcb_map_rich
 	 *            the complete_mcb_map_rich to set
 	 */
-	private void set_complete_level_2_mcb(
-			HashMap<String, List<String>> x) {
+	private void set_complete_level_2_mcb(HashMap<String, List<String>> x) {
 		this.level_2_mcb = x;
 	}
 
@@ -497,8 +532,7 @@ public class CycleSerializer {
 	 * @param complete_mcb_map_poor
 	 *            the complete_mcb_map_poor to set
 	 */
-	private void set_complete_level_1_mcb(
-			HashMap<String, List<String>> y) {
+	private void set_complete_level_1_mcb(HashMap<String, List<String>> y) {
 		this.level_1_mcb = y;
 	}
 }

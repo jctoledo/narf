@@ -154,6 +154,8 @@ public class CycleExtractor {
 						}
 					}
 				}
+				System.out.println(cs.getUniquelevel1());
+				System.out.println(cs.getUniqueLevel2());
 			} else if (inputSeqFile != null) {
 				//create a cycle serializer object
 				CycleSerializer cs = new CycleSerializer();
