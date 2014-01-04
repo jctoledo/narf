@@ -69,13 +69,14 @@ public class CycleHelperTest {
 			List<Cycle<Nucleotide, InteractionEdge>> mcb = aNuc
 					.getMinimumCycleBasis();
 			System.out.println("Total cycles in mcb: "+mcb.size());
+			
 			for (Cycle<Nucleotide, InteractionEdge> aCycle : mcb) {
-				BigDecimal d = CycleHelper.findMinmalNormalization(aNuc, aCycle);
+				BigDecimal d = CycleHelper.findMinmalNormalization(aNuc, aCycle,false);
 				// get all rotations of the cycle c
 				List<Cycle<Nucleotide, InteractionEdge>> rotatedCycles = CycleHelper
 						.findAllRotations(aNuc, aCycle);
 				for (Cycle<Nucleotide, InteractionEdge> rot:rotatedCycles){
-					BigDecimal i = CycleHelper.normalizeCycle(rot);
+					BigDecimal i = CycleHelper.normalizeCycle(rot,false);
 					System.out.println("norm: "+i);
 				}
 				System.out.println("min: "+d);

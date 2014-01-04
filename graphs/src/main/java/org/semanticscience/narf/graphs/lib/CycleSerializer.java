@@ -20,16 +20,17 @@
  */
 package org.semanticscience.narf.graphs.lib;
 
-import java.io.File;
 import java.io.IOException;
 import java.math.BigDecimal;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Random;
 import java.util.Set;
 
-import org.apache.commons.io.FileUtils;
 import org.semanticscience.narf.graphs.lib.cycles.Cycle;
 import org.semanticscience.narf.graphs.lib.cycles.CycleHelper;
 import org.semanticscience.narf.graphs.nucleicacid.InteractionEdge;
@@ -45,11 +46,27 @@ import com.hp.hpl.jena.rdf.model.Property;
 import com.hp.hpl.jena.rdf.model.Resource;
 
 /**
+ * Serialize the minimum cycle bases of Nucleic Acid structures
+ * 
  * @author Jose Cruz-Toledo
  * 
  */
 public class CycleSerializer {
-	
+	/**
+	 * A map where the key is an identfier of the structure (eg: PDBID) where
+	 * the cycle basis was obtained from and the value is a list of the mcb
+	 * cycle fingerprints. These cycles will include glycosidic bond orientation
+	 * and edge-edge interactions
+	 */
+	private HashMap<String, List<String>> complete_mcb_map_rich = new HashMap<String, List<String>>();
+	/**
+	 * A map where the key is an identfier of the structure (eg: PDBID) where
+	 * the cycle basis was obtained from and the value is a list of the mcb
+	 * cycle fingerprints. These cycles will **NOT** include glycosidic bond
+	 * orientation and edge-edge interactions
+	 */
+	private HashMap<String, List<String>> complete_mcb_map_poor = new HashMap<String, List<String>>();
+
 	/**
 	 * Create a TSV representation from a list of cycles
 	 * 
@@ -65,7 +82,7 @@ public class CycleSerializer {
 	 *            edge-edge interactions
 	 * @return a TSV string representation of the list of cycles
 	 */
-	public static String createNarfTsv(String aPdbId, NucleicAcid aNucleicAcid,
+	public String createNarfTsv(String aPdbId, NucleicAcid aNucleicAcid,
 			List<Cycle<Nucleotide, InteractionEdge>> aCycleList,
 			String aptamerType, int structureId, boolean basepaironly) {
 		String rm = "";
@@ -75,6 +92,8 @@ public class CycleSerializer {
 		} else {
 			rm += "pdbid\tcycle_len\tstart_vertex\tend_vertex\tedge_summary\tvertex_summary\tmin_norm\tmin_norm_no_gly_no_edges\n";
 		}
+		List<String> richFingerPrints = new ArrayList<String>();
+		List<String> poorFingerPrints = new ArrayList<String>();
 		for (Cycle<Nucleotide, InteractionEdge> cycle : aCycleList) {
 			BigDecimal min_norm = null;
 			// if basepaironly was set to false then compute the basepair only
@@ -84,12 +103,14 @@ public class CycleSerializer {
 				min_norm_no_edges_no_glybond = CycleHelper
 						.findMinmalNormalization(aNucleicAcid, cycle,
 								basepaironly);
+				poorFingerPrints.add("#" + min_norm_no_edges_no_glybond);
 			} else {
 				min_norm_no_edges_no_glybond = CycleHelper
-						.findMinmalNormalization(aNucleicAcid, cycle,
-								true);
+						.findMinmalNormalization(aNucleicAcid, cycle, true);
+				poorFingerPrints.add("#" + min_norm_no_edges_no_glybond);
 				min_norm = CycleHelper.findMinmalNormalization(aNucleicAcid,
 						cycle, false);
+				richFingerPrints.add("#" + min_norm);
 			}
 			int cLen = cycle.size();
 			String sV = cycle.getStartVertex().getResidueIdentifier()
@@ -105,10 +126,10 @@ public class CycleSerializer {
 			// edgeclass
 			String edgeSummary = "";
 			String bpSummary = "";
-			
+
 			List<InteractionEdge> edges = cycle.getEdgeList();
 			for (InteractionEdge anEdge : edges) {
-				
+
 				String bpC = anEdge.extractBasePairClasses();
 				if (bpC.length() > 0) {
 					bpSummary += bpC + ", ";
@@ -138,12 +159,6 @@ public class CycleSerializer {
 				if (structureId > 0) {
 					data += "\t" + structureId;
 				}
-				/*try {
-					FileUtils.writeStringToFile(f, min_norm_no_edges_no_glybond.toString());
-				} catch (IOException e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
-				}*/
 				rm += data + "\n";
 			} else {
 				data = aPdbId + "\t" + cLen + "\t" + sV + "\t" + eV + "\t"
@@ -151,9 +166,82 @@ public class CycleSerializer {
 						+ "\t#" + min_norm + "\t#"
 						+ min_norm_no_edges_no_glybond;
 				rm += data + "\n";
+
 			}// else
-			
+
 		}// for
+		this.keepTrack(aPdbId, richFingerPrints, poorFingerPrints);
+		return rm;
+	}
+
+	/**
+	 * Keep track of the computed cycle bases by their structure id (eg. PDBID)
+	 * 
+	 * @param anId
+	 *            eg. the pdbid
+	 * @param richFps
+	 *            a list of cycles found in the given structure id (with
+	 *            glycosidic bond orientations and edge edge interactions)
+	 * @param poorFps
+	 *            a list of cycles found in the given structure id without
+	 *            glycosidic bond orientation info nor edge-edge interactions
+	 */
+	private void keepTrack(String anId, List<String> richFps,
+			List<String> poorFps) {
+		this.complete_mcb_map_rich.put(anId, richFps);
+		this.complete_mcb_map_poor.put(anId, poorFps);
+	}
+
+	/**
+	 * Retrieve a unique set of rich cycles computed for this round
+	 * 
+	 * @return a unique set of rich cycles computed for this round as extracted
+	 *         from this.getCompleteRichMap()
+	 */
+	public List<String> getUniqueCycleTypesRich() {
+		List<String> rm = new ArrayList<String>();
+		Map<String, List<String>> x = this.getComplete_mcb_map_rich();
+		for (Map.Entry<String, List<String>> entry : x.entrySet()) {
+			String key = entry.getKey();
+			List<String> value = entry.getValue();
+			for (String aFp : value) {
+				if (!rm.contains(aFp)) {
+					rm.add(aFp);
+				}
+			}
+		}
+		return rm;
+	}
+
+	/**
+	 * Retrieve a unique list of PDBIDS used in this round
+	 * 
+	 * @return a unique list of PDBIDS used in this round
+	 */
+	public List<String> getPDBIds() {
+		List<String> rm = new ArrayList<String>();
+		rm.addAll(this.complete_mcb_map_poor.keySet());
+		return rm;
+	}
+
+	/**
+	 * Retrieve a unique set of rich cycles computed for this round
+	 * 
+	 * @return a unique set of rich cycles computed for this round as extracted
+	 *         from this.getCompletePoorMap()
+	 */
+	public List<String> getUniqueCycleTypesPoor() {
+		List<String> rm = new ArrayList<String>();
+		Map<String, List<String>> x = this.getComplete_mcb_map_poor();
+		for (Map.Entry<String, List<String>> entry : x.entrySet()) {
+			String key = entry.getKey();
+			List<String> value = entry.getValue();
+			for (String aFp : value) {
+				if (!rm.contains(aFp)) {
+					rm.add(aFp);
+				}
+			}
+		}
 		return rm;
 	}
 
@@ -169,8 +257,7 @@ public class CycleSerializer {
 	 * @throws IOException
 	 */
 	// TODO: deal with provenance of program used
-	public static Model createNarfModel(String aPdbId,
-			NucleicAcid aNucleicAcid,
+	public Model createNarfModel(String aPdbId, NucleicAcid aNucleicAcid,
 			List<Cycle<Nucleotide, InteractionEdge>> acycleList)
 			throws IOException {
 		Model rm = ModelFactory.createDefaultModel();
@@ -367,5 +454,51 @@ public class CycleSerializer {
 		public static Resource narf_normalized_string = m
 				.createResource(narf_vocabulary + "cycle_normalized_string");
 
+	}
+
+	/**
+	 * A map where the key is an identfier of the structure where the cycle
+	 * basis was obtained from and the value is a list of the counts of mcbs
+	 * found for that structure. The length of the list will be equal to the
+	 * total number of cycles extracted in this execution of the program. These
+	 * cycles will include glycosidic bond orientation and edge-edge
+	 * interactions
+	 * 
+	 * @return the complete_mcb_map_rich
+	 */
+	public HashMap<String, List<String>> getComplete_mcb_map_rich() {
+		return complete_mcb_map_rich;
+	}
+
+	/**
+	 * A map where the key is an identfier of the structure where the cycle
+	 * basis was obtained from and the value is a list of the counts of mcbs
+	 * found for that structure. The length of the list will be equal to the
+	 * total number of cycles extracted in this execution of the program. These
+	 * cycles will include glycosidic bond orientation and edge-edge
+	 * interactions
+	 * 
+	 * @param complete_mcb_map_rich
+	 *            the complete_mcb_map_rich to set
+	 */
+	private void setComplete_mcb_map_rich(
+			HashMap<String, List<String>> complete_mcb_map_rich) {
+		this.complete_mcb_map_rich = complete_mcb_map_rich;
+	}
+
+	/**
+	 * @return the complete_mcb_map_poor
+	 */
+	public HashMap<String, List<String>> getComplete_mcb_map_poor() {
+		return complete_mcb_map_poor;
+	}
+
+	/**
+	 * @param complete_mcb_map_poor
+	 *            the complete_mcb_map_poor to set
+	 */
+	private void setComplete_mcb_map_poor(
+			HashMap<String, List<String>> complete_mcb_map_poor) {
+		this.complete_mcb_map_poor = complete_mcb_map_poor;
 	}
 }

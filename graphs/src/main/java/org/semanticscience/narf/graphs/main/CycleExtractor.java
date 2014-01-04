@@ -110,8 +110,7 @@ public class CycleExtractor {
 				System.exit(1);
 			}
 			if (inputPDBDir != null) {
-				//create a cycle serializer object
-				
+				CycleSerializer cs = new CycleSerializer();
 				// from the input directory get a list of input files<String>
 				List<String> inputFiles = CycleExtractor.getFilePathsFromDir(
 						inputPDBDir, "pdb");
@@ -131,7 +130,7 @@ public class CycleExtractor {
 								String aPdbId = CycleExtractor
 										.getPdbIdFromFilePath(aFilePath);
 								if (format.equals("RDF")) {
-									Model m = CycleSerializer.createNarfModel(
+									Model m = cs.createNarfModel(
 											aPdbId, aNuc, ccb);
 									// make an output file
 									File outputFile = new File(
@@ -143,7 +142,7 @@ public class CycleExtractor {
 									m.write(fop);
 									fop.close();
 								} else if (format.equals("tsv")) {
-									String tsv = CycleSerializer.createNarfTsv(
+									String tsv = cs.createNarfTsv(
 											aPdbId, aNuc, ccb, null, -1, false);
 									File outputFile = new File(
 											outputDir.getAbsolutePath() + "/"
@@ -156,6 +155,8 @@ public class CycleExtractor {
 					}
 				}
 			} else if (inputSeqFile != null) {
+				//create a cycle serializer object
+				CycleSerializer cs = new CycleSerializer();
 				// open the file
 				List<String> lines = FileUtils.readLines(inputSeqFile);
 				// foreach line in the file
@@ -189,7 +190,7 @@ public class CycleExtractor {
 								if(format.equals("RDF")){
 									
 								}else if(format.equals("tsv")){
-									String tsv = CycleSerializer.createNarfTsv(se_mid, aNuc, ccb,apt_type,rand, true);
+									String tsv = cs.createNarfTsv(se_mid, aNuc, ccb,apt_type,rand, true);
 									File outputFile = new File(
 											outputDir.getAbsolutePath() + "/"
 													+ se_mid+"-"+rand + "_cycles.tsv");
