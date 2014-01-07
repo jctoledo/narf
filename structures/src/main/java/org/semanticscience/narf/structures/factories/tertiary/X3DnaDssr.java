@@ -94,7 +94,7 @@ public class X3DnaDssr extends ExtractedTertiaryStructureFactory {
 		
 		if (nucleotideMapping.size() == 0) {
 			throw new IOException(
-					"invalid nucleotide mapping! Sorry, but you failed!");
+					"invalid nucleotide mapping! Sorry, but you failed! => "+aPdbFile.getAbsolutePath() );
 		}
 		for (String chainId : nucleotideMapping.keySet()) {
 			// create a set for the sequence in this chain
