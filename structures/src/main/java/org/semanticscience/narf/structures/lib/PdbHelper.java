@@ -98,7 +98,12 @@ public class PdbHelper {
 				if (!values[2].equals(chain)) {
 					chain = values[2];
 					returnMe.put(chain, new TreeMap<Integer, Nucleotide>());
+					try{
 					residueCounter = startingPositions.get(chain);
+					}catch (NullPointerException e){
+						System.out.println("Check file: "+ aFile.getAbsolutePath());
+						e.printStackTrace();
+					}
 				}
 				for (int i = 4; i < values.length; i++) {
 					Nucleotide an = null;
@@ -108,6 +113,8 @@ public class PdbHelper {
 					} catch (InvalidResidueException e) {
 						System.out.println("PLEASE Check File: "
 								+ aFile.getName());
+						System.out.println(an);
+						e.printStackTrace();
 						return null;
 					}
 					if (an != null) {

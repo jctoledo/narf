@@ -50,7 +50,6 @@ public abstract class Residue implements Comparable<Residue> {
 					"The provided residue position : " + aResiduePosition
 							+ " may not be negative.");
 		} else if (aResidueIdentifier.length() < 1
-				|| aResidueIdentifier.length() > 3
 				|| aResidueIdentifier == null) {
 			throw new InvalidResidueException(
 					"The provided residue identifier is invalid!");

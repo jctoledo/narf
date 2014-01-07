@@ -115,14 +115,15 @@ public class Nucleotide extends Residue {
 	 * @throws InvalidResidueException
 	 */
 	public Nucleotide(int aResiduePosition, String aResidueIdentifier,
-			String aConformationLabel, String aPuckerAtom, String aPuckerQuality)
-			throws InvalidResidueException {
+			String aConformationLabel, String aPuckerAtom, String aPuckerQuality) throws InvalidResidueException 
+			 {
 		super(aResiduePosition, aResidueIdentifier);
 		residuePosition = aResiduePosition;
 		nucleotideConformation = aConformationLabel;
 		puckerAtom = aPuckerAtom;
 		puckerQuality = aPuckerQuality;
 		normalizedNucleotideMapping = this.makeNormalizedNucleotideMap();
+		
 	}
 
 	/**

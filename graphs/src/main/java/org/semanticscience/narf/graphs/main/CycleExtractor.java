@@ -24,10 +24,8 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Date;
 import java.util.List;
 import java.util.Random;
 import java.util.Set;
@@ -43,7 +41,6 @@ import org.apache.commons.cli.ParseException;
 import org.apache.commons.io.FileUtils;
 import org.semanticscience.narf.graphs.lib.CycleSerializer;
 import org.semanticscience.narf.graphs.lib.cycles.Cycle;
-import org.semanticscience.narf.graphs.lib.cycles.FundamentalCycleBasis;
 import org.semanticscience.narf.graphs.lib.cycles.exceptions.CycleException;
 import org.semanticscience.narf.graphs.nucleicacid.ExtractedNucleicAcid;
 import org.semanticscience.narf.graphs.nucleicacid.InteractionEdge;
@@ -128,6 +125,10 @@ public class CycleExtractor {
 							for (NucleicAcid aNuc : nucs) {
 								List<Cycle<Nucleotide, InteractionEdge>> ccb = aNuc
 										.getMinimumCycleBasis();
+								//see if cycle basis is empty
+								if(ccb.size() == 0){
+									System.out.println("PDBID:"+aFilePath +" has an empty cycle basis!");
+								}
 								// the pdbid
 								String aPdbId = CycleExtractor
 										.getPdbIdFromFilePath(aFilePath);
