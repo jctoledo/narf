@@ -42,6 +42,7 @@ import org.semanticscience.narf.structures.interactions.NucleotideInteraction;
 import org.semanticscience.narf.structures.interactions.PhosphodiesterBond;
 import org.semanticscience.narf.structures.parts.Nucleotide;
 
+import com.hp.hpl.jena.ontology.ObjectProperty;
 import com.hp.hpl.jena.rdf.model.Model;
 import com.hp.hpl.jena.rdf.model.ModelFactory;
 import com.hp.hpl.jena.rdf.model.Property;
@@ -68,6 +69,165 @@ public class CycleSerializer {
 	 * orientation and edge-edge interactions
 	 */
 	private HashMap<String, List<String>> level_1_mcb = new HashMap<String, List<String>>();
+
+	/**
+	 * Creates a RDF representation of a list of cycles
+	 * 
+	 * @param aPdbId
+	 *            the pdbId of the structure from where this cycle basis was
+	 *            derived
+	 * @param acycleList
+	 *            the list of cycles computed from a pdb id
+	 * @return a jena model that completely describes these cycles
+	 * @throws IOException
+	 */
+	// TODO: deal with provenance of program used
+	public Model createNarfModel(String aPdbId, NucleicAcid aNucleicAcid,
+			List<Cycle<Nucleotide, InteractionEdge>> acycleList)
+			throws IOException {
+		Model rm = ModelFactory.createDefaultModel();
+		for (Cycle<Nucleotide, InteractionEdge> acyc : acycleList) {
+			Random rp = new Random();
+			int randp = rp.nextInt() + 1;
+			// create a cycle resource
+			Resource cycleRes = rm.createResource(Vocab.narf_resource
+					+ CycleSerializer.MD5("cycle" + randp));
+			// type it as a cycle
+			cycleRes.addProperty(Vocab.rdftype, Vocab.narf_cycle);
+			cycleRes.addProperty(Vocab.rdftype, Vocab.rdfs + "Class");
+			// add a label
+			String lbl = "Cycle found in PDBID: " + aPdbId + " of size: "
+					+ acyc.size();
+			cycleRes.addProperty(Vocab.rdfslabel, lbl);
+			// add the size attribute
+			Resource sizeRes = rm.createResource(Vocab.narf_resource
+					+ CycleSerializer.MD5("size" + randp));
+			// type it as a size
+			sizeRes.addProperty(Vocab.rdftype, Vocab.narf_cycle_size);
+			sizeRes.addProperty(Vocab.rdftype, Vocab.rdfs + "Class");
+			// add the value
+			sizeRes.addLiteral(Vocab.hasValue, (int) acyc.size());
+			// connect the sizeRes to the cycleRes
+			cycleRes.addProperty(Vocab.hasAttribute, sizeRes);
+			// add the normalized string attribute
+			Resource norm_str_lvl_2_resource = rm.createResource(Vocab.narf_resource
+					+ CycleSerializer.MD5("norm_string" + randp));
+			// type it
+			norm_str_lvl_2_resource.addProperty(Vocab.rdftype, Vocab.narf_normalized_string);
+			norm_str_lvl_2_resource.addProperty(Vocab.rdftype, Vocab.rdfs + "Class");
+			norm_str_lvl_2_resource.addProperty(Vocab.rdftype, Vocab.narf_level_2_cycle_annotation);
+			rm.add(Vocab.narf_level_2_cycle_annotation, Vocab.rdftype, Vocab.rdfs + "Class");
+			// get the normalized string for this cycle
+			String n_str_lvl_2 = CycleHelper.findMinmalNormalization(aNucleicAcid,
+					acyc, false).toString();
+			// add the value
+			norm_str_lvl_2_resource.addLiteral(Vocab.hasValue, "#" + n_str_lvl_2);
+			norm_str_lvl_2_resource.addLiteral(Vocab.hasMD5, CycleSerializer.MD5(n_str_lvl_2));
+			// connect norm_str back to the cycleRes
+			cycleRes.addProperty(Vocab.hasAttribute, norm_str_lvl_2_resource);
+			// get the interaction edges
+			List<InteractionEdge> edges = acyc.getEdgeList();
+			for (InteractionEdge anEdge : edges) {
+				Set<NucleotideInteraction> interactions = anEdge
+						.getInteractions();
+				for (NucleotideInteraction ni : interactions) {
+					if (ni instanceof BasePair) {
+						Random r = new Random();
+						int rand = r.nextInt() + 1;
+						// get the first nucleotide
+						Nucleotide fN = ((BasePair) ni).getFirstNucleotide();
+						Nucleotide sN = ((BasePair) ni).getSecondNucleotide();
+						// create a bio2rdf resource for each nucleotide
+						Resource firstNucRes = rm
+								.createResource(Vocab.pdb_resource + aPdbId
+										+ "/chemicalComponent_"
+										+ fN.getChainId()
+										+ fN.getResiduePosition());
+						Resource secondNucRes = rm
+								.createResource(Vocab.pdb_resource + aPdbId
+										+ "/chemicalComponent_"
+										+ sN.getChainId()
+										+ sN.getResiduePosition());
+						// type them
+						firstNucRes.addProperty(Vocab.rdftype,
+								Vocab.pdb_resource + "Residue");
+						secondNucRes.addProperty(Vocab.rdftype,
+								Vocab.pdb_resource + "Residue");
+						// add these nucleotide resources as members of the
+						// cycle
+						cycleRes.addProperty(Vocab.hasMember, firstNucRes);
+						cycleRes.addProperty(Vocab.hasMember, secondNucRes);
+						// create a base pair resource
+						Resource bpRes = rm.createResource(Vocab.narf_resource
+								+ CycleSerializer.MD5(fN.toString()
+										+ sN.toString() + rand));
+						// create a resource from the rnaoclass
+						String rnaoClassStr = ((BasePair) ni).inferRnaOClass();
+						Resource rnaoClass = rm.createResource(rnaoClassStr);
+						if (rnaoClass != null) {
+							// type it using the rnaoClass resource
+							bpRes.addProperty(Vocab.rdftype, rnaoClass);
+						}
+						// base pair has part residues
+						bpRes.addProperty(Vocab.hasPart, firstNucRes);
+						bpRes.addProperty(Vocab.hasPart, secondNucRes);
+						// add the paried with property between the residues
+						firstNucRes
+								.addProperty(Vocab.paired_with, secondNucRes);
+						// add the base pair label
+						bpRes.addLiteral(Vocab.rdfslabel,
+								((BasePair) ni).toString());
+
+					} else if (ni instanceof PhosphodiesterBond) {
+						// get the first nucleotide
+						Nucleotide fN = ((PhosphodiesterBond) ni)
+								.getFirstNucleotide();
+						Nucleotide sN = ((PhosphodiesterBond) ni)
+								.getSecondNucleotide();
+						// create a bio2rdf resource for each nucleotide
+						Resource firstNucRes = rm
+								.createResource(Vocab.pdb_resource + aPdbId
+										+ "/chemicalComponent_"
+										+ fN.getChainId()
+										+ fN.getResiduePosition());
+						Resource secondNucRes = rm
+								.createResource(Vocab.pdb_resource + aPdbId
+										+ "/chemicalComponent_"
+										+ sN.getChainId()
+										+ sN.getResiduePosition());
+						// type them
+						firstNucRes.addProperty(Vocab.rdftype,
+								Vocab.pdb_resource + "Residue");
+						secondNucRes.addProperty(Vocab.rdftype,
+								Vocab.pdb_resource + "Residue");
+						Random r = new Random();
+						int rand = r.nextInt() + 1;
+						// add these nucleotide resources as members of the
+						// cycle
+						cycleRes.addProperty(Vocab.hasMember, firstNucRes);
+						cycleRes.addProperty(Vocab.hasMember, secondNucRes);
+						// create a phosphodiesterbond resource
+						Resource phdb = rm.createResource(Vocab.narf_resource
+								+ CycleSerializer.MD5("phdb" + rand));
+						// type it as a narf phdb
+						phdb.addProperty(Vocab.rdftype,
+								Vocab.narf_phosphodiester_bond);
+						// phosphodiester bond has part residuies
+						phdb.addProperty(Vocab.hasPart, firstNucRes);
+						phdb.addProperty(Vocab.hasPart, secondNucRes);
+						// add the covalently connected to property between the
+						// residues
+						firstNucRes.addProperty(Vocab.covalenty_connected_to,
+								secondNucRes);
+						// add the phosphodiester bond label
+						phdb.addLiteral(Vocab.rdfslabel,
+								((PhosphodiesterBond) ni).toString());
+					}
+				}
+			}
+		}
+		return rm;
+	}
 
 	/**
 	 * Create a TSV representation from a list of cycles
@@ -237,7 +397,7 @@ public class CycleSerializer {
 		}
 		rm_c = rm_c.substring(0, rm_c.length() - 1);
 		rm_c += "\n\n";
-		if (z != null && z.size()>0) {
+		if (z != null && z.size() > 0) {
 			rm_c += "\nLevel 2 Unique MCBs :\n";
 			for (String c : z) {
 				rm_c += c + ",";
@@ -255,7 +415,7 @@ public class CycleSerializer {
 			}
 		}
 		rm_c += "\n\n";
-		if (z != null && z.size()>0) {
+		if (z != null && z.size() > 0) {
 			rm_c += "pdbid\tlevel_2_cycles\n";
 			for (Map.Entry<String, List<String>> w : this
 					.get_complete_level_2_mcb().entrySet()) {
@@ -335,162 +495,6 @@ public class CycleSerializer {
 		return rm;
 	}
 
-	/**
-	 * Creates a RDF representation of a list of cycles
-	 * 
-	 * @param aPdbId
-	 *            the pdbId of the structure from where this cycle basis was
-	 *            derived
-	 * @param acycleList
-	 *            the list of cycles computed from a pdb id
-	 * @return a jena model that completely describes these cycles
-	 * @throws IOException
-	 */
-	// TODO: deal with provenance of program used
-	public Model createNarfModel(String aPdbId, NucleicAcid aNucleicAcid,
-			List<Cycle<Nucleotide, InteractionEdge>> acycleList)
-			throws IOException {
-		Model rm = ModelFactory.createDefaultModel();
-		for (Cycle<Nucleotide, InteractionEdge> acyc : acycleList) {
-			Random rp = new Random();
-			int randp = rp.nextInt() + 1;
-			// create a cycle resource
-			Resource cycleRes = rm.createResource(Vocab.narf_resource
-					+ CycleSerializer.MD5("cycle" + randp));
-			// type it as a cycle
-			cycleRes.addProperty(Vocab.rdftype, Vocab.narf_cycle);
-			// add a label
-			String lbl = "Cycle found in PDBID: " + aPdbId + " of size: "
-					+ acyc.size();
-			cycleRes.addProperty(Vocab.rdfslabel, lbl);
-			// add the size attribute
-			Resource sizeRes = rm.createResource(Vocab.narf_resource
-					+ CycleSerializer.MD5("size" + randp));
-			// type it as a size
-			sizeRes.addProperty(Vocab.rdftype, Vocab.narf_cycle_size);
-			// add the value
-			sizeRes.addLiteral(Vocab.hasValue, (double) acyc.size());
-			// connect the sizeRes to the cycleRes
-			cycleRes.addProperty(Vocab.hasAttribute, sizeRes);
-			// add the normalized string attribute
-			Resource norm_str = rm.createResource(Vocab.narf_resource
-					+ CycleSerializer.MD5("norm_string" + randp));
-			// type it
-			norm_str.addProperty(Vocab.rdftype, Vocab.narf_normalized_string);
-			// add the value
-			norm_str.addLiteral(
-					Vocab.hasValue,
-					"#"
-							+ CycleHelper.findMinmalNormalization(aNucleicAcid,
-									acyc, false).toString());
-			// connect norm_str back to the cycleRes
-			cycleRes.addProperty(Vocab.hasAttribute, norm_str);
-			// get the interaction edges
-			List<InteractionEdge> edges = acyc.getEdgeList();
-			for (InteractionEdge anEdge : edges) {
-				Set<NucleotideInteraction> interactions = anEdge
-						.getInteractions();
-				for (NucleotideInteraction ni : interactions) {
-					if (ni instanceof BasePair) {
-						Random r = new Random();
-						int rand = r.nextInt() + 1;
-						// get the first nucleotide
-						Nucleotide fN = ((BasePair) ni).getFirstNucleotide();
-						Nucleotide sN = ((BasePair) ni).getSecondNucleotide();
-						// create a bio2rdf resource for each nucleotide
-						Resource firstNucRes = rm
-								.createResource(Vocab.pdb_resource + aPdbId
-										+ "/chemicalComponent_"
-										+ fN.getChainId()
-										+ fN.getResiduePosition());
-						Resource secondNucRes = rm
-								.createResource(Vocab.pdb_resource + aPdbId
-										+ "/chemicalComponent_"
-										+ sN.getChainId()
-										+ sN.getResiduePosition());
-						// type them
-						firstNucRes.addProperty(Vocab.rdftype,
-								Vocab.pdb_resource + "Residue");
-						secondNucRes.addProperty(Vocab.rdftype,
-								Vocab.pdb_resource + "Residue");
-						// add these nucleotide resources as members of the
-						// cycle
-						cycleRes.addProperty(Vocab.hasMember, firstNucRes);
-						cycleRes.addProperty(Vocab.hasMember, secondNucRes);
-						// create a base pair resource
-						Resource bpRes = rm.createResource(Vocab.narf_resource
-								+ CycleSerializer.MD5(fN.toString()
-										+ sN.toString() + rand));
-						// create a resource from the rnaoclass
-						String rnaoClassStr = ((BasePair) ni).inferRnaOClass();
-						Resource rnaoClass = rm.createResource(rnaoClassStr);
-						if (rnaoClass != null) {
-							// type it using the rnaoClass resource
-							bpRes.addProperty(Vocab.rdftype, rnaoClass);
-						}
-						// base pair has part residues
-						bpRes.addProperty(Vocab.hasPart, firstNucRes);
-						bpRes.addProperty(Vocab.hasPart, secondNucRes);
-						// add the paried with property between the residues
-						firstNucRes
-								.addProperty(Vocab.paired_with, secondNucRes);
-						// add the base pair label
-						bpRes.addLiteral(Vocab.rdfslabel,
-								((BasePair) ni).toString());
-
-					} else if (ni instanceof PhosphodiesterBond) {
-						// get the first nucleotide
-						Nucleotide fN = ((PhosphodiesterBond) ni)
-								.getFirstNucleotide();
-						Nucleotide sN = ((PhosphodiesterBond) ni)
-								.getSecondNucleotide();
-						// create a bio2rdf resource for each nucleotide
-						Resource firstNucRes = rm
-								.createResource(Vocab.pdb_resource + aPdbId
-										+ "/chemicalComponent_"
-										+ fN.getChainId()
-										+ fN.getResiduePosition());
-						Resource secondNucRes = rm
-								.createResource(Vocab.pdb_resource + aPdbId
-										+ "/chemicalComponent_"
-										+ sN.getChainId()
-										+ sN.getResiduePosition());
-						// type them
-						firstNucRes.addProperty(Vocab.rdftype,
-								Vocab.pdb_resource + "Residue");
-						secondNucRes.addProperty(Vocab.rdftype,
-								Vocab.pdb_resource + "Residue");
-						Random r = new Random();
-						int rand = r.nextInt() + 1;
-						// add these nucleotide resources as members of the
-						// cycle
-						cycleRes.addProperty(Vocab.hasMember, firstNucRes);
-						cycleRes.addProperty(Vocab.hasMember, secondNucRes);
-						// create a phosphodiesterbond resource
-						Resource phdb = rm.createResource(Vocab.narf_resource
-								+ CycleSerializer.MD5("phdb" + rand));
-						// type it as a narf phdb
-						phdb.addProperty(Vocab.rdftype,
-								Vocab.narf_phosphodiester_bond);
-						// phosphodiester bond has part residuies
-						phdb.addProperty(Vocab.hasPart, firstNucRes);
-						phdb.addProperty(Vocab.hasPart, secondNucRes);
-						// add the covalently connected to property between the
-						// residues
-						firstNucRes.addProperty(Vocab.covalenty_connected_to,
-								secondNucRes);
-						// add the phosphodiester bond label
-						phdb.addLiteral(Vocab.rdfslabel,
-								((PhosphodiesterBond) ni).toString());
-					}
-				}
-			}
-
-		}
-
-		return rm;
-	}
-
 	private static String MD5(String md5) {
 		try {
 			MessageDigest md = MessageDigest.getInstance("MD5");
@@ -504,46 +508,6 @@ public class CycleSerializer {
 		} catch (NoSuchAlgorithmException e) {
 		}
 		return null;
-	}
-
-	@SuppressWarnings("unused")
-	private static final class Vocab {
-		private static final String narf_base = "http://bio2rdf.org/narf";
-		private static final String pdb_base = "http://bio2rdf.org/pdb";
-		private static final String narf_vocabulary = narf_base
-				+ "_vocabulary:";
-		private static final String pdb_vocabulary = pdb_base + "_vocabulary:";
-		private static final String pdb_resource = pdb_base + "_resource:";
-		private static final String narf_resource = narf_base + "_resource:";
-		private static final String rdf = "http://www.w3.org/1999/02/22-rdf-syntax-ns#";
-		private static final String rdfs = "http://www.w3.org/2000/01/rdf-schema#";
-
-		private static Model m = ModelFactory.createDefaultModel();
-		public static Property rdftype = m.createProperty(rdf + "type");
-		public static Property rdfslabel = m.createProperty(rdfs + "label");
-		public static Property hasMember = m.createProperty(narf_vocabulary
-				+ "has_member");
-		public static Property hasPart = m.createProperty(narf_vocabulary
-				+ "has_part");
-		public static Property hasAttribute = m.createProperty(narf_vocabulary
-				+ "has_attribute");
-		public static Property hasValue = m.createProperty(narf_vocabulary
-				+ "has_value");
-		public static Property paired_with = m.createProperty(narf_vocabulary
-				+ "paired_with");
-		public static Property stacked_with = m.createProperty(narf_vocabulary
-				+ "stacked_with");
-		public static Property covalenty_connected_to = m
-				.createProperty(narf_vocabulary + "covalently_connected_to");
-		public static Resource narf_cycle = m.createResource(narf_vocabulary
-				+ "cycle");
-		public static Resource narf_phosphodiester_bond = m
-				.createResource(narf_vocabulary + "phosphodiester_bond");
-		public static Resource narf_cycle_size = m
-				.createResource(narf_vocabulary + "cycle_size");
-		public static Resource narf_normalized_string = m
-				.createResource(narf_vocabulary + "cycle_normalized_string");
-
 	}
 
 	/**
@@ -588,5 +552,50 @@ public class CycleSerializer {
 	 */
 	private void set_complete_level_1_mcb(HashMap<String, List<String>> y) {
 		this.level_1_mcb = y;
+	}
+
+	@SuppressWarnings("unused")
+	private static final class Vocab {
+		private static final String narf_base = "http://bio2rdf.org/narf";
+		private static final String pdb_base = "http://bio2rdf.org/pdb";
+		private static final String narf_vocabulary = narf_base
+				+ "_vocabulary:";
+		private static final String pdb_vocabulary = pdb_base + "_vocabulary:";
+		private static final String pdb_resource = pdb_base + "_resource:";
+		private static final String narf_resource = narf_base + "_resource:";
+		private static final String rdf = "http://www.w3.org/1999/02/22-rdf-syntax-ns#";
+		private static final String rdfs = "http://www.w3.org/2000/01/rdf-schema#";
+
+		private static Model m = ModelFactory.createDefaultModel();
+		public static Property rdftype = m.createProperty(rdf + "type");
+		public static Property rdfslabel = m.createProperty(rdfs + "label");
+		public static Property hasMember = m.createProperty(narf_vocabulary
+				+ "has_member");
+		public static Property hasPart = m.createProperty(narf_vocabulary
+				+ "has_part");
+		public static Property hasAttribute = m.createProperty(narf_vocabulary
+				+ "has_attribute");
+		public static Property hasValue = m.createProperty(narf_vocabulary
+				+ "has_value");
+		public static Property hasMD5 = m.createProperty(narf_vocabulary
+				+ "has_md5hash");
+		public static Property paired_with = m.createProperty(narf_vocabulary
+				+ "paired_with");
+		public static Property stacked_with = m.createProperty(narf_vocabulary
+				+ "stacked_with");
+		public static Property covalenty_connected_to = m
+				.createProperty(narf_vocabulary + "covalently_connected_to");
+		public static Resource narf_cycle = m.createResource(narf_vocabulary
+				+ "cycle");
+		public static Resource narf_phosphodiester_bond = m
+				.createResource(narf_vocabulary + "phosphodiester_bond");
+		public static Resource narf_cycle_size = m
+				.createResource(narf_vocabulary + "cycle_size");
+		public static Resource narf_normalized_string = m
+				.createResource(narf_vocabulary + "cycle_normalized_string");
+		public static Resource narf_level_1_cycle_annotation = m
+				.createResource(narf_vocabulary + "level_1_cycle_annotation");
+		public static Resource narf_level_2_cycle_annotation = m
+				.createResource(narf_vocabulary + "level_2_cycle_annotation");
 	}
 }

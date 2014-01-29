@@ -47,7 +47,7 @@ public class CycleExtractorTest {
 	public static void tearDownAfterClass() throws Exception {
 	}
 
-	@Test
+	/*@Test
 	public void test1() {
 		String[] args = new String[] {
 				"-inputSeqFile",
@@ -60,7 +60,7 @@ public class CycleExtractorTest {
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
-	}
+	}*/
 	
 	@Test
 	public void test2() {
