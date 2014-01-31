@@ -27,6 +27,7 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Set;
 
+import org.apache.commons.lang3.StringUtils;
 import org.semanticscience.narf.graphs.lib.cycles.exceptions.CycleException;
 import org.semanticscience.narf.graphs.nucleicacid.InteractionEdge;
 import org.semanticscience.narf.graphs.nucleicacid.NucleicAcid;
@@ -44,6 +45,28 @@ import org.semanticscience.narf.structures.parts.Nucleotide;
  */
 public class CycleHelper {
 
+	//TODO: fix how this is computed. Currently not considering other characters  ie not GCTUA
+	public static Double computeCycleGCContent(Cycle<Nucleotide, InteractionEdge> aCycle){
+		List<Nucleotide> nucs = aCycle.getVertexList();
+		String seq_tmp = "";
+		for (Nucleotide aNuc : nucs) {
+			seq_tmp += aNuc.getResidueIdentifier().toUpperCase().charAt(0);
+		}
+		double g = StringUtils.countMatches(seq_tmp, "G")*1.0;
+		double c = StringUtils.countMatches(seq_tmp, "C")*1.0;
+		double t = StringUtils.countMatches(seq_tmp, "T")*1.0;
+		double u = StringUtils.countMatches(seq_tmp, "U")*1.0;
+		double a = StringUtils.countMatches(seq_tmp, "A")*1.0;
+		if(u ==0){//if dna
+			double q = a+t+g+c;
+			double s = (g+c)/q ;
+			return s*100;
+		}else if(t== 0){//if rna
+			return ((g+c)/(a+g+u+c))*100;
+		}else{
+			return ((g+c)/(a+g+u+t+c))*100;
+		}
+	}
 	/**
 	 * For a given cycle, compute all counter-clockwise 1-step unique rotations
 	 * of aCycle, and return the double representation of the smallest one

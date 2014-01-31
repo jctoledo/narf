@@ -57,7 +57,7 @@ public class CycleExtractorTest {
 				"-outputFormat", "tsv" };
 		try {
 			CycleExtractor.main(args);
-		} catch (Exception e) {
+		} catch (Exception e) {uh
 			e.printStackTrace();
 		}
 	}*/
@@ -70,6 +70,21 @@ public class CycleExtractorTest {
 				"-outputDir",
 				"/tmp/pico",
 				"-outputFormat", "tsv" };
+		try {
+			CycleExtractor.main(args);
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+	}
+	
+	@Test
+	public void test3() {
+		String[] args = new String[] {
+				"-inputPDBDir",
+				"/home/jose/Documents/research/aptamers_inPDB/pdb_retriever/Nov2013/pdb_sample/rna",
+				"-outputDir",
+				"/tmp/pico",
+				"-outputFormat", "RDF" };
 		try {
 			CycleExtractor.main(args);
 		} catch (Exception e) {

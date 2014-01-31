@@ -109,7 +109,8 @@ public class CycleExtractor {
 				System.exit(1);
 			}
 			if (inputPDBDir != null) {
-				CycleSerializer cs = new CycleSerializer();
+				//TODO: be able to change default parser for pdb structures
+				CycleSerializer cs = new CycleSerializer("x3dna-dssr", "beta-r21-on-20130903");
 				// from the input directory get a list of input files<String>
 				List<String> inputFiles = CycleExtractor.getFilePathsFromDir(
 						inputPDBDir, "pdb");
@@ -134,7 +135,7 @@ public class CycleExtractor {
 										.getPdbIdFromFilePath(aFilePath);
 								if (format.equals("RDF")) {
 									Model m = cs.createNarfModel(
-											aPdbId, aNuc, ccb);
+											aPdbId, aNuc, ccb, false);
 									// make an output file
 									File outputFile = new File(
 											outputDir.getAbsolutePath() + "/"
@@ -165,7 +166,7 @@ public class CycleExtractor {
 				
 			} else if (inputSeqFile != null) {
 				//create a cycle serializer object
-				CycleSerializer cs = new CycleSerializer();
+				CycleSerializer cs = new CycleSerializer("x3dna-dssr", "beta-r21-on-20130903");
 				// open the file
 				List<String> lines = FileUtils.readLines(inputSeqFile);
 				// foreach line in the file
