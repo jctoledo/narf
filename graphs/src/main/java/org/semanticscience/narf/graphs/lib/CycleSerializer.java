@@ -709,9 +709,9 @@ public class CycleSerializer {
 		public static Resource narf_normalized_string = m
 				.createResource(narf_vocabulary + "cycle_normalized_string");
 		public static Resource narf_cycle_profile_level_1 = m
-				.createResource(narf_vocabulary + "level_1_cycle_serialization");
+				.createResource(narf_vocabulary + "cycle_profile_level_1");
 		public static Resource narf_cycle_profile_level_2 = m
-				.createResource(narf_vocabulary + "level_2_cycle_serialization");
+				.createResource(narf_vocabulary + "cycle_profile_level_2");
 		public static Resource pdb_residue = m.createResource(pdb_resource + "Residue");
 		public static Resource rdfs_class = m.createResource(rdfs+"Class");
 		public static Resource named_individual = m.createResource(owl+"NamedIndividual");
