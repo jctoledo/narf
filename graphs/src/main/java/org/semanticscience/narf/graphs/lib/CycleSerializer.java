@@ -116,18 +116,19 @@ public class CycleSerializer {
 				Vocab.narf_resource + CycleSerializer.MD5("mcb_computation"+rand_i));
 		//type it
 		mcb_computation.addProperty(Vocab.rdftype, Vocab.narf_mcb_computation);
-		rm.add(Vocab.narf_mcb_computation, Vocab.rdftype, Vocab.rdfs+"Class");
-		mcb_computation.addProperty(Vocab.rdftype, Vocab.owl+"NamedIndividual");
+		rm.add(Vocab.narf_mcb_computation, Vocab.rdftype, Vocab.rdfs_class);
+		mcb_computation.addProperty(Vocab.rdftype, Vocab.named_individual);
 		//add a software resource
 		Resource sw_res = rm.createResource(Vocab.narf_resource+CycleSerializer.MD5("software"+rand_i));
 		sw_res.addProperty(Vocab.rdftype, Vocab.narf_software);
-		rm.add(Vocab.narf_software, Vocab.rdftype, Vocab.rdfs+"Class");
-		sw_res.addProperty(Vocab.rdftype, Vocab.owl+"NamedIndividual");		
+		rm.add(Vocab.narf_software, Vocab.rdftype, Vocab.rdfs_class);
+		sw_res.addProperty(Vocab.rdftype, Vocab.named_individual);		
 		//add a mcb resource
 		Resource mcb_res = rm.createResource(Vocab.narf_resource+CycleSerializer.MD5("mcb"+rand_i));
 		mcb_res.addProperty(Vocab.rdftype, Vocab.narf_mcb);
-		rm.add(Vocab.narf_mcb, Vocab.rdftype, Vocab.rdfs+"Class");
-		mcb_res.addProperty(Vocab.rdftype, Vocab.owl+"NamedIndividual");		
+		rm.add(Vocab.narf_mcb, Vocab.rdftype, Vocab.rdfs_class);
+		mcb_res.addProperty(Vocab.rdftype, Vocab.named_individual);	
+		mcb_res.addLiteral(Vocab.rdfslabel, "Minimum Cycle Basis");
 		//connect them back to the mcb_computation
 		mcb_computation.addProperty(Vocab.has_attribute, sw_res);
 		mcb_computation.addProperty(Vocab.has_attribute, mcb_res);
@@ -139,13 +140,15 @@ public class CycleSerializer {
 		for (Cycle<Nucleotide, InteractionEdge> acyc : acycleList) {
 			Random rp = new Random();
 			int randp = rp.nextInt() + 1;
+			//print to string to a file
+			
 			// create a cycle resource
 			Resource cycleRes = rm.createResource(Vocab.narf_resource
 					+ CycleSerializer.MD5("cycle" + randp));
 			// type it as a cycle
 			cycleRes.addProperty(Vocab.rdftype, Vocab.narf_cycle);
-			rm.add(Vocab.narf_cycle, Vocab.rdftype, Vocab.rdfs+"Class");
-			cycleRes.addProperty(Vocab.rdftype, Vocab.owl+"NamedIndividual");
+			rm.add(Vocab.narf_cycle, Vocab.rdftype, Vocab.rdfs_class);
+			cycleRes.addProperty(Vocab.rdftype, Vocab.named_individual);
 			mcb_res.addProperty(Vocab.has_member, cycleRes);
 			
 			// add a label
@@ -157,36 +160,38 @@ public class CycleSerializer {
 					+ CycleSerializer.MD5("size" + randp));
 			// type it as a size
 			sizeRes.addProperty(Vocab.rdftype, Vocab.narf_cycle_size);
-			rm.add(Vocab.narf_cycle_size, Vocab.rdftype, Vocab.rdfs + "Class");
-			sizeRes.addProperty(Vocab.rdftype, Vocab.owl+"NamedIndividual");
+			rm.add(Vocab.narf_cycle_size, Vocab.rdftype, Vocab.rdfs_class);
+			sizeRes.addProperty(Vocab.rdftype, Vocab.named_individual);
 			// add the value
 			sizeRes.addLiteral(Vocab.has_value, (int) acyc.size());
 			// connect the sizeRes to the cycleRes
 			cycleRes.addProperty(Vocab.has_attribute, sizeRes);
 			
-			
 			//create a gccontent res System.out.println(CycleHelper.computeCycleGCContent(acyc));
 			Resource gcCont = rm.createResource(Vocab.narf_resource+CycleSerializer.MD5("gcContent"+randp+acyc.hashCode()));
 			gcCont.addProperty(Vocab.rdftype, Vocab.narf_gc_content);
-			rm.add(Vocab.narf_gc_content, Vocab.rdftype, Vocab.rdfs+"Class");
-			gcCont.addProperty(Vocab.rdftype, Vocab.owl+"NamedIndividual");
-			gcCont.addLiteral(Vocab.has_value, CycleHelper.computeCycleGCContent(acyc));
+			rm.add(Vocab.narf_gc_content, Vocab.rdftype, Vocab.rdfs_class);
+			gcCont.addProperty(Vocab.rdftype, Vocab.named_individual);
+			double gc_cont =  CycleHelper.computeCycleGCContent(acyc);
+			gcCont.addLiteral(Vocab.has_value,gc_cont);
+			cycleRes.addProperty(Vocab.has_attribute, gcCont);
 			
 			if(basepaironly){
 				Resource lvl_1 = rm.createResource(Vocab.narf_resource+CycleSerializer.MD5("lvl_1"+randp));
 				lvl_1.addProperty(Vocab.rdftype, Vocab.narf_cycle_profile_level_1);
-				rm.add(Vocab.narf_cycle_profile_level_1, Vocab.rdftype, Vocab.rdfs+"Class");
-				lvl_1.addProperty(Vocab.rdftype, Vocab.owl+"NamedIndividual");
+				rm.add(Vocab.narf_cycle_profile_level_1, Vocab.rdftype, Vocab.rdfs_class);
+				lvl_1.addProperty(Vocab.rdftype, Vocab.named_individual);
 				//get the level 1 normalized version of this string
 				String lvl_1_str = CycleHelper.findMinmalNormalization(aNucleicAcid, acyc, true).toString();
 				lvl_1.addLiteral(Vocab.has_value,"#"+lvl_1_str);
 				lvl_1.addLiteral(Vocab.hasMD5,CycleSerializer.MD5(lvl_1_str));
 				cycleRes.addProperty(Vocab.has_attribute, lvl_1);
 			}else{
+				
 				Resource lvl_1 = rm.createResource(Vocab.narf_resource+CycleSerializer.MD5("lvl_1"+randp));
 				lvl_1.addProperty(Vocab.rdftype, Vocab.narf_cycle_profile_level_1);
-				rm.add(Vocab.narf_cycle_profile_level_1, Vocab.rdftype, Vocab.rdfs+"Class");
-				lvl_1.addProperty(Vocab.rdftype, Vocab.owl+"NamedIndividual");
+				rm.add(Vocab.narf_cycle_profile_level_1, Vocab.rdftype, Vocab.rdfs_class);
+				lvl_1.addProperty(Vocab.rdftype, Vocab.named_individual);
 				//get the level 1 normalized version of this string
 				String lvl_1_str = CycleHelper.findMinmalNormalization(aNucleicAcid, acyc, true).toString();
 				lvl_1.addLiteral(Vocab.has_value,"#"+lvl_1_str);
@@ -195,9 +200,9 @@ public class CycleSerializer {
 				
 				Resource lvl_2 = rm.createResource(Vocab.narf_resource
 						+ CycleSerializer.MD5("norm_string_lvl_2" + randp));
-				rm.add(Vocab.narf_normalized_string, Vocab.rdftype, Vocab.rdfs+"Class");
 				lvl_2.addProperty(Vocab.rdftype, Vocab.narf_cycle_profile_level_2);
-				rm.add(Vocab.narf_cycle_profile_level_2, Vocab.rdftype, Vocab.rdfs + "Class");
+				rm.add(Vocab.narf_cycle_profile_level_2, Vocab.rdftype, Vocab.rdfs_class);
+				lvl_2.addProperty(Vocab.rdftype, Vocab.named_individual);
 				String n_str_lvl_2 = CycleHelper.findMinmalNormalization(aNucleicAcid,
 						acyc, false).toString();
 				lvl_2.addLiteral(Vocab.has_value, "#" + n_str_lvl_2);
@@ -211,10 +216,11 @@ public class CycleSerializer {
 			for (InteractionEdge anEdge : edges) {
 				Set<NucleotideInteraction> interactions = anEdge
 						.getInteractions();
+				Random r = new Random();
+				int rand = r.nextInt() + 1;
 				for (NucleotideInteraction ni : interactions) {
 					if (ni instanceof BasePair) {
-						Random r = new Random();
-						int rand = r.nextInt() + 1;
+						
 						// get the first nucleotide
 						Nucleotide fN = ((BasePair) ni).getFirstNucleotide();
 						Nucleotide sN = ((BasePair) ni).getSecondNucleotide();
@@ -231,24 +237,32 @@ public class CycleSerializer {
 										+ sN.getResiduePosition());
 						// type them
 						firstNucRes.addProperty(Vocab.rdftype,
-								Vocab.pdb_resource + "Residue");
-						rm.add(rm.createResource(Vocab.pdb_resource + "Residue"), Vocab.rdftype, Vocab.rdfs+"Class");
+								Vocab.pdb_residue);
+						rm.add(Vocab.pdb_residue, Vocab.rdftype, Vocab.rdfs_class);
+						firstNucRes.addProperty(Vocab.rdftype, Vocab.named_individual);
 						secondNucRes.addProperty(Vocab.rdftype,
-								Vocab.pdb_resource + "Residue");
+								Vocab.pdb_residue);
+						secondNucRes.addProperty(Vocab.rdftype, Vocab.named_individual);
 						// add these nucleotide resources as members of the
 						// cycle
-						cycleRes.addProperty(Vocab.has_member, firstNucRes);
-						cycleRes.addProperty(Vocab.has_member, secondNucRes);
+						cycleRes.addProperty(Vocab.has_part, firstNucRes);
+						cycleRes.addProperty(Vocab.has_part, secondNucRes);
 						// create a base pair resource
 						Resource bpRes = rm.createResource(Vocab.narf_resource
 								+ CycleSerializer.MD5(fN.toString()
-										+ sN.toString() + rand));
+										+ sN.toString()));
 						// create a resource from the rnaoclass
 						String rnaoClassStr = ((BasePair) ni).inferRnaOClass();
 						Resource rnaoClass = rm.createResource(rnaoClassStr);
 						if (rnaoClass != null) {
 							// type it using the rnaoClass resource
 							bpRes.addProperty(Vocab.rdftype, rnaoClass);
+							rm.add(rnaoClass, Vocab.rdftype, Vocab.rdfs_class);
+							bpRes.addProperty(Vocab.rdftype, Vocab.named_individual);
+						}else{
+							bpRes.addProperty(Vocab.rdftype, rm.createResource("http://purl.obolibrary.org/obo/RNAO_0000001"));
+							bpRes.addProperty(Vocab.rdftype, Vocab.named_individual);
+							rm.add(rm.createResource("http://purl.obolibrary.org/obo/RNAO_0000001"),Vocab.rdftype, Vocab.rdfs_class);
 						}
 						// base pair has part residues
 						bpRes.addProperty(Vocab.has_part, firstNucRes);
@@ -259,6 +273,7 @@ public class CycleSerializer {
 						// add the base pair label
 						bpRes.addLiteral(Vocab.rdfslabel,
 								((BasePair) ni).toString());
+						cycleRes.addProperty(Vocab.has_attribute, bpRes);
 
 					} else if (ni instanceof PhosphodiesterBond) {
 						// get the first nucleotide
@@ -279,31 +294,34 @@ public class CycleSerializer {
 										+ sN.getResiduePosition());
 						// type them
 						firstNucRes.addProperty(Vocab.rdftype,
-								Vocab.pdb_resource + "Residue");
+								Vocab.pdb_residue);
+						firstNucRes.addProperty(Vocab.rdftype, Vocab.named_individual);
 						secondNucRes.addProperty(Vocab.rdftype,
-								Vocab.pdb_resource + "Residue");
-						Random r = new Random();
-						int rand = r.nextInt() + 1;
+								Vocab.pdb_residue);
+						secondNucRes.addProperty(Vocab.rdftype, Vocab.named_individual);
 						// add these nucleotide resources as members of the
 						// cycle
-						cycleRes.addProperty(Vocab.has_member, firstNucRes);
-						cycleRes.addProperty(Vocab.has_member, secondNucRes);
+						cycleRes.addProperty(Vocab.has_part, firstNucRes);
+						cycleRes.addProperty(Vocab.has_part, secondNucRes);
 						// create a phosphodiesterbond resource
-						Resource phdb = rm.createResource(Vocab.narf_resource
+						Resource phdbRes = rm.createResource(Vocab.narf_resource
 								+ CycleSerializer.MD5("phdb" + rand));
 						// type it as a narf phdb
-						phdb.addProperty(Vocab.rdftype,
+						phdbRes.addProperty(Vocab.rdftype,
 								Vocab.narf_phosphodiester_bond);
+						rm.add(rm.createResource(Vocab.narf_phosphodiester_bond), Vocab.rdftype, Vocab.rdfs_class);
+						phdbRes.addProperty(Vocab.rdftype, Vocab.named_individual);
 						// phosphodiester bond has part residuies
-						phdb.addProperty(Vocab.has_part, firstNucRes);
-						phdb.addProperty(Vocab.has_part, secondNucRes);
+						phdbRes.addProperty(Vocab.has_part, firstNucRes);
+						phdbRes.addProperty(Vocab.has_part, secondNucRes);
 						// add the covalently connected to property between the
 						// residues
 						firstNucRes.addProperty(Vocab.covalenty_connected_to,
 								secondNucRes);
 						// add the phosphodiester bond label
-						phdb.addLiteral(Vocab.rdfslabel,
+						phdbRes.addLiteral(Vocab.rdfslabel,
 								((PhosphodiesterBond) ni).toString());
+						cycleRes.addProperty(Vocab.has_attribute, phdbRes);
 					}
 				}
 			}
@@ -677,6 +695,7 @@ public class CycleSerializer {
 				.createProperty(narf_vocabulary + "has_name");
 		
 		
+		
 		public static Resource narf_cycle = m.createResource(narf_vocabulary
 				+ "cycle");
 		public static Resource narf_gc_content = m.createResource(narf_vocabulary+"gc_content");
@@ -693,6 +712,9 @@ public class CycleSerializer {
 				.createResource(narf_vocabulary + "level_1_cycle_serialization");
 		public static Resource narf_cycle_profile_level_2 = m
 				.createResource(narf_vocabulary + "level_2_cycle_serialization");
+		public static Resource pdb_residue = m.createResource(pdb_resource + "Residue");
+		public static Resource rdfs_class = m.createResource(rdfs+"Class");
+		public static Resource named_individual = m.createResource(owl+"NamedIndividual");
 	}
 
 	/**

@@ -68,7 +68,7 @@ public class CycleExtractorTest {
 				"-inputPDBDir",
 				"/home/jose/Documents/research/aptamers_inPDB/pdb_retriever/Nov2013/pdb_sample/rna",
 				"-outputDir",
-				"/tmp/pico",
+				"/tmp/pico/tsv",
 				"-outputFormat", "tsv" };
 		try {
 			CycleExtractor.main(args);
@@ -83,7 +83,7 @@ public class CycleExtractorTest {
 				"-inputPDBDir",
 				"/home/jose/Documents/research/aptamers_inPDB/pdb_retriever/Nov2013/pdb_sample/rna",
 				"-outputDir",
-				"/tmp/pico",
+				"/tmp/pico/rdf",
 				"-outputFormat", "RDF" };
 		try {
 			CycleExtractor.main(args);

@@ -47,11 +47,11 @@ public class CycleHelperTest {
 	 */
 	@BeforeClass
 	public static void setUpBeforeClass() throws Exception {
-		URL aURL = new URL("http://www.rcsb.org/pdb/files/" + pdbId + ".pdb");
+		/*URL aURL = new URL("http://www.rcsb.org/pdb/files/" + pdbId + ".pdb");
 		File aFile = new File(FileUtils.getTempDirectoryPath() + "/" + pdbId
 				+ ".pdb");
 		FileUtils.copyURLToFile(aURL, aFile);
-		nas = ExtractedNucleicAcid.x3dnaDssr(aFile);
+		nas = ExtractedNucleicAcid.x3dnaDssr(aFile);*/
 	}
 
 	/**
@@ -61,8 +61,16 @@ public class CycleHelperTest {
 	public static void tearDownAfterClass() throws Exception {
 		nas = null;
 	}
-
-	@SuppressWarnings("unused")
+	
+	@Test
+	public void test(){
+		String haystack = "hello2342hZzZzZZelhlolkjsadlUHsakjhello";
+		String needle = "z";
+		int c = CycleHelper.countOccurences(haystack, needle);
+		System.out.println(c);
+	}
+	
+	/*@SuppressWarnings("unused")
 	@Test 
 	public void test() {
 		for (NucleicAcid aNuc : nas) {
@@ -83,6 +91,6 @@ public class CycleHelperTest {
 				System.out.println("*****************");
 			}
 		}
-	}
+	}*/
 	
 }

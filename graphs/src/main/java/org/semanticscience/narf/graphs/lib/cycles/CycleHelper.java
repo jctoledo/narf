@@ -22,9 +22,11 @@ package org.semanticscience.narf.graphs.lib.cycles;
 
 import java.math.BigDecimal;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 
 import org.apache.commons.lang3.StringUtils;
@@ -45,14 +47,74 @@ import org.semanticscience.narf.structures.parts.Nucleotide;
  */
 public class CycleHelper {
 
-	//TODO: fix how this is computed. Currently not considering other characters  ie not GCTUA
 	public static Double computeCycleGCContent(Cycle<Nucleotide, InteractionEdge> aCycle){
+		Map<String, Integer> residue_count_map = new HashMap<String, Integer>();
 		List<Nucleotide> nucs = aCycle.getVertexList();
+		List<String> residue_labels = new ArrayList<String>();
 		String seq_tmp = "";
 		for (Nucleotide aNuc : nucs) {
-			seq_tmp += aNuc.getResidueIdentifier().toUpperCase().charAt(0);
+			residue_labels.add(aNuc.getResidueIdentifier().toUpperCase());
+			seq_tmp += aNuc.getResidueIdentifier().toUpperCase();
 		}
-		double g = StringUtils.countMatches(seq_tmp, "G")*1.0;
+		
+		//now get the counts and store them in residue_count_map
+		for (String albl : residue_labels) {
+			int c = CycleHelper.countOccurences(seq_tmp, albl);
+			residue_count_map.put(albl, c);
+		}
+		
+		double q = 0;
+		for(Map.Entry<String, Integer> entry:residue_count_map.entrySet()){
+			String key = entry.getKey();
+			Integer val = entry.getValue();
+			q += val;
+		}
+		
+		int g = 0;
+		try{
+			g = residue_count_map.get("G");
+		}catch(NullPointerException e){
+			g = 0;
+		}
+		
+		int c = 0;
+		try{
+			c = residue_count_map.get("C");
+		}catch(NullPointerException e){
+			c = 0;
+		}
+		
+		if(g >0 ||c>0){
+			double d = g + c;
+			double s = d/q;
+			return s * 100;
+		} 
+		
+		return 0.0;
+		//int g = residue_count_map.get("G");
+	
+		/*if(residue_count_map.get("U") == 0){
+			//if dna
+			int q = 0;
+			for(Map.Entry<String, Integer> entry:residue_count_map.entrySet()){
+				String key = entry.getKey();
+				Integer val = entry.getValue();
+				q += val;
+			}
+			double s = (residue_count_map.get("G") + residue_count_map.get("C"))/q;
+			return s * 100;
+		}else if(residue_count_map.get("T") == 0){
+			//if rna
+			int q = 0;
+			for(Map.Entry<String, Integer> entry:residue_count_map.entrySet()){
+				String key = entry.getKey();
+				Integer val = entry.getValue();
+				q += val;
+			}
+			double s = (residue_count_map.get("G") + residue_count_map.get("C"))/q;
+			return s * 100;
+		}*/
+		/*double g = StringUtils.countMatches(seq_tmp, "G")*1.0;
 		double c = StringUtils.countMatches(seq_tmp, "C")*1.0;
 		double t = StringUtils.countMatches(seq_tmp, "T")*1.0;
 		double u = StringUtils.countMatches(seq_tmp, "U")*1.0;
@@ -65,8 +127,30 @@ public class CycleHelper {
 			return ((g+c)/(a+g+u+c))*100;
 		}else{
 			return ((g+c)/(a+g+u+t+c))*100;
-		}
+		}*/
 	}
+	
+	/**
+	 * Count the number of occurences of needle in haystack in a case independent manner
+	 * @param haystack
+	 * @param needle
+	 * @return
+	 */
+	public static int countOccurences(String haystack, String needle){
+		int count = 0;
+		int lastIndex=0;
+		haystack = haystack.toUpperCase();
+		needle = needle.toUpperCase();
+		while(lastIndex!=-1){
+			lastIndex = haystack.indexOf(needle, lastIndex);
+			if (lastIndex != -1){
+				count ++;
+				lastIndex += needle.length();
+			}
+		}
+		return count;
+	}
+	
 	/**
 	 * For a given cycle, compute all counter-clockwise 1-step unique rotations
 	 * of aCycle, and return the double representation of the smallest one
