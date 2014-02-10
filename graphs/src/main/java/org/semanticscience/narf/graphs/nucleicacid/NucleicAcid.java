@@ -30,6 +30,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import org._3pq.jgrapht.graph.SimpleGraph;
+import org.jgrapht.alg.NeighborIndex;
 import org.openscience.cdk.annotations.TestClass;
 import org.openscience.cdk.ringsearch.cyclebasis.CycleBasis;
 import org.openscience.cdk.ringsearch.cyclebasis.SimpleCycle;
@@ -90,6 +91,11 @@ public class NucleicAcid extends AbstractNucleicAcid {
 	 * ringsearch implementation of Horton 1984
 	 */
 	private List<Cycle<Nucleotide, InteractionEdge>> minimumCycleBasis;
+	/**
+	 * A map where the key is a nucleotide and the value is a list
+	 * of cycles that have the given key as a vertex
+	 */
+	private HashMap<Nucleotide, List<Cycle<Nucleotide, InteractionEdge>>> mcbVertexMap = new HashMap<Nucleotide, List<Cycle<Nucleotide, InteractionEdge>>>();
 
 	/**
 	 * Construct a nucleic acid using a mapping of chains to their respective
@@ -166,7 +172,29 @@ public class NucleicAcid extends AbstractNucleicAcid {
 				// now create a cycle
 				Cycle<Nucleotide, InteractionEdge> c = new Cycle<Nucleotide, InteractionEdge>(
 						this, fv, lv, el, el.size());
+				// add to the mcbVertexMap
+				// iterate over every vertex in c and add its neighbours to the
+				// adjacency matrix
+				List<Nucleotide> vertices = c.getVertexList();
+				HashMap<Nucleotide, List<Cycle<Nucleotide, InteractionEdge>>> hm = this
+						.getMcbVertexMap();
+				for (Nucleotide aNuc : vertices) {
+					if (hm.containsKey(aNuc)) {
+						List<Cycle<Nucleotide, InteractionEdge>> ac = hm
+								.get(aNuc);
+						//check if this current cycle (c) is in the ac list
+						if (!ac.contains(c)){
+							ac.add(c);
+							this.getMcbVertexMap().put(aNuc, ac);
+						}
+					}else{
+						List<Cycle<Nucleotide,InteractionEdge>> p = new ArrayList<Cycle<Nucleotide,InteractionEdge>>();
+						p.add(c);
+						this.getMcbVertexMap().put(aNuc, p);
+					}
+				}
 				rm.add(c);
+
 			}
 		} catch (CycleException e) {
 			e.printStackTrace();
@@ -515,5 +543,26 @@ public class NucleicAcid extends AbstractNucleicAcid {
 	public String getUniqueIdentifier() {
 		return String.valueOf(this.hashCode());
 	}
+
+	/**
+	 *
+	 * A map where the key is a nucleotide and the value is a list
+	 * of cycles that have the given key as a vertex
+	 *
+	 * @return the mcbVertexMap
+	 */
+	public HashMap<Nucleotide, List<Cycle<Nucleotide, InteractionEdge>>> getMcbVertexMap() {
+		return mcbVertexMap;
+	}
+
+	/**
+	 * @param mcbVertexMap the mcbVertexMap to set
+	 */
+	private void setMcbVertexMap(
+			HashMap<Nucleotide, List<Cycle<Nucleotide, InteractionEdge>>> mcbVertexMap) {
+		this.mcbVertexMap = mcbVertexMap;
+	}
+
+	
 
 }

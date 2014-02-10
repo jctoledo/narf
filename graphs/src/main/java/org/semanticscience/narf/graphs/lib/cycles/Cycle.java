@@ -315,8 +315,10 @@ public class Cycle<V, E> extends GraphPathImpl<V, E> {
 		return this.getEdgeList().size();
 	}
 
+	
 	/**
-	 * Rotate this cycle. Define the new start and end of this cycle
+	 * Rotate this cycle. Define the new start and end of this cycle while
+	 * maintaining order of edges and vertices
 	 * 
 	 * @param newStart
 	 *            the start of the cycle to return
