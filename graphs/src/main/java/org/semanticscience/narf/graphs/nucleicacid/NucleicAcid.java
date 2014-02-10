@@ -172,24 +172,28 @@ public class NucleicAcid extends AbstractNucleicAcid {
 				// now create a cycle
 				Cycle<Nucleotide, InteractionEdge> c = new Cycle<Nucleotide, InteractionEdge>(
 						this, fv, lv, el, el.size());
-				// add to the mcbVertexMap
-				// iterate over every vertex in c and add its neighbours to the
-				// adjacency matrix
+				// add each vertex of c to the mcbVertexMap
 				List<Nucleotide> vertices = c.getVertexList();
+				//get the map for this nucleic acid
 				HashMap<Nucleotide, List<Cycle<Nucleotide, InteractionEdge>>> hm = this
 						.getMcbVertexMap();
 				for (Nucleotide aNuc : vertices) {
 					if (hm.containsKey(aNuc)) {
+						//get the list of cycles at that nucleotide
 						List<Cycle<Nucleotide, InteractionEdge>> ac = hm
 								.get(aNuc);
 						//check if this current cycle (c) is in the ac list
 						if (!ac.contains(c)){
+							//only add c if it has not been stored in the map's value
 							ac.add(c);
 							this.getMcbVertexMap().put(aNuc, ac);
 						}
 					}else{
+						//create a blank list 
 						List<Cycle<Nucleotide,InteractionEdge>> p = new ArrayList<Cycle<Nucleotide,InteractionEdge>>();
+						//add c to the list
 						p.add(c);
+						//add the list to the mcbvertex map
 						this.getMcbVertexMap().put(aNuc, p);
 					}
 				}
