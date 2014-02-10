@@ -30,12 +30,16 @@ import java.io.IOException;
 import java.net.URL;
 import java.util.HashSet;
 import java.util.Set;
+import java.util.List;
 
 import org.apache.commons.io.FileUtils;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.Test;
+import org.semanticscience.narf.graphs.lib.cycles.Cycle;
 import org.semanticscience.narf.structures.lib.exceptions.InvalidResidueException;
+import org.semanticscience.narf.structures.parts.Nucleotide;
+
 
 /**
  * @author Jose Cruz-Toledo
@@ -64,6 +68,7 @@ public class NucleicAcidTest1Y26 {
 				+ ".pdb");
 		FileUtils.copyURLToFile(aURL, aFile);
 		nAs = ExtractedNucleicAcid.mcannotate(aFile);
+		
 	}
 
 	@AfterClass
@@ -80,6 +85,20 @@ public class NucleicAcidTest1Y26 {
 		}
 	}
 
+	@Test
+	public void testingNeighbours(){
+		for(NucleicAcid na: nAs){
+			List<Cycle<Nucleotide,InteractionEdge>> mcb = na.getMinimumCycleBasis();
+			for(Cycle<Nucleotide,InteractionEdge> c : mcb){
+				System.out.println("Searching for neighbours of: "+c.toString());
+				List<Cycle<Nucleotide, InteractionEdge>> neighbours = na.findMCBNeighbours(c);
+				System.out.println(neighbours);
+				System.out.println("******\n");
+			}
+			System.out.println("########################\n");
+		}
+	}
+	
 	@Test
 	public void testContainsChain() {
 		for (NucleicAcid na : nAs) {

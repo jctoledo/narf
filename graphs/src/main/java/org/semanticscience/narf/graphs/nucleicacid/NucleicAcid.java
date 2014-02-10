@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2011 Jose Cruz-Toledo and William Greenwood
+ * Copyright (c) 2011-2014 Jose Cruz-Toledo 
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
  * in the Software without restriction, including without limitation the rights
@@ -96,6 +96,8 @@ public class NucleicAcid extends AbstractNucleicAcid {
 	 * that have the given key as a vertex
 	 */
 	private HashMap<Nucleotide, List<Cycle<Nucleotide, InteractionEdge>>> mcbVertexMap = new HashMap<Nucleotide, List<Cycle<Nucleotide, InteractionEdge>>>();
+
+	//private HashMap<InteractionEdge, List<Cycle<Nucleotide, InteractionEdge>>> mcbEdgeMap = new HashMap<InteractionEdge, List<Cycle<Nucleotide, InteractionEdge>>>();
 
 	/**
 	 * Construct a nucleic acid using a mapping of chains to their respective
@@ -213,6 +215,45 @@ public class NucleicAcid extends AbstractNucleicAcid {
 		}
 		return rm;
 	}
+
+	/**
+	 * Find a unique list of cycles (no repetitions) that share at least one
+	 * vertex with aCycle
+	 * 
+	 * @param aCycle
+	 *            a Cycle for which you wish to find all other cycles in the
+	 *            graph that share at least one vertex
+	 * @return a unique list of cycles that share at least one vertex with
+	 *         aCycle. Null is returned if the mcbVertexMap is empty
+	 */
+	public List<Cycle<Nucleotide, InteractionEdge>> findMCBNeighbours(
+			Cycle<Nucleotide, InteractionEdge> aCycle) {
+		//first verify that mcbVertexMap is not empty
+		if(this.getMcbVertexMap().isEmpty()){
+			return null;
+		}
+		//declare the variable to be returned
+		List<Cycle<Nucleotide, InteractionEdge>> rm = new ArrayList<Cycle<Nucleotide,InteractionEdge>>();
+		//get this's mcbVertexMap
+		HashMap<Nucleotide, List<Cycle<Nucleotide,InteractionEdge>>> vert_map = this.getMcbVertexMap();
+		//get the list of vertices
+		List<Nucleotide> nucs = aCycle.getVertexList();
+		for (Nucleotide anuc : nucs) {
+			//see if anuc is a key in this's getMCBVertexMap()
+			if(vert_map.containsKey(anuc)){
+				//get the list of cycles
+				List<Cycle<Nucleotide,InteractionEdge>> some_cycles = vert_map.get(anuc);
+				//now get the cycles that are not aCycle
+				for (Cycle<Nucleotide, InteractionEdge> c : some_cycles) {
+					if(!c.equals(aCycle)){
+						rm.add(c);
+					}
+				}				
+			}
+		}
+		return rm;
+	}
+
 
 	/**
 	 * Populate the nucleic acid with the nucleotides and interactions present
@@ -575,5 +616,6 @@ public class NucleicAcid extends AbstractNucleicAcid {
 			HashMap<Nucleotide, List<Cycle<Nucleotide, InteractionEdge>>> mcbVertexMap) {
 		this.mcbVertexMap = mcbVertexMap;
 	}
+
 
 }
