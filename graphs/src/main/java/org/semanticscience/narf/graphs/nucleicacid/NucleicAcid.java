@@ -92,8 +92,8 @@ public class NucleicAcid extends AbstractNucleicAcid {
 	 */
 	private List<Cycle<Nucleotide, InteractionEdge>> minimumCycleBasis;
 	/**
-	 * A map where the key is a nucleotide and the value is a list
-	 * of cycles that have the given key as a vertex
+	 * A map where the key is a nucleotide and the value is a list of cycles
+	 * that have the given key as a vertex
 	 */
 	private HashMap<Nucleotide, List<Cycle<Nucleotide, InteractionEdge>>> mcbVertexMap = new HashMap<Nucleotide, List<Cycle<Nucleotide, InteractionEdge>>>();
 
@@ -140,6 +140,13 @@ public class NucleicAcid extends AbstractNucleicAcid {
 				.getInteractions());
 	}
 
+	/**
+	 * Compute the minimum cycle basis of this Nucleic acid. As cycles are
+	 * discovered a map of nucleotide to List<Cycle> is populated and stored.
+	 * 
+	 * @return a list of minimum cycles where composed of nucleotides and their
+	 *         interaction edges
+	 */
 	@SuppressWarnings("unchecked")
 	private List<Cycle<Nucleotide, InteractionEdge>> computeMCB() {
 		List<Cycle<Nucleotide, InteractionEdge>> rm = new ArrayList<Cycle<Nucleotide, InteractionEdge>>();
@@ -174,26 +181,27 @@ public class NucleicAcid extends AbstractNucleicAcid {
 						this, fv, lv, el, el.size());
 				// add each vertex of c to the mcbVertexMap
 				List<Nucleotide> vertices = c.getVertexList();
-				//get the map for this nucleic acid
+				// get the map for this nucleic acid
 				HashMap<Nucleotide, List<Cycle<Nucleotide, InteractionEdge>>> hm = this
 						.getMcbVertexMap();
 				for (Nucleotide aNuc : vertices) {
 					if (hm.containsKey(aNuc)) {
-						//get the list of cycles at that nucleotide
+						// get the list of cycles at that nucleotide
 						List<Cycle<Nucleotide, InteractionEdge>> ac = hm
 								.get(aNuc);
-						//check if this current cycle (c) is in the ac list
-						if (!ac.contains(c)){
-							//only add c if it has not been stored in the map's value
+						// check if this current cycle (c) is in the ac list
+						if (!ac.contains(c)) {
+							// only add c if it has not been stored in the map's
+							// value
 							ac.add(c);
 							this.getMcbVertexMap().put(aNuc, ac);
 						}
-					}else{
-						//create a blank list 
-						List<Cycle<Nucleotide,InteractionEdge>> p = new ArrayList<Cycle<Nucleotide,InteractionEdge>>();
-						//add c to the list
+					} else {
+						// create a blank list
+						List<Cycle<Nucleotide, InteractionEdge>> p = new ArrayList<Cycle<Nucleotide, InteractionEdge>>();
+						// add c to the list
 						p.add(c);
-						//add the list to the mcbvertex map
+						// add the list to the mcbvertex map
 						this.getMcbVertexMap().put(aNuc, p);
 					}
 				}
@@ -549,10 +557,10 @@ public class NucleicAcid extends AbstractNucleicAcid {
 	}
 
 	/**
-	 *
-	 * A map where the key is a nucleotide and the value is a list
-	 * of cycles that have the given key as a vertex
-	 *
+	 * 
+	 * A map where the key is a nucleotide and the value is a list of cycles
+	 * that have the given key as a vertex
+	 * 
 	 * @return the mcbVertexMap
 	 */
 	public HashMap<Nucleotide, List<Cycle<Nucleotide, InteractionEdge>>> getMcbVertexMap() {
@@ -560,13 +568,12 @@ public class NucleicAcid extends AbstractNucleicAcid {
 	}
 
 	/**
-	 * @param mcbVertexMap the mcbVertexMap to set
+	 * @param mcbVertexMap
+	 *            the mcbVertexMap to set
 	 */
 	private void setMcbVertexMap(
 			HashMap<Nucleotide, List<Cycle<Nucleotide, InteractionEdge>>> mcbVertexMap) {
 		this.mcbVertexMap = mcbVertexMap;
 	}
-
-	
 
 }
