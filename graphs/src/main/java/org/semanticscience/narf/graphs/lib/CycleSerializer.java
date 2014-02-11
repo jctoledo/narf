@@ -185,7 +185,7 @@ public class CycleSerializer {
 			rm.add(Vocab.narf_cycle_size, Vocab.rdftype, Vocab.rdfs_class);
 			sizeRes.addProperty(Vocab.rdftype, Vocab.named_individual);
 			//add a label
-			String l = "Cycle size for :"+acyc.toString();
+			String l = "Cycle size";
 			sizeRes.addLiteral(Vocab.rdfslabel, l);
 			// add the value
 			sizeRes.addLiteral(Vocab.has_value, (int) acyc.size());
@@ -197,8 +197,8 @@ public class CycleSerializer {
 			gcCont.addProperty(Vocab.rdftype, Vocab.narf_gc_content);
 			rm.add(Vocab.narf_gc_content, Vocab.rdftype, Vocab.rdfs_class);
 			//add a label
-			String l2 = "Cycle gc content for :"+acyc.toString();
-			gcCont.addLiteral(Vocab.rdfslabel, l);
+			String l2 = "Cycle gc content";
+			gcCont.addLiteral(Vocab.rdfslabel, l2);
 			gcCont.addProperty(Vocab.rdftype, Vocab.named_individual);
 			double gc_cont =  CycleHelper.computeCycleGCContent(acyc);
 			gcCont.addLiteral(Vocab.has_value,gc_cont);
@@ -210,7 +210,7 @@ public class CycleSerializer {
 				rm.add(Vocab.narf_cycle_profile_level_1, Vocab.rdftype, Vocab.rdfs_class);
 				lvl_1.addProperty(Vocab.rdftype, Vocab.named_individual);
 				//add a label
-				String l3 = "Cycle profile level 1 for :"+acyc.toString();
+				String l3 = "Cycle profile level 1 ";
 				lvl_1.addLiteral(Vocab.rdfslabel, l3);
 				//get the level 1 normalized version of this string
 				String lvl_1_str = CycleHelper.findMinmalNormalization(aNucleicAcid, acyc, true).toString();
@@ -224,7 +224,7 @@ public class CycleSerializer {
 				rm.add(Vocab.narf_cycle_profile_level_1, Vocab.rdftype, Vocab.rdfs_class);
 				lvl_1.addProperty(Vocab.rdftype, Vocab.named_individual);
 				//add a label
-				String l34 = "Cycle profile level 2 for :"+acyc.toString();
+				String l34 = "Cycle profile level 2 ";
 				lvl_1.addLiteral(Vocab.rdfslabel, l34);
 				//get the level 1 normalized version of this string
 				String lvl_1_str = CycleHelper.findMinmalNormalization(aNucleicAcid, acyc, true).toString();
