@@ -160,7 +160,7 @@ public class CycleSerializer {
 			if(firstDegNeigh.size()>0){
 				String r = "r"+randp;
 				Resource firstDegCNS = rm.createResource(Vocab.narf_resource+CycleSerializer.MD5(r));
-				String lb = "First degree cycle neighbourset for :"+acyc.toString();
+				String lb = "First degree cycle neighbourset";
 				//add a label
 				firstDegCNS.addLiteral(Vocab.rdfslabel, lb);
 				//type it as a 1st degree neighbour cycle set
