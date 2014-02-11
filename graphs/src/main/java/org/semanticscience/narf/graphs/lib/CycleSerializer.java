@@ -140,11 +140,9 @@ public class CycleSerializer {
 		for (Cycle<Nucleotide, InteractionEdge> acyc : acycleList) {
 			Random rp = new Random();
 			int randp = rp.nextInt() + 1;
-			//print to string to a file
-			
 			// create a cycle resource
 			Resource cycleRes = rm.createResource(Vocab.narf_resource
-					+ CycleSerializer.MD5("cycle" + randp));
+					+ CycleSerializer.MD5(acyc.toString()+aPdbId));
 			// type it as a cycle
 			cycleRes.addProperty(Vocab.rdftype, Vocab.narf_cycle);
 			rm.add(Vocab.narf_cycle, Vocab.rdftype, Vocab.rdfs_class);
@@ -155,6 +153,27 @@ public class CycleSerializer {
 			String lbl = "Cycle found in PDBID: " + aPdbId + " of size: "
 					+ acyc.size();
 			cycleRes.addProperty(Vocab.rdfslabel, lbl);
+			
+			//add 1st degree neighbour cycle set
+			//all the cycles that share one or more vertices with acyc
+			List<Cycle<Nucleotide, InteractionEdge>> firstDegNeigh = aNucleicAcid.findMCBNeighbours(acyc);
+			if(firstDegNeigh.size()>0){
+				String r = "r"+randp;
+				Resource firstDegCNS = rm.createResource(Vocab.narf_resource+CycleSerializer.MD5(r));
+				//type it as a 1st degree neighbour cycle set
+				firstDegCNS.addProperty(Vocab.rdftype, Vocab.narf_firstDegreeCycleNeighbourSet);
+				rm.add(Vocab.narf_firstDegreeCycleNeighbourSet, Vocab.rdftype, Vocab.rdfs_class);
+				firstDegCNS.addProperty(Vocab.rdftype, Vocab.named_individual);
+				cycleRes.addProperty(Vocab.has_attribute, firstDegCNS);
+				//now iterate over the neighbours
+				for (Cycle<Nucleotide, InteractionEdge> an : firstDegNeigh) {
+					//create a resource for each
+					Resource an_res = rm.createResource(Vocab.narf_resource+CycleSerializer.MD5(an.toString()+aPdbId));
+					//attach them to firstDegCNS using hasmember
+					firstDegCNS.addProperty(Vocab.has_member, an_res);
+				}
+			}
+			
 			// add the size attribute
 			Resource sizeRes = rm.createResource(Vocab.narf_resource
 					+ CycleSerializer.MD5("size" + randp));
@@ -216,8 +235,8 @@ public class CycleSerializer {
 			for (InteractionEdge anEdge : edges) {
 				Set<NucleotideInteraction> interactions = anEdge
 						.getInteractions();
-				Random r = new Random();
-				int rand = r.nextInt() + 1;
+				Random ra = new Random();
+				int rand = ra.nextInt() + 1;
 				for (NucleotideInteraction ni : interactions) {
 					if (ni instanceof BasePair) {
 						
@@ -695,7 +714,7 @@ public class CycleSerializer {
 				.createProperty(narf_vocabulary + "has_name");
 		
 		
-		
+		public static Resource narf_firstDegreeCycleNeighbourSet = m.createResource(narf_vocabulary+"first_degree_cycle_neighbour_set");
 		public static Resource narf_cycle = m.createResource(narf_vocabulary
 				+ "cycle");
 		public static Resource narf_gc_content = m.createResource(narf_vocabulary+"gc_content");

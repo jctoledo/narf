@@ -246,7 +246,9 @@ public class NucleicAcid extends AbstractNucleicAcid {
 				//now get the cycles that are not aCycle
 				for (Cycle<Nucleotide, InteractionEdge> c : some_cycles) {
 					if(!c.equals(aCycle)){
-						rm.add(c);
+						if(!rm.contains(c)){
+							rm.add(c);
+						}
 					}
 				}				
 			}

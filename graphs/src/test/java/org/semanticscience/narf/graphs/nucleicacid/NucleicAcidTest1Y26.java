@@ -91,11 +91,11 @@ public class NucleicAcidTest1Y26 {
 			List<Cycle<Nucleotide,InteractionEdge>> mcb = na.getMinimumCycleBasis();
 			for(Cycle<Nucleotide,InteractionEdge> c : mcb){
 				System.out.println("Searching for neighbours of: "+c.toString());
+				System.out.println("");
 				List<Cycle<Nucleotide, InteractionEdge>> neighbours = na.findMCBNeighbours(c);
 				System.out.println(neighbours);
 				System.out.println("******\n");
 			}
-			System.out.println("########################\n");
 		}
 	}
 	
