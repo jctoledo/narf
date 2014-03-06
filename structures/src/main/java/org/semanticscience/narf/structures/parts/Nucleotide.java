@@ -845,7 +845,12 @@ public class Nucleotide extends Residue {
 		rm.put("ZHP", 589);
 		rm.put("ZN", 590);
 		rm.put("ZTH", 591);
-		return rm;
+		rm.put("T", 592);
+		rm.put("R", 593);
+		rm.put("Y", 594);
+		rm.put("X", 595);
+		rm.put("M", 596);
+		return rm; 
 	}
 
 	public Map<String, Integer> getNormalizedNucleotideMapping() {

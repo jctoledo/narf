@@ -22,10 +22,20 @@ package org.semanticscience.narf.graphs.main;
 
 import static org.junit.Assert.*;
 
+import java.io.IOException;
+import java.util.Iterator;
+import java.util.Set;
+
 import org.apache.commons.io.FileUtils;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.Test;
+import org.semanticscience.narf.graphs.nucleicacid.NucleicAcid;
+import org.semanticscience.narf.graphs.nucleicacid.PredictedNucleicAcid;
+import org.semanticscience.narf.structures.lib.exceptions.InvalidDotBracketNotationException;
+import org.semanticscience.narf.structures.lib.exceptions.InvalidResidueException;
+import org.semanticscience.narf.structures.lib.exceptions.InvalidSequenceException;
+import org.semanticscience.narf.structures.parts.Sequence;
 
 /**
  * @author Jose Cruz-Toledo
@@ -62,6 +72,47 @@ public class CycleExtractorTest {
 		}
 	}*/
 	
+	/*@Test
+	public void test44(){
+		//create
+		try{
+			Sequence seq = new Sequence("GGGAAUGGAUCCACAUCUACGAAUUCCGCGCAGGCGCCGUGAGACGGCGAUAUGCUUCACUGCAGACUUGACGAAGCUU");
+			Set<NucleicAcid> nas = PredictedNucleicAcid.rnafold(seq);
+			Iterator<NucleicAcid> itr = nas.iterator();
+			while(itr.hasNext()){
+				NucleicAcid na = itr.next();
+				System.out.println(na);
+			}
+		}catch(InvalidResidueException e){
+			e.printStackTrace();
+		}catch (InvalidSequenceException e2){
+			e2.printStackTrace();
+		} catch (InvalidDotBracketNotationException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (IOException e) {
+			
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		
+		
+	}*/
+	@Test 
+	public void test3(){
+		String[] args = new String[] {
+				"-inputSeqFile",
+				"/home/jose/Documents/research/aptamerbase_trends/data/input.sequences.clean",
+				"-outputDir",
+				"/tmp/pico/rdf",
+				"-outputFormat", "RDF" };
+		try {
+			CycleExtractor.main(args);
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+	}
+	/*
 	@Test
 	public void test2() {
 		String[] args = new String[] {
@@ -92,5 +143,5 @@ public class CycleExtractorTest {
 		}
 	}
 
-	
+	*/
 }

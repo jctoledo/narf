@@ -134,7 +134,7 @@ public class CycleExtractor {
 								String aPdbId = CycleExtractor
 										.getPdbIdFromFilePath(aFilePath);
 								if (format.equals("RDF")) {
-									Model m = cs.createNarfModel(
+									Model m = cs.createNarfModelFromPDB(
 											aPdbId, aNuc, ccb, false);
 									// make an output file
 									File outputFile = new File(
@@ -160,7 +160,7 @@ public class CycleExtractor {
 				}
 				//now write a report in a separate output file
 				//print a summary file
-				String summary = cs.makeSummary();
+				String summary = cs.makeSummary(); 
 				File readme_out = new File(outputDir.getAbsolutePath()+"/cycle_summary.txt");
 				FileUtils.writeStringToFile(readme_out, summary);
 				
@@ -170,14 +170,17 @@ public class CycleExtractor {
 				// open the file
 				List<String> lines = FileUtils.readLines(inputSeqFile);
 				// foreach line in the file
+				int c3 = 1;
 				for (String aLine : lines) {
+					c3++;
 					// get a sequence
 					List<String> sl = Arrays.asList(aLine.split(","));
 					// skip the first line
-					if (sl.get(0).equals("sequence")) {
-						continue;
-					}
-					String aSeq = sl.get(0).replace("\"", "");
+					//if (sl.get(0).equals("sequence")) {
+					//	continue;
+					//}
+					String aSeq = aLine;
+					//String aSeq = sl.get(0).replace("\"", "");
 					// call runMfold
 					Set<NucleicAcid> nas = CycleExtractor.runMfold(aSeq);
 					if (nas == null || nas.size() == 0) {
@@ -185,27 +188,40 @@ public class CycleExtractor {
 								"Could not extract cycles from :" + sl);
 					} else {
 						if (nas.size() == 1) {
+							
 							for (NucleicAcid aNuc : nas) {
+								
 								Random r = new Random();
-								int rand = (r.nextInt(65536)-32768);
+								int rand = Math.abs((r.nextInt(65536)-32768));
+								String rd = Integer.toString(rand);
 								// get the MCB of each prediction
 								List<Cycle<Nucleotide, InteractionEdge>> ccb = aNuc
 										.getMinimumCycleBasis();
 								//get the aptamer type
-								String apt_type = sl.get(5).replace("\"", "");
+								//String apt_type = sl.get(5).replace("\"", "");
 								//get the selex experiment mid
-								String se_mid = sl.get(4).replace("\"", "");
-								se_mid = se_mid.replace("\\/", "");
+								//String se_mid = sl.get(4).replace("\"", "");
+								//se_mid = se_mid.replace("\\/", "");
 								//se_mid += rand;
 								if(format.equals("RDF")){
-									
+									Model m = cs.createNarfModelFromAB(
+											rd, aNuc, ccb);
+									// make an output file
+									File outputFile = new File(
+											outputDir.getAbsolutePath() + "/"
+													+ Math.abs(c3+rand)+rd + "_cycles.rdf");
+									// create a fop
+									FileOutputStream fop = new FileOutputStream(
+											outputFile);
+									m.write(fop);
+									fop.close();
 								}else if(format.equals("tsv")){
-									String tsv = cs.createNarfTsv(se_mid, aNuc, ccb,apt_type,rand, true);
+									/*String tsv = cs.createNarfTsv(se_mid, aNuc, ccb,apt_type,rand, true);
 									File outputFile = new File(
 											outputDir.getAbsolutePath() + "/"
 													+ se_mid+"-"+rand + "_cycles.tsv");
 									FileUtils
-									.writeStringToFile(outputFile, tsv);
+									.writeStringToFile(outputFile, tsv);*/
 								}
 								
 							}

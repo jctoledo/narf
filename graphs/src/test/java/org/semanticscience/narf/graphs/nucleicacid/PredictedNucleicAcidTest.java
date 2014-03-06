@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2012  Jose Cruz-Toledo
+ * Copyright (c) 2014  Jose Cruz-Toledo
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
  * in the Software without restriction, including without limitation the rights
@@ -25,10 +25,13 @@ import static org.junit.Assert.*;
 import java.util.Iterator;
 import java.util.Set;
 
+
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.Test;
 import org.semanticscience.narf.structures.parts.Sequence;
+
+
 
 /**
  * @author  Jose Cruz-Toledo
@@ -45,12 +48,11 @@ public class PredictedNucleicAcidTest {
 	 */
 	@BeforeClass
 	public static void setUpBeforeClass() throws Exception {
-		seq = new Sequence("GCGCGCGCGCGCAAAAAGCGCGCGCGCGC");
+		seq = new Sequence("GGGAAUGGAUCCACAUCUACGAAUUCCGCGCAGGCGCCGUGAGACGGCGAUAUGCUUCACUGCAGACUUGACGAAGCUU");
 		nAs = PredictedNucleicAcid.rnafold(seq);
 		Iterator<NucleicAcid> itr = nAs.iterator();
 		while(itr.hasNext()){
 			NucleicAcid na = itr.next();
-			
 		}
 	}
 
@@ -65,6 +67,7 @@ public class PredictedNucleicAcidTest {
 
 	@Test
 	public void test() {
+		System.out.println("poto");
 		System.out.println(nAs);
 		
 	}
