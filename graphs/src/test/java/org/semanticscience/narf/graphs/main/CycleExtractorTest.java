@@ -98,7 +98,7 @@ public class CycleExtractorTest {
 		
 		
 	}*/
-	@Test 
+	/*@Test 
 	public void test3(){
 		String[] args = new String[] {
 				"-inputSeqFile",
@@ -112,7 +112,7 @@ public class CycleExtractorTest {
 			e.printStackTrace();
 		}
 	}
-	/*
+	
 	@Test
 	public void test2() {
 		String[] args = new String[] {
@@ -127,12 +127,12 @@ public class CycleExtractorTest {
 			e.printStackTrace();
 		}
 	}
-	
+	*/
 	@Test
 	public void test3() {
 		String[] args = new String[] {
 				"-inputPDBDir",
-				"/home/jose/Documents/research/aptamers_inPDB/pdb_retriever/Nov2013/pdb_sample/rna",
+				"/tmp/poto",
 				"-outputDir",
 				"/tmp/pico/rdf",
 				"-outputFormat", "RDF" };
@@ -143,5 +143,5 @@ public class CycleExtractorTest {
 		}
 	}
 
-	*/
+	
 }

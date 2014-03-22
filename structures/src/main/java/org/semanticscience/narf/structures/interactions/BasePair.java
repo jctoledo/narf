@@ -129,7 +129,7 @@ public class BasePair extends NucleotideInteraction implements
 		glycosidicOrientation = aGlycosidicOrientation;
 		strandBPOrientation = aStrandBPOrientation;
 		normalizedbasePairMapping = makeNormalizedBasePairMap();
-		rnaoclassuri = inferRnaOClass();
+		rnaoclassuri = "http://purl.obolibrary.org/obo/RNAO_0000001";
 	}
 
 	/**
@@ -160,11 +160,12 @@ public class BasePair extends NucleotideInteraction implements
 			String glyorient, String bporient, String aLabel,
 			String aSaengerClass, String aLWClass) {
 		this(n1, n2, e1, e2, glyorient, bporient);
+		
 		label = aLabel;
 		saengerClass = aSaengerClass;
 		LWClass = aLWClass;
 		normalizedbasePairMapping = makeNormalizedBasePairMap();
-		rnaoclassuri = inferRnaOClass();
+		rnaoclassuri = this.inferRnaOClass();
 	}
 
 	/**
@@ -702,7 +703,7 @@ public class BasePair extends NucleotideInteraction implements
 	 */
 	@Override
 	public String toString() {
-		return "BasePair [label=" + label + ", strandBPOrientation="
+		return "B@asePair [label=" + label + ", strandBPOrientation="
 				+ strandBPOrientation + ", glycosidicOrientation="
 				+ glycosidicOrientation + ", first nucleotide="
 				+ getFirstNucleotide().toString() + " , second nucleotide="
@@ -711,6 +712,7 @@ public class BasePair extends NucleotideInteraction implements
 				+ ", c1c1Distance=" + c1c1Distance + ", n1n9Distance="
 				+ n1n9Distance + ", c6c8Distance=" + c6c8Distance
 				+ ", saengerClass=" + saengerClass + ", LWClass=" + LWClass
+				+" , rnaoClass=" +rnaoclassuri
 				+ "]\n";
 	}
 

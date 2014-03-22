@@ -339,6 +339,7 @@ public class CycleSerializer {
 	public Model createNarfModelFromPDB(String aPdbId, NucleicAcid aNucleicAcid,
 			List<Cycle<Nucleotide, InteractionEdge>> acycleList, boolean basepaironly)
 			throws IOException {
+		aPdbId = aPdbId.toUpperCase();
 		Random r_i = new Random();
 		int rand_i = r_i.nextInt()+1;
 		Model rm = ModelFactory.createDefaultModel();

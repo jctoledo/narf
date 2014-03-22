@@ -129,6 +129,7 @@ public class CycleExtractor {
 								//see if cycle basis is empty
 								if(ccb.size() == 0){
 									System.out.println("PDBID:"+aFilePath +" has an empty cycle basis!");
+									continue;
 								}
 								// the pdbid
 								String aPdbId = CycleExtractor

@@ -44,7 +44,7 @@
       <attribute value="jar:file:/home/jose/.m2/repository/commons-io/commons-io/2.4/commons-io-2.4-javadoc.jar!/" name="javadoc_location"/>
     </attributes>
   </classpathentry>
-  <classpathentry kind="var" path="M2_REPO/org/semanticscience/narf/structures/2.0/structures-2.0.jar"/>
+  <classpathentry kind="src" path="/structures"/>
   <classpathentry kind="var" path="M2_REPO/com/hp/hpl/jena/arq/2.8.3/arq-2.8.3.jar" sourcepath="M2_REPO/com/hp/hpl/jena/arq/2.8.3/arq-2.8.3-sources.jar">
     <attributes>
       <attribute value="jar:file:/home/jose/.m2/repository/com/hp/hpl/jena/arq/2.8.3/arq-2.8.3-javadoc.jar!/" name="javadoc_location"/>
