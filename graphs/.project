@@ -2,9 +2,7 @@
 <projectDescription>
   <name>graphs</name>
   <comment>A set of classes used to represent nucleic acid structure as graphs. NO_M2ECLIPSE_SUPPORT: Project files created with the maven-eclipse-plugin are not supported in M2Eclipse.</comment>
-  <projects>
-    <project>structures</project>
-  </projects>
+  <projects/>
   <buildSpec>
     <buildCommand>
       <name>org.eclipse.jdt.core.javabuilder</name>
